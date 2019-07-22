@@ -1,0 +1,58 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module"
+  },
+  "rules": {
+    "quotes": [
+      "warn",
+      "backtick"
+    ],
+    "semi": [
+      "warn",
+      "never"
+    ],
+    "indent": [
+      "warn",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "linebreak-style": [
+      "warn",
+      "windows"
+    ],
+    "keyword-spacing": [
+      "warn",
+      {
+        "before": true,
+        "after": true
+      }
+    ],
+    "no-multiple-empty-lines": [
+      "warn",
+      {
+        "max": 1
+      }
+    ],
+    "block-spacing": [
+      "warn",
+      "always"
+    ],
+    "comma-dangle": [
+      "warn",
+      "never"
+    ],
+    "key-spacing": [
+      "warn",
+      {
+        "mode": "strict"
+      }
+    ]
+  }
+}

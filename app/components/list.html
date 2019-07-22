@@ -1,0 +1,169 @@
+<div class="list">
+    <div>
+      <div class="checkBox"></div>
+      <div class="name">
+        <div class="text">
+          Departures ~あなたにおくるアイの歌~
+        </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="attribute">
+        <div class="artist">未知艺术家</div>
+        <div class="album">GREATESTHITS2011-2017'ALTEREGO'</div>
+        <div class="date">2017年</div>
+        <div class="style">R&B</div>
+      </div>
+      <div class="duration">3:07</div>
+    </div>
+    <div>
+      <div class="checkBox"></div>
+      <div class="name">
+        <div class="text">
+          Departures
+        </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="attribute">
+        <div class="artist">未知艺术家</div>
+        <div class="album">GREATESTH</div>
+        <div class="date">2017年</div>
+        <div class="style">R&B</div>
+      </div>
+      <div class="duration">2:07</div>
+    </div>
+    <div>
+      <div class="checkBox"></div>
+      <div class="name">
+        <div class="text">
+          Departures ~あなたにおくるアイの歌~
+        </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="attribute">
+        <div class="artist">未知艺术家</div>
+        <div class="album">GREATESTHITS2011-2017'ALTEREGO'</div>
+        <div class="date">2017年</div>
+        <div class="style">R&B</div>
+      </div>
+      <div class="duration">3:07</div>
+    </div>
+    <div>
+      <div class="checkBox"></div>
+      <div class="name">
+        <div class="text">
+          Departures
+        </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="attribute">
+        <div class="artist">未知艺术家</div>
+        <div class="album">GREATESTH</div>
+        <div class="date">2017年</div>
+        <div class="style">R&B</div>
+      </div>
+      <div class="duration">2:07</div>
+    </div>
+  </div>
+  <style>
+    .data {
+    width: 5vw;
+  }
+
+  .name .text {
+    margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  .name {
+    display: flex;
+    align-items: center;
+    height: inherit;
+    width: 25vw;
+  }
+
+  .checkBox {
+    width: 20px;
+    height: 20px;
+    margin: 12px;
+    outline: 1px solid rgba(31, 190, 164, 0.479);
+
+  }
+
+  .list>div:nth-child(2n-1) {
+    background-color: rgb(240, 240, 240);
+  }
+
+  .list>div:hover {
+    background-color: rgb(220, 220, 220);
+  }
+
+  .list svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: purple;
+  }
+
+  .list>div:hover .icon {
+    display: flex;
+  }
+
+  .list .icon:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .list .icon {
+    display: none;
+    flex-shrink: 0;
+    height: 50px;
+    width: 50px;
+  }
+
+  .attribute {
+    flex: 1;
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 20px;
+    font-size: 12px
+  }
+
+  .artist,
+  .album {
+    width: 20vw;
+    overflow: hidden;
+    margin-right: 20px;
+  }
+
+  .date {
+    margin-right: 20px;
+  }
+
+  .duration {
+    font-size: 12px;
+    margin-right: 10px;
+  }
+
+  .list>div {
+    display: flex;
+    align-items: center;
+    height: 50px;
+  }
+
+  .line {
+    position: relative;
+    z-index: -1;
+    top: -2px;
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px rgb(206, 206, 206) solid;
+  }
+  </style>
+  <script type="module" src="../assets/icon.js"></script>

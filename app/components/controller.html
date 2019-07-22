@@ -1,0 +1,314 @@
+<div id="controller">
+  <div class="cover-info-center">
+    <div class="cover-info">
+      <div class="cover">
+        <img src="../assets/cover/佐仓千代avatar.png" alt="cover" srcset="">
+      </div>
+      <div class="info">
+        <div class="name">
+          Departures ~あなたにおくるアイの歌~
+        </div>
+        <div class="artist">
+          未知艺术家
+        </div>
+      </div>
+    </div>
+    <div class="center">
+      <div class="buttons">
+        <div class="icon random middle-button">
+        </div>
+        <div class="icon previous middle-button">
+        </div>
+        <div class="icon play big-button">
+        </div>
+        <div class="icon next middle-button">
+        </div>
+        <div class="icon refresh middle-button">
+        </div>
+      </div>
+      <div class="progress">
+        <div class="timer time-passed">22:05</div>
+        <input type="range" min="0" max="100"></input>
+        <div class="timer timer-total">32:17</div>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="icon sound middle-button">
+    </div>
+    <input type="range" min="0" max="100"></input>
+    <div class="icon resize middle-button">
+    </div>
+    <div class="icon more middle-button">
+    </div>
+  </div>
+</div>
+<style>
+  body {
+    margin: 0;
+  }
+
+  .cover img {
+    width: inherit;
+    object-fit: cover;
+  }
+
+  svg {
+    fill: none;
+    stroke: white;
+  }
+
+  .icon {
+    margin: 5px;
+  }
+
+  .timer {
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    line-height: 20px;
+    margin: 0 5px;
+  }
+
+  .cover-info-center {
+    width: 66vw;
+    justify-content: space-between;
+  }
+
+  .info {
+    box-sizing: border-box;
+    white-space: nowrap;
+    color: white;
+    display: flex;
+    width: 22vw;
+    max-width: 333px;
+    flex-direction: column;
+    height: 90px;
+    padding: 0 15px;
+    justify-content: center;
+  }
+
+  .cover-info:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .name,
+  .artist {
+    overflow: hidden;
+  }
+
+  .artist {
+    font-weight: bold;
+  }
+
+  .cover {
+    width: 90px;
+    height: 90px;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 64px;
+  }
+
+  .cover-info-center,
+  .cover-info,
+  .buttons>div,
+  .right>div {
+    display: flex;
+  }
+
+  .middle-button svg {
+    margin: auto;
+    height: 14px;
+    width: 14px;
+  }
+
+  .big-button svg {
+    margin: auto;
+    height: 20px;
+    width: 20px;
+  }
+
+  input {
+    width: 280px;
+    height: 2px;
+  }
+
+  .center {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    height: 90px;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+  }
+
+  .progress {
+    display: flex;
+    justify-content: space-between;
+    width: 32vw;
+    height: 26px;
+  }
+
+  .right input {
+    width: 100px;
+  }
+
+  .progress input {
+    flex: 1;
+  }
+
+  input[type="range"] {
+    color: currentColor;
+    -webkit-appearance: none;
+    margin: 0;
+    border: 0;
+    height: 20px;
+    background: transparent;
+  }
+
+  input[type="range"]:focus {
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 2px;
+    background-color: white;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    position: relative;
+    top: -7px;
+    margin: 0;
+    border: 2px;
+    height: 16px;
+    width: 16px;
+    border-color: #ffffff;
+    outline: 2px solid currentColor;
+    border-style: solid;
+    border-radius: 50%;
+    background-color: currentColor;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:active {
+    background-color: white;
+    outline: none;
+    top: -10px;
+    height: 22px;
+    width: 22px;
+    border-color: white;
+}
+
+  .middle-button {
+    width: 32px;
+    height: 32px;
+    border-color: rgba(0, 0, 0, 0);
+  }
+
+  .big-button {
+    width: 46px;
+    height: 46px;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .middle-button:hover,
+  .big-button:hover {
+    border-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .middle-button,
+  .big-button {
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+  }
+
+  .cover {
+    width: 90px;
+    height: 90px;
+  }
+
+  #controller {
+    width: 100%;
+    height: 90px;
+    color: rgb(113, 204, 192);
+    background-color: currentColor;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 860px) {
+
+    div.random,
+    div.refresh {
+      display: none
+    }
+  }
+
+  @media (max-width: 770px) {
+    div.resize {
+      display: none;
+    }
+  }
+
+  @media (max-width: 670px) {
+
+    .right [type="range"],
+    div.sound,
+    div.cover {
+      display: none
+    }
+
+    div.more {
+      transform: rotate(90deg)
+    }
+
+    .cover-info-center {
+      flex: 1;
+    }
+
+    .cover-info {
+      height: 60px;
+      width: calc(100% - 152px);
+      max-width: 250px;
+    }
+
+    div.info {
+      height: 60px;
+      width: 100%;
+    }
+
+    div.progress {
+      position: absolute;
+      right: 10px;
+      top: 65px;
+      width: calc(100vw - 20px);
+    }
+
+    /* div.progress {
+      align-self: flex-end;
+      margin-right: -47px;
+      width: calc(100vw - 27px)
+    } */
+    div.center {
+      align-items: flex-end;
+    }
+  }
+</style>
+<script type="module" src="../assets/icon.js"></script>

@@ -1,0 +1,128 @@
+<div class="main">
+  <div class="icon playList cover">
+
+  </div>
+  <div class="item" id="setName">
+    <input type="text" placeholder="命名此播放列表">
+    <div class="icon cross"></div>
+    <div class="icon search"></div>
+  </div>
+  <div class="yourCreated">
+    您创建的
+  </div>
+  <div class="creation">
+    <div class="create">
+      创建播放列表
+    </div>
+    <div class="cancel">
+      取消
+    </div>
+  </div>
+</div>
+<style>
+  .cancel {
+    margin-top: 8px;
+  }
+  .create,
+  .cancel {
+    line-height: 40px;
+    text-align: center;
+  }
+
+  .create {
+    width: 250px;
+    height: 40px;
+    color: white;
+    background-color: burlywood;
+  }
+
+  .yourCreated {
+    margin: 10px 0 60px 0;
+  }
+
+  ::-webkit-input-placeholder {
+   text-align: right;
+}
+  #setName .icon {
+    display: flex;
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+  }
+
+  #setName svg {
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    fill: none;
+    stroke: black;
+  }
+
+  #setName:hover {
+    background-color: rgb(230, 230, 230)
+  }
+
+  #setName {
+    display: flex;
+    /* width: 400px; */
+    height: 56px;
+    background-color: rgb(250, 250, 250)
+  }
+
+  #setName .search {
+    background-color: inherit;
+  }
+
+  #setName input:focus,
+  #setName input:focus~.icon {
+    background-color: rgb(250, 250, 250)
+  }
+
+  #setName .cross {
+    visibility: hidden;
+  }
+
+  #setName input:focus+.cross {
+    visibility: unset;
+  }
+
+  #setName input {
+    font-family: sans-serif;
+    font-weight: lighter;
+    font-size: 30px;
+    line-height: 56px;
+    outline: none;
+    border: none;
+    height: 56px;
+    width: 280px;
+    background-color: transparent;
+  }
+
+  .playList svg {
+    stroke: white;
+    fill: none;
+    width: 36px;
+    height: 36px;
+    margin: auto;
+  }
+
+  .cover {
+    margin:60px 0 20px 0;
+    display: flex;
+    width: 170px;
+    height: 170px;
+    border-radius: 5px;
+    background-color: burlywood;
+
+  }
+
+  .main {
+    width: 470px;
+    height: 520px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 20px 5px rgba(100, 100, 100, 0.2);
+  }
+</style>
+<script type="module" src="../assets/icon.js"></script>

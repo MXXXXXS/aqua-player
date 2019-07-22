@@ -1,0 +1,21 @@
+{
+  "name": "aqua-player",
+  "version": "1.0.0",
+  "description": "仿win10 Groove音乐播放器",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "electron .",
+    "updateIcons": "node utils/replace.js && node utils/collectIcons.js",
+    "updateComps": "node utils/collectComponents.js",
+    "updateAll": "node utils/replace.js && node utils/collectIcons.js && node utils/collectComponents.js"
+  },
+  "keywords": [],
+  "author": "MXXXXXS",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "electron": "^5.0.6",
+    "eslint": "^6.0.1"
+  }
+}

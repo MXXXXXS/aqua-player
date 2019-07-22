@@ -1,0 +1,251 @@
+<div class="sideBar">
+  <div class="item" id="switch">
+    <div class="icon menu"></div>
+  </div>
+  <div class="item" id="search">
+    <input type="text" placeholder="搜索">
+    <div class="icon cross"></div>
+    <div class="icon search"></div>
+  </div>
+  <div tabindex="-1" class="item" id="music">
+    <div class="icon music"></div>
+    <div>我的音乐</div>
+  </div>
+  <div tabindex="-1" class="item" id="lastPlayed">
+    <div class="icon clock"></div>
+    <div>最近播放的内容</div>
+  </div>
+  <div tabindex="-1" class="item" id="playing">
+    <div class="icon wave"></div>
+    <div>正在播放</div>
+  </div>
+  <div id="line0"></div>
+  <div id="playList">
+    <div tabindex="-1">
+      <div class="icon playList"></div>
+      <div>播放列表</div>
+    </div>
+    <div class="icon add"></div>
+  </div>
+  <div class="albums">
+    <div tabindex="-1" class="item albums">
+      <div class="icon album"></div>
+      <div>deemo</div>
+    </div>
+  </div>
+  <div id="line1"></div>
+  <div tabindex="-1" class="item" id="settings">
+    <div class="icon gear"></div>
+    <div>设置</div>
+  </div>
+</div>
+<style>
+  .sideBar {
+    transition: width 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .menu:hover {
+    background-color: rgba(0, 0, 0, 0.1)
+  }
+
+  .icon svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: black;
+  }
+
+  .sideBar {
+    min-height: 400px;
+    height: 100vh;
+    width: 320px;
+    background-color: rgb(242, 242, 242);
+    display: flex;
+    flex-direction: column;
+
+  }
+
+  .close {
+    width: 40px;
+    height: 40px;
+  }
+
+  .albums {
+    flex: 1;
+    width: inherit;
+    background-color: inherit;
+  }
+
+  #line0,
+  #line1 {
+    align-self: center;
+    width: 290px;
+    height: 0px;
+    outline: 1px rgba(0, 0, 0, 0.1) solid;
+  }
+
+  #search {
+    height: 50px;
+  }
+
+  #search .icon {
+    outline: none;
+    width: 40px;
+    height: 40px;
+    background-color: rgb(250, 250, 250);
+  }
+
+  #search .icon:hover {
+    color: rgb(1, 231, 231);
+  }
+
+  #search svg {
+    stroke: currentColor;
+    width: 14px;
+    height: 14px;
+  }
+
+  #search .cross svg {
+    visibility: hidden;
+  }
+
+  #search input:hover,
+  #search input:focus,
+  #search input:hover~.icon,
+  #search input:focus~.icon {
+    background-color: white;
+  }
+
+  #search input:focus+.icon svg {
+    visibility: unset;
+  }
+
+  #search input {
+    margin-left: 10px;
+    padding-left: 10px;
+    outline: none;
+    border: none;
+    width: 210px;
+    height: 40px;
+    background-color: rgb(250, 250, 250);
+  }
+
+  #settings {
+    justify-self: flex-end;
+  }
+
+  #playList>div:first-child {
+    display: flex;
+    flex: 1;
+  }
+
+  #playList>div:hover,
+  #playList>.add:hover {
+    background-color: rgba(0, 0, 0, 0.1)
+  }
+
+  #playList>div:first-child:focus {
+    outline: none;
+    box-shadow: inset 4px 0 rgb(1, 231, 231);
+  }
+
+  #playList>div:first-child:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .icon {
+    display: flex;
+    width: 50px;
+    height: 50px;
+  }
+
+  .item:nth-child(n+3):focus,
+  .albums>.item:focus {
+    outline: none;
+    box-shadow: inset 4px 0 rgb(1, 231, 231);
+  }
+
+  .item:nth-child(n+3):hover,
+  .albums>.item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .item,
+  #playList>div {
+    box-shadow: inset 4px 0 rgba(236, 236, 236, 0);
+  }
+
+  .item,
+  #playList {
+    line-height: 50px;
+    display: flex;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    div[tabindex="-1"]>div:last-child {
+      display: none;
+    }
+
+    .sideBar {
+      width: 50px;
+    }
+
+    #line0 {
+      display: none;
+    }
+
+    #line1 {
+      outline: none;
+      flex: 1;
+    }
+
+    .albums,
+    #search input,
+    #search .cross {
+      display: none;
+    }
+
+    #search .search:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      color: black;
+    }
+
+    #search .search {
+      width: 50px;
+      height: 50px;
+      background-color: inherit;
+    }
+
+    #playList {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sideBar {
+      min-height: 300px;
+    }
+
+    #line0 {
+      display: none;
+    }
+
+    #line1 {
+      outline: none;
+      flex: 1;
+    }
+
+    .albums,
+    #playList .add,
+    #wave,
+    #search {
+      display: none;
+    }
+  }
+</style>
+<script type="module" src="../assets/icon.js"></script>

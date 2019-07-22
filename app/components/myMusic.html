@@ -1,0 +1,71 @@
+<div id="main">
+  <div class="myMusic">我的音乐</div>
+  <div class="tags">
+    <div class="songs">歌曲</div>
+    <div class="singers">歌手</div>
+    <div class="albums">专辑</div>
+  </div>
+  <div class="line"></div>
+  <div class="preference">
+    <div class="icon random"></div>
+    <div class="randomAll">无序播放所有(14)</div>
+    <div class="sort">排序依据: <span href="">添加日期</span></div>
+    <div class="type">类型: <span href="">所有流派</span></div>
+  </div>
+</div>
+<style>
+  .sort,
+  .type {
+    margin-left: 20px;
+  }
+
+  .randomAll {
+    margin-left: 10px;
+  }
+
+  .preference {
+    height: 50px;
+    font-size: 14px;
+    align-items: center;
+    display: flex;
+  }
+
+  .random svg {
+    fill: none;
+    stroke: black;
+    width: 16px;
+    height: 16px;
+  }
+
+  .myMusic {
+    font-size: 34px;
+    font-weight: lighter;
+  }
+
+  .tags {
+    font-size: 20px;
+    display: flex;
+    width: 200px;
+    justify-content: space-between;
+  }
+
+  .tags>div {
+    margin-top: 10px;
+    padding: 0 0 3px 0;
+    border-bottom: 2px rgba(0, 224, 224, 0) solid;
+  }
+
+  .tags>div:hover {
+    border-bottom: 2px rgb(8, 184, 184) solid;
+  }
+
+  .line {
+    position: relative;
+    z-index: -1;
+    top: -2px;
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px rgb(206, 206, 206) solid;
+  }
+</style>
+<script type="module" src="../assets/icon.js"></script>
