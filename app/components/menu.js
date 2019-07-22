@@ -1,4 +1,4 @@
-import components from './assets/components.js'
+import components from '../assets/components.js'
 const {menu} = components
 
 class AQUAMenu extends HTMLElement {

@@ -1,7 +1,7 @@
 const fs = require(`fs`)
 const path = require(`path`)    
     
-const components = path.join(__dirname, `../app/components`)
+const components = path.join(__dirname, `../app/components/src`)
 const componentsJs = path.join(__dirname, `../app/assets/components.js`)
 const buf = {}
 fs.readdirSync(components).forEach(file => {

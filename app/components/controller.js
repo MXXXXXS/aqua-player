@@ -1,4 +1,4 @@
-import components from './assets/components.js'
+import components from '../assets/components.js'
 const {controller} = components
 
 class AQUAController extends HTMLElement {
