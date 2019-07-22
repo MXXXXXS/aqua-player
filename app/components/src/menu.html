@@ -9,21 +9,21 @@
   </div>
   <div tabindex="-1" class="item" id="music">
     <div class="icon music"></div>
-    <div>我的音乐</div>
+    <div class="text">我的音乐</div>
   </div>
   <div tabindex="-1" class="item" id="lastPlayed">
     <div class="icon clock"></div>
-    <div>最近播放的内容</div>
+    <div class="text">最近播放的内容</div>
   </div>
   <div tabindex="-1" class="item" id="playing">
     <div class="icon wave"></div>
-    <div>正在播放</div>
+    <div class="text">正在播放</div>
   </div>
   <div id="line0"></div>
   <div id="playList">
     <div tabindex="-1">
       <div class="icon playList"></div>
-      <div>播放列表</div>
+      <div class="text">播放列表</div>
     </div>
     <div class="icon add"></div>
   </div>
@@ -36,12 +36,17 @@
   <div id="line1"></div>
   <div tabindex="-1" class="item" id="settings">
     <div class="icon gear"></div>
-    <div>设置</div>
+    <div class="text">设置</div>
   </div>
 </div>
 <style>
   body {
     margin: 0;
+  }
+
+  .text {
+    white-space: nowrap;
+    height: 100%;
   }
 
   .menu:hover {
@@ -57,8 +62,10 @@
   }
 
   .sideBar {
+    overflow: hidden;
     transition: width 0.2s cubic-bezier(0.19, 1, 0.22, 1);
     min-height: 400px;
+    height: 100%;
     width: 320px;
     background-color: rgb(242, 242, 242);
     display: flex;
