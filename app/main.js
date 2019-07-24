@@ -8,6 +8,7 @@ let mainWindow
 function createWindow() {
   mainWindow = new BrowserWindow({width: 800, height: 500, webPreferences: {
     nodeIntegration: true
+    // devTools: true
   }})
 
   const mainPage = url.format({
@@ -17,10 +18,8 @@ function createWindow() {
   })
   console.log(mainPage)
 
-  mainWindow.webContents.openDevTools()
-  
   mainWindow.loadURL(mainPage)
-
+  
   mainWindow.on(`closed`, function () {
     mainWindow = null
   })

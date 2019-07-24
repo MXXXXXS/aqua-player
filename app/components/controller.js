@@ -5,6 +5,10 @@ class AQUAController extends HTMLElement {
     super()
     const shadow = this.attachShadow({mode: `open`})
     shadow.innerHTML = controller
+    this.shadowRoot.querySelector(`.play`).addEventListener(`click`, () => {
+      console.log(`clicked`)
+      getSong(`D:/coding/aqua-player/assets/たまゆらのかぜ.mp3`)
+    })
   }
 
 }
