@@ -1,5 +1,4 @@
-import components from '../assets/components.js'
-const {controller} = components
+const {controller} = require(`./assets/components.js`)
 
 class AQUAController extends HTMLElement {
   constructor() {

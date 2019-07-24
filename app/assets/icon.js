@@ -1,4 +1,4 @@
-import icons from './icons.js'
+const icons = require(`./assets/icons.js`)
 document.querySelectorAll(`.aqua`).forEach(el => {
   if (el.shadowRoot) {
     el.shadowRoot.querySelectorAll(`.icon`).forEach(el => {

@@ -13,4 +13,4 @@ fs.readdirSync(icons).forEach(file => {
     buf[file.slice(0, -4)] = data
   }
 })
-fs.writeFileSync(iconsJs, `export default ${JSON.stringify(buf)}`)
+fs.writeFileSync(iconsJs, `module.exports = ${JSON.stringify(buf)}`)

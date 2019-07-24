@@ -6,14 +6,18 @@ const {app, BrowserWindow} = require(`electron`)
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 800, height: 500})
+  mainWindow = new BrowserWindow({width: 800, height: 500, webPreferences: {
+    nodeIntegration: true
+  }})
 
   const mainPage = url.format({
-    pathname: path.join(__dirname, index.html),
+    pathname: path.join(__dirname, `index.html`),
     protocol: `file`,
     slashes: true
   })
   console.log(mainPage)
+
+  mainWindow.webContents.openDevTools()
   
   mainWindow.loadURL(mainPage)
 

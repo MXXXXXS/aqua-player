@@ -1,53 +1,25 @@
-// window.onload = () => {
-//   const menu = sel(`aqua-menu`).shadowRoot
-//   menu.querySelector(`#switch`).addEventListener(`click`, () => {
-//     console.log(`clicked`)
-//     const style = document.createElement(`style`)
-//     style.textContent = 
-//     `div[tabindex="-1"]>div:last-child {
-//       display: none;
-//     }
+const path = require(`path`)
+const fs = require(`fs`)
 
-//     .sideBar {
-//       width: 50px;
-//     }
+const audioCtx = new AudioContext()
 
-//     #line0 {
-//       display: none;
-//     }
+const getSong = async function (songPath) {
+  const sound = await  new Promise((res, rej) => {
+    fs.readFile(songPath, `binary`, (err, data) => {
+      if (err) rej(err)
+      const buf = Buffer.from(data, `binary`)
+      // console.log(typeof data)
+      const arrData = buf.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
+      res(new Blob(arrData, { type: `audio/mpeg` }))
+    })
+  }).catch(e => { console.log(e) })
+  audioCtx.decodeAudioData(sound, playSound)
+  function playSound(buf) {
+    const src = audioCtx.createBufferSource()
+    src.buffer = buf
+    src.connect(audioCtx.destination)
+    src.start(0)
+  }
+}
 
-//     #line1 {
-//       outline: none;
-//       flex: 1;
-//     }
-
-//     .albums,
-//     #search input,
-//     #search .cross {
-//       display: none;
-//     }
-
-//     #search .search:hover {
-//       background-color: rgba(0, 0, 0, 0.1);
-//       color: black;
-//     }
-
-//     #search .search {
-//       width: 50px;
-//       height: 50px;
-//       background-color: inherit;
-//     }
-
-//     #playList {
-//       flex-direction: column;
-//     }`
-//     menu.appendChild(style)
-//   })
-// }
-// function sel(selector0, selector1) {
-//   if (arguments.length === 1) {
-//     return document.querySelector(selector0)
-//   } else if (arguments.length === 2) {
-//     return document.querySelector(selector0).shadowRoot.querySelector(selector1)
-//   }
-// }
+getSong(`D:/coding/aqua-player/assets/たまゆらのかぜ.mp3`)

@@ -13,4 +13,4 @@ fs.readdirSync(components).forEach(file => {
     buf[file.slice(0, -5)] = data
   }
 })
-fs.writeFileSync(componentsJs, `export default ${JSON.stringify(buf)}`)
+fs.writeFileSync(componentsJs, `module.exports = ${JSON.stringify(buf)}`)

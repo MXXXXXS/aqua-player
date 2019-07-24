@@ -1,5 +1,4 @@
-import components from '../assets/components.js'
-const {menu} = components
+const {menu} = require(`./assets/components.js`)
 
 const foldingStyle = `
 div[tabindex="-1"]>div:last-child {
