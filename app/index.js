@@ -1,8 +1,10 @@
 const path = require(`path`)
+const mm = require(`music-metadata`)
+
 const fs = require(`fs`)
 const audioCtx = new AudioContext()
 
-const getSong = async function (songPath) {
+async function getSong(songPath) {
   const sound = await new Promise((res, rej) => {
     fs.readFile(songPath, (err, data) => {
       if (err) 
@@ -21,4 +23,12 @@ const getSong = async function (songPath) {
     src.start(0)
   }
 }
-getSong(`D:/coding/aqua-player/assets/たまゆらのかぜ.mp3`)
+
+async function getMetadata(songPath) {
+  const result = await mm.parseFile(songPath, {
+    duration: true,
+    skipCovers: false
+    
+  }).catch(e => console.error(e))
+  console.log(result)
+}

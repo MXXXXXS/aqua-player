@@ -8,6 +8,7 @@ class AQUAController extends HTMLElement {
     this.shadowRoot.querySelector(`.play`).addEventListener(`click`, () => {
       console.log(`clicked`)
       getSong(`D:/coding/aqua-player/assets/たまゆらのかぜ.mp3`)
+      // getMetadata(`D:/coding/aqua-player/assets/たまゆらのかぜ.mp3`)
     })
   }
 

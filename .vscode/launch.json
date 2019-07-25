@@ -7,9 +7,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch index.js",
-      "program": "${workspaceFolder}\\app\\index.js",
-      // "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron"
-    }
+      "name": "Launch main.js",
+      "program": "${workspaceFolder}/app/main.js",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+    },
   ]
 }
