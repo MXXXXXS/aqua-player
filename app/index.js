@@ -17,10 +17,11 @@ async function getSongBuf(songPath) {
   return await audioCtx.decodeAudioData(arrSound)
 }
 
-function getSongSrc(srcBuf) {
+function getSongSrc(srcBuf, gainNode) {
   const src = audioCtx.createBufferSource()
   src.buffer = srcBuf
-  src.connect(audioCtx.destination)
+  src.connect(gainNode)
+  gainNode.connect(audioCtx.destination)
   return src
 }
 
