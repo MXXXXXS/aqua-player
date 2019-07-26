@@ -27,9 +27,9 @@
         </div>
       </div>
       <div class="progress">
-        <div class="timer time-passed">22:05</div>
-        <input type="range" min="0" max="100"></input>
-        <div class="timer timer-total">32:17</div>
+        <div class="timer time-passed"></div>
+        <input type="range" min="0" max="1000"></input>
+        <div class="timer duration"></div>
       </div>
     </div>
   </div>
@@ -193,26 +193,26 @@
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     position: relative;
-    top: -7px;
     margin: 0;
     border: 2px;
-    height: 16px;
-    width: 16px;
-    border-color: #ffffff;
-    outline: 2px solid currentColor;
     border-style: solid;
     border-radius: 50%;
-    background-color: currentColor;
     cursor: pointer;
+    top: -7px;
+    width: 16px;
+    height: 16px;
+    border-color: #ffffff;
+    outline: 2px solid currentColor;
+    background-color: currentColor;
   }
 
-  input[type="range"]::-webkit-slider-thumb:active {
-    background-color: white;
-    outline: none;
+  input[type="range"]:active::-webkit-slider-thumb {
     top: -10px;
-    height: 22px;
     width: 22px;
+    height: 22px;
     border-color: white;
+    outline: none;
+    background-color: white;
 }
 
   .middle-button {

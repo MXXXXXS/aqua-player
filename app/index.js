@@ -25,10 +25,9 @@ function getSongSrc(srcBuf) {
 }
 
 async function getMetadata(songPath) {
-  const result = await mm.parseFile(songPath, {
+  return await mm.parseFile(songPath, {
     duration: true,
     skipCovers: false
 
   }).catch(e => console.error(e))
-  console.log(result)
 }

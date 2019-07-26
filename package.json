@@ -5,6 +5,7 @@
   "main": "app/main.js",
   "scripts": {
     "start": "electron .",
+    "watch": "nodemon -w ./app --exec npm -- run start",
     "updateIcons": "node utils/replace.js && node utils/collectIcons.js",
     "updateComps": "node utils/collectComponents.js",
     "updateAll": "node utils/replace.js && node utils/collectIcons.js && node utils/collectComponents.js"
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "electron": "^5.0.6",
-    "eslint": "^6.0.1"
+    "eslint": "^6.0.1",
+    "nodemon": "^1.19.1"
   }
 }

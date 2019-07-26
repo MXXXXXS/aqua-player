@@ -6,7 +6,7 @@ const {app, BrowserWindow} = require(`electron`)
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 800, height: 500, webPreferences: {
+  mainWindow = new BrowserWindow({width: 1200, height: 900, webPreferences: {
     nodeIntegration: true
     // devTools: true
   }})
@@ -27,6 +27,7 @@ function createWindow() {
 
 app.on(`ready`, function () {
   createWindow()
+  mainWindow.webContents.openDevTools()
 })
 
 app.on(`window-all-closed`, function () {
