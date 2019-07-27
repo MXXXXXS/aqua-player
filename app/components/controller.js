@@ -1,6 +1,6 @@
-const { controller } = require(`./assets/components.js`)
-const second2time = require(`./utils/second2time.js`)
-
+const {controller} = require(`../assets/components.js`)
+const {audioCtx, getMetadata, getSongBuf} = require(`../audio.js`)
+const second2time = require(`../utils/second2time.js`)
 class AQUAController extends HTMLElement {
   constructor() {
     super()
@@ -9,6 +9,7 @@ class AQUAController extends HTMLElement {
     const root = this.shadowRoot
     const timeLine = root.querySelector(`#timeLine`)
     const loudness = root.querySelector(`#loudness`)
+    loudness.value = 1
     timeLine.value = 0
     const gainNode = audioCtx.createGain()
     run()
@@ -72,6 +73,4 @@ class AQUAController extends HTMLElement {
     }
   }
 }
-
-window.customElements.define(`aqua-controller`, AQUAController)
-
+module.exports = AQUAController

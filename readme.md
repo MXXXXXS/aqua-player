@@ -1,7 +1,7 @@
 # 记录一下遇到的坑
 
 - ES6模块不可用, 必须require
-- require, src等路径都需要设为相对路径, 且是相对与加载的html文件的位置
+- index.html的js, require, src等路径都需要设为相对路径, 是相对与该html文件的位置
 - AudioBufferSourceNode只能start()一次, 要再次播放需要重新createBufferSource并设置buffer, 并connect, 然后start该src
 - AudioContext的currentTime is a read-only property
 - AudioContext建立以后 currentTime 是一直增长的, currentTime应该视为一条增长的时间轴的当前长度
@@ -26,7 +26,8 @@ TODO
   - [x] 播放暂停功能
   - [x] 时间轨控制播放
   - [x] 音量调节
-- [ ] 使用proxy实现双向绑定函数
+- [ ] data-view双向绑定
+  - [x] proxy实现单向数据同步, 数据变动引起绑定的所有对象key的value更新
 - [ ] 状态管理, 事件驱动, 管理所有的数据变动
 - [ ] 列表渲染实现
 - [ ] 写完所有groove的组件

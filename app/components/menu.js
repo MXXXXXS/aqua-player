@@ -1,4 +1,4 @@
-const {menu} = require(`./assets/components.js`)
+const {menu} = require(`../assets/components.js`)
 
 const foldingStyle = `
 div[tabindex="-1"]>div:last-child {
@@ -61,5 +61,4 @@ class AQUAMenu extends HTMLElement {
   }
 }
 
-window.customElements.define(`aqua-menu`, AQUAMenu)
-
+module.exports = AQUAMenu

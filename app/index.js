@@ -1,34 +1,12 @@
-const path = require(`path`)
-const mm = require(`music-metadata`)
+const AQUAController = require(`./components/controller.js`)
+const AQUAList = require(`./components/list.js`)
+const AQUAMenu = require(`./components/menu.js`)
 
-const fs = require(`fs`)
-const audioCtx = new AudioContext()
+window.customElements.define(`aqua-menu`, AQUAMenu)
+window.customElements.define(`aqua-list`, AQUAList)
+window.customElements.define(`aqua-controller`, AQUAController)
 
-async function getSongBuf(songPath) {
-  const sound = await new Promise((res, rej) => {
-    fs.readFile(songPath, (err, data) => {
-      if (err)
-        rej(err)
-      res(data)
-    })
-  })
-    .catch(e => { console.log(e) })
-  const arrSound = sound.buffer.slice(sound.byteOffset, sound.byteOffset + sound.byteLength)
-  return await audioCtx.decodeAudioData(arrSound)
-}
+// const IDB = require(`./utils/indexDB.js`)
 
-function getSongSrc(srcBuf, gainNode) {
-  const src = audioCtx.createBufferSource()
-  src.buffer = srcBuf
-  src.connect(gainNode)
-  gainNode.connect(audioCtx.destination)
-  return src
-}
+// const db = new IDB(`aqua-player`, `song`)
 
-async function getMetadata(songPath) {
-  return await mm.parseFile(songPath, {
-    duration: true,
-    skipCovers: false
-
-  }).catch(e => console.error(e))
-}

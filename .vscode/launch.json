@@ -7,6 +7,12 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch store.js",
+      "program": "${workspaceFolder}/app/utils/store.js",
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch main.js",
       "program": "${workspaceFolder}/app/main.js",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",

@@ -10,6 +10,7 @@
       margin: 0;
     }
     aqua-menu-info {
+      display: flex;
       flex: 1;
     }
   #main {
@@ -23,13 +24,16 @@
   <div id="main">
     <aqua-menu-info>
       <aqua-menu class="aqua"></aqua-menu>
-      <aqua-info class="aqua"></aqua-menu>
+      <aqua-info class="aqua">
+        <aqua-list>
+
+        </aqua-list>
+      </aqua-menu>
     </aqua-menu-info>
     <aqua-controller class="aqua"></aqua-controller>
   </div>
   <script src="index.js"></script>
-  <script src="./components/controller.js"></script>
-  <script src="./components/menu.js"></script>
+  <script src="states.js"></script>
   <script src="./assets/icon.js"></script>
 </body>
 </html>
