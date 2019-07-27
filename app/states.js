@@ -1,12 +1,13 @@
 const Store = require(`./utils/store.js`)
-const songsPromise = require(`./loadSongs.js`)
+const {songslist, songsPath} = require(`./loadSongs.js`)
 
 // run()
 
 async function run() {
-  const songs = await songsPromise
-  console.log(songs)
-  return songs
+  const sList = await songslist
+  const sPath = songsPath
+  console.log(sPath, sList)
+  return {sPath, sList}
 }
 
 module.exports = run()
