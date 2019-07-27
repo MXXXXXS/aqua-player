@@ -35,4 +35,4 @@ TODO
 
 预览
 
-![Alt preview](assets\sample.jpg)
+![Alt preview](assets/sample.jpg)
