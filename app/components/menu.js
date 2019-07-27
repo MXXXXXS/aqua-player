@@ -1,5 +1,6 @@
 const {menu} = require(`../assets/components.js`)
 
+//这些sytle可以放在template里, 通过js响应窗口变化
 const foldingStyle = `
 div[tabindex="-1"]>div:last-child {
   display: none;

@@ -29,6 +29,10 @@ TODO
 - [ ] data-view双向绑定
   - [x] proxy实现单向数据同步, 数据变动引起绑定的所有对象key的value更新
 - [ ] 状态管理, 事件驱动, 管理所有的数据变动
-- [ ] 列表渲染实现
+- [x] 列表渲染实现
 - [ ] 写完所有groove的组件
 - [ ] 全部整合成最终的app
+
+预览
+
+![Alt preview](assets\sample.jpg)

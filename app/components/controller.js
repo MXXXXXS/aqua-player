@@ -1,5 +1,5 @@
 const {controller} = require(`../assets/components.js`)
-const {audioCtx, getMetadata, getSongBuf} = require(`../audio.js`)
+const {audioCtx, getMetadata, getSongBuf, getSongSrc} = require(`../audio.js`)
 const second2time = require(`../utils/second2time.js`)
 class AQUAController extends HTMLElement {
   constructor() {

@@ -73,7 +73,7 @@ class Store {
 
 // testDataChange()
 // testDataAddAndRemove()
-testNoArgs()
+// testNoArgs()
 function testDataChange() {
   const store = new Store({
     name: `suger`,

@@ -14,7 +14,7 @@ async function list(songs) {
     genre: meta.common.genre ? meta.common.genre[0] : undefined,
     duration: meta.format.duration
   }))
-  console.log(songList)
+  console.log(`Songs list get √`)
   return songList
 }
 

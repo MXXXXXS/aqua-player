@@ -1,4 +1,6 @@
 const icons = require(`./assets/icons.js`)
+
+// setTimeout(()=> {
 document.querySelectorAll(`.aqua`).forEach(el => {
   if (el.shadowRoot) {
     el.shadowRoot.querySelectorAll(`.icon`).forEach(el => {
@@ -6,3 +8,4 @@ document.querySelectorAll(`.aqua`).forEach(el => {
     })
   }
 })
+// }, 4000)
