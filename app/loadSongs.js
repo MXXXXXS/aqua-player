@@ -1,16 +1,17 @@
+const path = require(`path`)
 const { getMetadata } = require(`./audio.js`)
 const searchFolder = require(`./utils/searchFolder.js`)
-const songPath = `E:/SteamLibrary/steamapps/common/Hollow Knight/Hollow Knight - Official Soundtrack/MP3`
-const songs = searchFolder(songPath)
+const songsPath = `E:/SteamLibrary/steamapps/common/Hollow Knight/Hollow Knight - Official Soundtrack/MP3`
+const songs = searchFolder(path.resolve(songsPath))
 
 async function list(songs) {
   const result = songs.map(function (songPath) {
     return { meta: getMetadata(songPath), songPath: songPath }
   }).map(async m => {
-    const path = m.songPath
+    const filePath = m.songPath
     const meta = await m.meta
     const picture = meta.common.picture ? meta.common.picture[0] : undefined
-    const title = meta.common.title
+    const title = meta.common.title ? meta.common.title : path.basename(filePath)
     const artist = meta.common.artist
     const album = meta.common.album
     const year = meta.common.year
@@ -18,7 +19,7 @@ async function list(songs) {
     const duration = meta.format.duration
     const type = meta.format.codec
     return {
-      path,
+      filePath,
       picture,
       title,
       artist,
@@ -34,4 +35,4 @@ async function list(songs) {
   return songList
 }
 
-module.exports = { songslist: list(songs), songsPath: songPath }
+module.exports = { songslist: list(songs), songsPath: songsPath }

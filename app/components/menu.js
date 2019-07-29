@@ -1,6 +1,5 @@
 const {menu} = require(`../assets/components.js`)
 
-//这些sytle可以放在template里, 通过js响应窗口变化
 const foldingStyle = `
 div[tabindex="-1"]>div:last-child {
   display: none;
@@ -41,6 +40,30 @@ div[tabindex="-1"]>div:last-child {
 }
 `
 
+//(max-width: 768px) open menu
+
+const menuOpen = 
+`
+.sideBar {
+  min-height: 300px;
+}
+
+#line0 {
+  display: none;
+}
+
+#line1 {
+  outline: none;
+  flex: 1;
+}
+
+.albums,
+#playList .add,
+#wave,
+#search {
+  display: none;
+}
+`
 class AQUAMenu extends HTMLElement {
   constructor() {
     super()

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,35 +10,63 @@
     body {
       margin: 0;
     }
+
     aqua-menu-info {
       display: flex;
       height: 100%;
     }
+
     aqua-menu {
       height: inherit;
     }
+
     aqua-info {
-      height: inherit;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 0 20px;
       width: 100%;
       overflow-y: auto;
     }
-  #main {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-  }
+
+    aqua-my-music {
+      position: sticky;
+      top: 0;
+      background: white;
+    }
+
+    #main {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (max-width: 768px) {
+      aqua-menu-info {
+        flex-direction: column;
+      }
+
+      aqua-info {
+        padding: 0;
+      }
+
+      aqua-menu {
+        height: 50px;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div id="main">
     <aqua-menu-info>
       <aqua-menu class="aqua"></aqua-menu>
       <aqua-info class="aqua">
         <!-- aqua-list 不需要添加class="aqua"用以初始化图标, 因为列表是变动的, 在list.js中添加图标 -->
-        <aqua-list> 
-        </aqua-list>
-      </aqua-menu>
+        <aqua-my-music class="aqua"></aqua-my-music>
+        <aqua-list></aqua-list>
+        </aqua-menu>
     </aqua-menu-info>
     <aqua-controller class="aqua"></aqua-controller>
   </div>
@@ -45,4 +74,5 @@
   <script src="states.js"></script>
   <script src="./assets/icon.js"></script>
 </body>
+
 </html>

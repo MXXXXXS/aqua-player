@@ -1,5 +1,7 @@
 const fs = require(`fs`)
 
+const ffmpegPath = require(`ffmpeg-static`).path
+const child_process = require(`child_process`)
 const mm = require(`music-metadata`)
 
 const audioCtx = new AudioContext()

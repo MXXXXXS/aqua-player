@@ -41,15 +41,11 @@ class AQUAList extends HTMLElement {
         el.innerHTML += icons[el.classList[1]]
       })
       root.querySelector(`.list`).addEventListener(`click`, e => {
-        const playBtn = e.target.classList.contains(`play`) ?
-          e.target :
-          e.target.parentNode.classList.contains(`play`) ?
-            e.target.parentNode :
-            undefined
-        if (playBtn) {
+        const isPlayBtn = e.target.classList.contains(`play`)
+        if (isPlayBtn) {
           for (let i = 0; i < sList.length; i++) {
             const song = sList[i]
-            if (song.title === playBtn.getAttribute(`data-title`)) {
+            if (song.title === e.target.getAttribute(`data-title`)) {
               ebus.emit(`play this`, song)
               break
             }

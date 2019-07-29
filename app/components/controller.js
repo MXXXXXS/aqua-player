@@ -2,6 +2,7 @@ const ebus = require(`../utils/eBus.js`)
 const { controller } = require(`../assets/components.js`)
 const { audioCtx, getMetadata, getSongBuf, getSongSrc } = require(`../audio.js`)
 const second2time = require(`../utils/second2time.js`)
+
 class AQUAController extends HTMLElement {
   constructor() {
     super()
@@ -23,12 +24,12 @@ class AQUAController extends HTMLElement {
     let srcBuf
     let duration
     async function run(song) {
-      console.log(`clicked`)
-      srcBuf = await getSongBuf(song.path)
-      timeLine.value = 0
-      songPlayingOffset = 0
-      if (audioSrc) audioSrc.stop()
+      console.log(`clicked`, song.filePath)
       clearInterval(timer)
+      if (audioSrc && audioSrc.buffer) audioSrc.stop()
+      srcBuf = await getSongBuf(song.filePath)
+      songPlayingOffset = 0
+      timeLine.value = 0
       playing = true
       duration = song.duration
       const formatedDuration = second2time(duration)
@@ -82,6 +83,10 @@ class AQUAController extends HTMLElement {
       const time = parseInt(audioCtx.currentTime - srcAddedTime + songPlayingOffset)
       timeLine.value = (time / duration) * 1000
       root.querySelector(`.time-passed`).innerText = second2time(time, fillFlag)
+      if (timeLine.value >= 1000) {
+        audioSrc.stop()
+        clearInterval(timer)
+      }
     }
   }
 }
