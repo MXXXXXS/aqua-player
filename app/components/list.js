@@ -3,7 +3,9 @@ const ebus = require(`../utils/eBus.js`)
 const icons = require(`../assets/icons.js`)
 const { list } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
-const listAndPath = require(`../states.js`)
+const { songslist, songsPath } = require(`../loadSongs.js`)
+const store = require(`../states.js`)
+const states = store.states
 
 class AQUAList extends HTMLElement {
   constructor() {
@@ -14,7 +16,8 @@ class AQUAList extends HTMLElement {
     run()
 
     async function run() {
-      const { sList, sPath } = await listAndPath
+      const sList = await songslist
+      const sPath = songsPath
       sList.forEach(song => {
         root.querySelector(`.list`).innerHTML +=
           `
@@ -37,6 +40,9 @@ class AQUAList extends HTMLElement {
     </div>
         `
       })
+      store.addCb(`playingSongNum`, (i) => {
+        ebus.emit(`play this`, sList[i])
+      })
       root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML += icons[el.classList[1]]
       })
@@ -47,6 +53,7 @@ class AQUAList extends HTMLElement {
             const song = sList[i]
             if (song.title === e.target.getAttribute(`data-title`)) {
               ebus.emit(`play this`, song)
+              states.playingSongNum = i
               break
             }
           }

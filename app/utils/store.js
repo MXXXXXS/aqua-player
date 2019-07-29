@@ -5,7 +5,8 @@ class Store {
     //     val: '',
     //     subscribers: [
     //       [obj0, [bindedKey0, bindedKey1,]],
-    //     ]
+    //     ],
+    //     callbacks: [fun0, fun1,]
     //   },
     // }
     const _this = this
@@ -14,21 +15,27 @@ class Store {
       for (const key in states) {
         if (states.hasOwnProperty(key)) {
           this.binded[key] = {
-            val: states[key],
-            subscribers: []
+            subscribers: [],
+            callbacks: []
           }
         }
       }
       this.states = new Proxy(states, {
         set(target, p, value, receiver) {
-          const subscribers = _this.binded[p].subscribers
-          subscribers.forEach(item => {
-            const obj = item[0]
-            const bindedKeys = item[1]
-            bindedKeys.forEach(bindedKey => {
-              obj[bindedKey] = value
+          if (receiver[p] !== value) {
+            const subscribers = _this.binded[p].subscribers
+            subscribers.forEach(item => {
+              const obj = item[0]
+              const bindedKeys = item[1]
+              bindedKeys.forEach(bindedKey => {
+                obj[bindedKey] = value
+              })
             })
-          })
+            const callbacks = _this.binded[p].callbacks
+            callbacks.forEach(cb => {
+              cb(value, receiver[p])
+            })
+          }
           return Reflect.set(target, p, value, receiver)
         }
       })
@@ -48,6 +55,10 @@ class Store {
         }
       }
     }
+  }
+
+  addCb(state, cb) {
+    this.binded[state].callbacks.push(cb)
   }
 
   remove(state, obj, ...keysToRemove) {
@@ -146,7 +157,7 @@ function testDataAddAndRemove() {
 
 function testNoArgs() {
   console.log(new Store())
-  
+
 }
 
 module.exports = Store
