@@ -1,7 +1,7 @@
 const path = require(`path`)
 const ebus = require(`../utils/eBus.js`)
 const icons = require(`../assets/icons.js`)
-const { list } = require(`../assets/components.js`)
+const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
 const { songslist, songsPath } = require(`../loadSongs.js`)
 const store = require(`../states.js`)
@@ -12,13 +12,15 @@ class AQUAList extends HTMLElement {
     super()
     const shadow = this.attachShadow({ mode: `open` })
     const root = this.shadowRoot
-    shadow.innerHTML = list
+    shadow.innerHTML = songs
     run()
 
     async function run() {
       const sList = await songslist
-      const sPath = songsPath
-      sList.forEach(song => {
+      states.sList.push(...sList)
+      states.sPath.push(songsPath)
+      states.total = sList.length
+      states.sList.forEach(song => {
         root.querySelector(`.list`).innerHTML +=
           `
         <div data-key="${song.title}">
@@ -41,7 +43,7 @@ class AQUAList extends HTMLElement {
         `
       })
       store.addCb(`playingSongNum`, (i) => {
-        ebus.emit(`play this`, sList[i])
+        ebus.emit(`play this`, states.sList[i])
       })
       root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML += icons[el.classList[1]]
@@ -49,8 +51,8 @@ class AQUAList extends HTMLElement {
       root.querySelector(`.list`).addEventListener(`click`, e => {
         const isPlayBtn = e.target.classList.contains(`play`)
         if (isPlayBtn) {
-          for (let i = 0; i < sList.length; i++) {
-            const song = sList[i]
+          for (let i = 0; i < states.sList.length; i++) {
+            const song = states.sList[i]
             if (song.title === e.target.getAttribute(`data-title`)) {
               ebus.emit(`play this`, song)
               states.playingSongNum = i

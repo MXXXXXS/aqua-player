@@ -1,8 +1,8 @@
 const path = require(`path`)
 const { getMetadata } = require(`./audio.js`)
 const searchFolder = require(`./utils/searchFolder.js`)
-const songsPath = `E:/SteamLibrary/steamapps/common/Hollow Knight/Hollow Knight - Official Soundtrack/MP3`
-const songs = searchFolder(path.resolve(songsPath))
+const songsPath = `D:/UW/CloudMusic`
+const songs = searchFolder(path.resolve(songsPath), false)
 
 async function list(songs) {
   const result = songs.map(function (songPath) {

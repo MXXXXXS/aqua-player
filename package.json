@@ -15,7 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "ffmpeg-static": "^2.5.0",
-    "music-metadata": "^4.2.1"
+    "music-metadata": "^4.2.1",
+    "pinyin": "^2.9.0"
   },
   "devDependencies": {
     "electron": "^5.0.6",

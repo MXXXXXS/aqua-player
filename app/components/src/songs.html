@@ -37,11 +37,15 @@
   }
 
   .checkBox {
+    visibility: hidden;
     width: 20px;
     height: 20px;
     margin: 12px;
     outline: 1px solid rgba(31, 190, 164, 0.479);
+  }
 
+  .list>div:hover .checkBox {
+    visibility: visible;
   }
 
   .list>div:nth-child(2n-1) {

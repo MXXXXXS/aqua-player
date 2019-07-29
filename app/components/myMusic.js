@@ -1,4 +1,5 @@
 const { myMusic } = require(`../assets/components.js`)
+const store = require(`../states.js`)
 class AQUAMyMusic extends HTMLElement {
   constructor() {
     super()
@@ -6,6 +7,10 @@ class AQUAMyMusic extends HTMLElement {
     const root = this.shadowRoot
     shadow.innerHTML = myMusic
     run()
+
+    const total = root.querySelector(`#total`)
+
+    store.add(`total`, total, `innerText`)
 
     async function run() {
     }

@@ -1,33 +1,49 @@
 <div class="main">
-  <div>
-    <div class="cover"></div>
-    <div class="artist"></div>
-  </div>
-  <div>
-    <div class="cover"></div>
-    <div class="artist"></div>
-  </div>
-  <div>
-    <div class="cover"></div>
-    <div class="artist">Franzl Lang</div>
-  </div>
-  <div>
-    <div class="cover">
-      <div class="icon play"></div>
-      <div class="icon add"></div>
+  <!-- <div>
+    <div class="letter">D</div>
+    <div class="group">
+      <div class="item">
+        <div class="cover">
+          <div class="icon play"></div>
+          <div class="icon add"></div>
+        </div>
+        <div class="artist">Departures～あなたにおくるアイの歌～</div>
+      </div>
     </div>
-    <div class="artist">Departures～あなたにおくるアイの歌～</div>
   </div>
   <div>
-    <div class="cover"></div>
-    <div class="artist"></div>
+    <div class="letter">E</div>
+    <div class="group">
+      <div class="item">
+        <div class="cover">
+          <div class="icon play"></div>
+          <div class="icon add"></div>
+        </div>
+        <div class="artist">Departures～あなたにおくるアイの歌～</div>
+      </div>
+      <div class="item">
+        <div class="cover">
+          <div class="icon play"></div>
+          <div class="icon add"></div>
+        </div>
+        <div class="artist">Departures～あなたにおくるアイの歌～</div>
+      </div> -->
+    </div>
   </div>
-  <div>
-    <div class="cover"></div>
-    <div class="artist"></div>
-  </div>
-</div>
 <style>
+  .item {
+    margin-left: 10px;
+  }
+  .group {
+    display: flex;
+    margin: 10px 0;
+  }
+  .letter {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 2;
+  }
   .icon svg {
     margin: auto;
     width: 16px;
@@ -76,8 +92,6 @@
   .main {
     display: flex;
     flex-direction: column;
-    width: 100vw;
-    height: 100vh;
   }
 
   .cover:hover {

@@ -22,7 +22,7 @@ class AQUAController extends HTMLElement {
     let srcAddedTime
     let songPlayingOffset = 0
     let timer
-    let audioSrc
+    let audioSrc = audioCtx.createBufferSource()
     let fillFlag
     let srcBuf
     let duration
@@ -99,19 +99,18 @@ class AQUAController extends HTMLElement {
     })
 
     function stop() {
-      console.log(`Called to stop`, timer, audioSrc)
       //audioCtx.currentTime - srcAddedTime 为上一次播放开始后, 已经播放的时间
       //更新此次播放产生的偏移
       songPlayingOffset = audioCtx.currentTime - srcAddedTime + songPlayingOffset
       clearInterval(timer)
-      if (audioSrc && audioSrc.buffer) {
-        audioSrc.stop()
-        audioSrc = undefined
-      }
+      audioSrc.stop()
     }
 
     function start() {
-      audioSrc = getSongSrc(srcBuf, gainNode)
+      audioSrc = audioCtx.createBufferSource()
+      audioSrc.buffer = srcBuf
+      audioSrc.connect(gainNode)
+      gainNode.connect(audioCtx.destination)
       srcAddedTime = audioCtx.currentTime
       audioSrc.start(0, songPlayingOffset)
       timer = setInterval(syncProgressBar, 100)
@@ -120,9 +119,10 @@ class AQUAController extends HTMLElement {
     function syncProgressBar() {
       const time = parseInt(audioCtx.currentTime - srcAddedTime + songPlayingOffset)
       timeLine.value = (time / duration) * 1000
-      root.querySelector(`.time-passed`).innerText = second2time(time, fillFlag)
       if (timeLine.value >= 1000) {
         stop()
+      } else {
+        root.querySelector(`.time-passed`).innerText = second2time(time, fillFlag)
       }
     }
   }

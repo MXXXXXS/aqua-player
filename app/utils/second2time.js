@@ -2,9 +2,10 @@ module.exports = second2time
 function second2time(sec, fillFlag = false) {
   if (sec < 0)
     return
-  const hour = Math.floor(sec / 3600)
-  const minute = Math.floor((sec - 3600 * hour) / 60)
-  const second = Math.round(sec % 60)
+  sec = Math.round(sec)
+  let hour = Math.round(sec / 3600)
+  let minute = Math.round((sec - 3600 * hour) / 60)
+  let second = Math.round(sec % 60)
   if (fillFlag) {
     switch (fillFlag) {
       case `h+`:

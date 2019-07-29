@@ -8,12 +8,18 @@
   <div class="line"></div>
   <div class="preference">
     <div class="icon random"></div>
-    <div class="randomAll">无序播放所有(14)</div>
+    <div class="randomAll">无序播放所有(<span id="total"></span>)</div>
     <div class="sort">排序依据: <span href="">添加日期</span></div>
     <div class="type">类型: <span href="">所有流派</span></div>
   </div>
 </div>
 <style>
+  .icon {
+    display: flex;
+  }
+  svg {
+    margin: auto;
+  }
   .sort,
   .type {
     margin-left: 20px;
