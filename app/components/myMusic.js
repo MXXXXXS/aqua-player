@@ -1,5 +1,6 @@
 const { myMusic } = require(`../assets/components.js`)
 const store = require(`../states.js`)
+const states = store.states
 class AQUAMyMusic extends HTMLElement {
   constructor() {
     super()
@@ -8,9 +9,31 @@ class AQUAMyMusic extends HTMLElement {
     shadow.innerHTML = myMusic
     run()
 
-    const total = root.querySelector(`#total`)
+    const tagSongs = document.querySelector(`aqua-songs`)
+    const tagSingers = document.querySelector(`aqua-singers`)
+    // const tagSongs = document.querySelector(`aqua-songs`)
 
-    store.add(`total`, total, `innerText`)
+    root.querySelector(`.songs`).addEventListener(`click`, ()=> {
+      states.myMusicTagMode = `songs`
+    })
+    root.querySelector(`.singers`).addEventListener(`click`, ()=> {
+      states.myMusicTagMode = `singers`
+    })
+
+    store.addCb(`myMusicTagMode`, (mode) => {
+      switch (mode) {
+        case `songs`:
+          tagSongs.style.display = `unset`
+          tagSingers.style.display = `none`
+          break
+        case `singers`:
+          tagSongs.style.display = `none`
+          tagSingers.style.display = `unset`
+          break
+        case `albums`:
+          break
+      }
+    })
 
     async function run() {
     }

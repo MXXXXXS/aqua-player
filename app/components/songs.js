@@ -20,7 +20,8 @@ class AQUAList extends HTMLElement {
       states.sList.push(...sList)
       states.sPath.push(songsPath)
       states.total = sList.length
-      states.sList.forEach(song => {
+      states.sList.forEach((song, i) => {
+        song.id = i
         root.querySelector(`.list`).innerHTML +=
           `
         <div data-key="${song.title}">
