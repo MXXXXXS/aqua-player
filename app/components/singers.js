@@ -1,7 +1,7 @@
 const icons = require(`../assets/icons.js`)
 const { singers } = require(`../assets/components.js`)
 const store = require(`../states.js`)
-const {sortIdWords, sortUniqueIdWords} = require(`../utils/sortWords.js`)
+const {sortUniqueIdWords} = require(`../utils/sortWords.js`)
 const states = store.states
 
 class AQUASingers extends HTMLElement {
@@ -44,8 +44,6 @@ class AQUASingers extends HTMLElement {
           root.innerHTML += groupTemplate(inital, items)
         })
       }
-      console.log(uen)
-      console.log(uzh)
       
       addGroups(uen)
       addGroups(uzh)

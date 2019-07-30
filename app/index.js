@@ -3,10 +3,12 @@ const AQUASongs = require(`./components/songs.js`)
 const AQUASingers = require(`./components/singers.js`)
 const AQUAMenu = require(`./components/menu.js`)
 const AQUAMyMusic = require(`./components/myMusic.js`)
+const AQUAAlbums = require(`./components/albums.js`)
 
 window.customElements.define(`aqua-menu`, AQUAMenu)
 window.customElements.define(`aqua-songs`, AQUASongs)
 window.customElements.define(`aqua-singers`, AQUASingers)
+window.customElements.define(`aqua-albums`, AQUAAlbums)
 window.customElements.define(`aqua-controller`, AQUAController)
 window.customElements.define(`aqua-my-music`, AQUAMyMusic)
 

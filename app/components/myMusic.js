@@ -9,15 +9,20 @@ class AQUAMyMusic extends HTMLElement {
     shadow.innerHTML = myMusic
     run()
 
+    store.add(`total`, root.querySelector(`#total`), `innerText`)
+
     const tagSongs = document.querySelector(`aqua-songs`)
     const tagSingers = document.querySelector(`aqua-singers`)
-    // const tagSongs = document.querySelector(`aqua-songs`)
+    const tagAlbums = document.querySelector(`aqua-albums`)
 
-    root.querySelector(`.songs`).addEventListener(`click`, ()=> {
+    root.querySelector(`.songs`).addEventListener(`click`, () => {
       states.myMusicTagMode = `songs`
     })
-    root.querySelector(`.singers`).addEventListener(`click`, ()=> {
+    root.querySelector(`.singers`).addEventListener(`click`, () => {
       states.myMusicTagMode = `singers`
+    })
+    root.querySelector(`.albums`).addEventListener(`click`, () => {
+      states.myMusicTagMode = `albums`
     })
 
     store.addCb(`myMusicTagMode`, (mode) => {
@@ -25,12 +30,17 @@ class AQUAMyMusic extends HTMLElement {
         case `songs`:
           tagSongs.style.display = `unset`
           tagSingers.style.display = `none`
+          tagAlbums.style.display = `none`
           break
         case `singers`:
-          tagSongs.style.display = `none`
           tagSingers.style.display = `unset`
+          tagSongs.style.display = `none`
+          tagAlbums.style.display = `none`
           break
         case `albums`:
+          tagAlbums.style.display = `flex`
+          tagSongs.style.display = `none`
+          tagSingers.style.display = `none`
           break
       }
     })

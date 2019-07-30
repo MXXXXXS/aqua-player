@@ -37,7 +37,7 @@ class AQUAList extends HTMLElement {
         <div class="artist">${song.artist}</div>
         <div class="album">${song.album}</div>
         <div class="date">${song.year}</div>
-        <div class="style">${song.genre ? song.genre : `未知流派`}</div>
+        <div class="style">${song.genre}</div>
       </div>
       <div class="duration">${second2time(Math.round(song.duration))}</div>
     </div>

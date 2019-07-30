@@ -12,10 +12,10 @@ async function list(songs) {
     const meta = await m.meta
     const picture = meta.common.picture ? meta.common.picture[0] : undefined
     const title = meta.common.title ? meta.common.title : path.basename(filePath)
-    const artist = meta.common.artist
-    const album = meta.common.album
-    const year = meta.common.year
-    const genre = meta.common.genre ? meta.common.genre[0] : undefined
+    const artist = meta.common.artist ? meta.common.artist : `未知艺术家`
+    const album = meta.common.album ? meta.common.album : `未知专辑`
+    const year = meta.common.year ? meta.common.year : `未知年份`
+    const genre = meta.common.genre ? meta.common.genre[0] : `未知流派`
     const duration = meta.format.duration
     const type = meta.format.codec
     return {
