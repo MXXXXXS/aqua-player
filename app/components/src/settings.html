@@ -1,0 +1,88 @@
+<div class="setting">设置</div>
+<div class="items">此PC上的音乐</div>
+<div class="add">选择查找音乐的位置</div>
+<div class="items">播放</div>
+<div class="adjust">均衡器</div>
+<div class="items">模式</div>
+<div class="mode">
+  <div><input type="radio" id="light">浅色</div>
+  <div><input type="radio" id="dark">深色</div>
+</div>
+<div class="addPannel">
+  <div class="title">从本地曲库创建个人"收藏"</div>
+  <div class="statement">现在我们正在查看这些文件夹</div>
+  <div class="container">
+    <div class="addTile">+</div>
+    <div class="tile">
+      <div class="icon">+</div>
+      <div class="basename">CloudMusic</div>
+      <div class="path">D:/UW/CloudMusic</div>
+    </div>
+    <div class="tile"></div>
+    <div class="tile"></div>
+  </div>
+</div>
+<style>
+  body {
+    margin: 0;
+  }
+  .setting {
+    position: sticky;
+    top: 0;
+    height: 45px;
+    padding-top: 10px;
+    text-align: bottom;
+    font-size: 34px;
+    font-weight: lighter;
+    background-color: white;
+  }
+
+  .items {
+    font-size: 24px;
+    margin-top: 26px;
+    margin-bottom: 5px;
+  }
+  .addPannel {
+    box-sizing: border-box;
+    padding: 30px;
+    outline: 1px solid blueviolet;
+    width: 350px;
+    height: 756px;
+  }
+  .container {
+    height: 580px;
+  }
+  .title {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+  .statement {
+    font-size: 14
+  }
+  .tile, .addTile {
+    margin-top: 8px;
+    font-size: 14px;
+    position: relative;
+    padding: 15px 10px;
+    box-sizing: border-box;
+    height: 72px;
+    background-color: gainsboro;
+  }
+
+  .addTile {
+    font-weight: lighter;
+    text-align: center;
+    line-height: 36px;
+    font-size: 50px;
+  }
+  .icon {
+    transform: rotate(45deg);
+    line-height: 20px;
+    font-size: 30px;
+    position: absolute;
+    right: 10px;
+  }
+  .basename {
+    font-weight: bold;
+  }
+</style>

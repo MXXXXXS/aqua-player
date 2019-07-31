@@ -82,6 +82,28 @@ class Store {
   }
 }
 
+class List {
+  constructor(arr) {
+    if (Array.isArray(arr)) {
+      const _this = this
+      this.callbacks = []
+      this.list = new Proxy(arr, {
+        set(target, p, value, receiver) {
+          if (receiver[p] !== value) {
+            _this.callbacks.forEach(cb => {
+              cb(p, value, receiver[p])
+            })
+          }
+          return Reflect.set(target, p, value, receiver)
+        }
+      })
+    }
+  }
+  addCb(cb) {
+    this.callbacks.push(cb)
+  }
+}
+
 // testDataChange()
 // testDataAddAndRemove()
 // testNoArgs()
@@ -160,4 +182,4 @@ function testNoArgs() {
 
 }
 
-module.exports = Store
+module.exports = {Store, List}

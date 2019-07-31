@@ -49,7 +49,6 @@ function sortWords(arr) {
       group[0] = `假名` + group[0]
     return group
   })
-  console.log(groupsEn)
   
   return { en: groupsEn, zh: groupsZh }
 }

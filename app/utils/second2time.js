@@ -3,9 +3,9 @@ function second2time(sec, fillFlag = false) {
   if (sec < 0)
     return
   sec = Math.round(sec)
-  let hour = Math.round(sec / 3600)
-  let minute = Math.round((sec - 3600 * hour) / 60)
-  let second = Math.round(sec % 60)
+  let hour = Math.floor(sec / 3600)
+  let minute = Math.floor((sec - 3600 * hour) / 60)
+  let second = sec - hour * 3600 - minute * 60
   if (fillFlag) {
     switch (fillFlag) {
       case `h+`:

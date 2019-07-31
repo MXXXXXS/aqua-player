@@ -1,8 +1,7 @@
 const icons = require(`../assets/icons.js`)
 const { singers } = require(`../assets/components.js`)
-const store = require(`../states.js`)
+const {listSList} = require(`../states.js`)
 const {sortUniqueIdWords} = require(`../utils/sortWords.js`)
-const states = store.states
 
 class AQUASingers extends HTMLElement {
   constructor() {
@@ -35,7 +34,7 @@ class AQUASingers extends HTMLElement {
     }
 
     setTimeout(() => {
-      const { en: uen, zh: uzh} = sortUniqueIdWords(states.sList.map((song, i) => [i, song.artist]))
+      const { en: uen, zh: uzh} = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.artist]))
       function addGroups(sorted) {
         sorted.forEach(group => {
           const inital = group[0]

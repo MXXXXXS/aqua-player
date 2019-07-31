@@ -2,8 +2,8 @@ const ebus = require(`../utils/eBus.js`)
 const { controller } = require(`../assets/components.js`)
 const { audioCtx, getMetadata, getSongBuf, getSongSrc } = require(`../audio.js`)
 const second2time = require(`../utils/second2time.js`)
-const store = require(`../states.js`)
-const states = store.states
+const { storeStates } = require(`../states.js`)
+const states = storeStates.states
 
 class AQUAController extends HTMLElement {
   constructor() {
@@ -16,9 +16,11 @@ class AQUAController extends HTMLElement {
     const loudness = root.querySelector(`#loudness`)
     const nextSong = root.querySelector(`.next`)
     const lastSong = root.querySelector(`.previous`)
-    loudness.value = 1
+    const initalLoudness = 0.5
+    loudness.value = initalLoudness
     timeLine.value = 0
     const gainNode = audioCtx.createGain()
+    gainNode.gain.value = initalLoudness
     let srcAddedTime
     let songPlayingOffset = 0
     let timer
@@ -29,17 +31,17 @@ class AQUAController extends HTMLElement {
 
     const name = root.querySelector(`.name`)
     const artist = root.querySelector(`.artist`)
-    store.add(`name`, name, `innerText`)
-    store.add(`artist`, artist, `innerText`)
-    store.addCb(`playing`, (nowPlaying, wasPlaying) => {
-      console.log(`From playing cb`)
-      console.log(nowPlaying, wasPlaying)
+    storeStates.add(`name`, name, `innerText`)
+    storeStates.add(`artist`, artist, `innerText`)
+    storeStates.addCb(`playing`, (nowPlaying, wasPlaying) => {
+      //console.log(`From playing cb`)
+      //console.log(nowPlaying, wasPlaying)
       if (nowPlaying === false && wasPlaying === true) {
-        console.log(`Stop playing`)
+        //console.log(`Stop playing`)
         stop()
       }
       if (nowPlaying === true && wasPlaying === false) {
-        console.log(`Start playing`)
+        //console.log(`Start playing`)
         start()
       }
     })
@@ -49,7 +51,7 @@ class AQUAController extends HTMLElement {
       states.artist = song.artist
       states.playing = false
       duration = song.duration
-      console.log(`received`, song.filePath)
+      //console.log(`received`, song.filePath)
       srcBuf = await getSongBuf(song.filePath)
       songPlayingOffset = 0
       timeLine.value = 0
@@ -63,10 +65,10 @@ class AQUAController extends HTMLElement {
     }
     root.querySelector(`.play`).addEventListener(`click`, () => {
       if (!states.playing) {
-        console.log(`click to start`)
+        //console.log(`click to start`)
         states.playing = true
       } else {
-        console.log(`click to stop`)
+        //console.log(`click to stop`)
         states.playing = false
       }
     })
@@ -91,11 +93,11 @@ class AQUAController extends HTMLElement {
     })
 
     nextSong.addEventListener(`click`, (e) => {
-      states.playingSongNum += 1
+      playNextSong()
     })
 
     lastSong.addEventListener(`click`, (e) => {
-      states.playingSongNum -= 1
+      playPreviousSong()
     })
 
     function stop() {
@@ -116,11 +118,32 @@ class AQUAController extends HTMLElement {
       timer = setInterval(syncProgressBar, 100)
     }
 
+    function playNextSong() {
+      if (states.playingSongNum + 1 < states.total) {
+        states.playingSongNum += 1
+        return true
+      } else {
+        return false
+      }
+
+    }
+
+    function playPreviousSong() {
+      if (states.playingSongNum - 1 >= 0) {
+        states.playingSongNum -= 1
+        return true
+      } else {
+        return false
+      }
+    }
+
     function syncProgressBar() {
       const time = parseInt(audioCtx.currentTime - srcAddedTime + songPlayingOffset)
       timeLine.value = (time / duration) * 1000
       if (timeLine.value >= 1000) {
         stop()
+        playNextSong()
+        root.querySelector(`.time-passed`).innerText = root.querySelector(`.duration`).innerText
       } else {
         root.querySelector(`.time-passed`).innerText = second2time(time, fillFlag)
       }

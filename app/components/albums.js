@@ -1,7 +1,6 @@
 const { albums } = require(`../assets/components.js`)
 const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
-const store = require(`../states.js`)
-const states = store.states
+const {storeStates, listSList, listSPath} = require(`../states.js`)
 class AQUAAlbums extends HTMLElement {
   constructor() {
     super()
@@ -26,13 +25,13 @@ class AQUAAlbums extends HTMLElement {
       return items.map(item => {
         const id = item[0][0]
         const album = item[1]
-        return itemTemplate(id, { album: album, artist: states.sList[id].artist })
+        return itemTemplate(id, { album: album, artist: listSList.list[id].artist })
       }).join(``)
 
     }
 
     setTimeout(() => {
-      const { en: uen, zh: uzh } = sortUniqueIdWords(states.sList.map((song, i) => [i, song.album]))
+      const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.album]))
       function addGroups(sorted) {
         sorted.forEach(group => {
           const inital = group[0]
@@ -41,8 +40,6 @@ class AQUAAlbums extends HTMLElement {
           root.innerHTML += groupTemplate(inital, items)
         })
       }
-      console.log(uen)
-      console.log(uzh)
 
       addGroups(uen)
       addGroups(uzh)

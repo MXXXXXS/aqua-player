@@ -1,6 +1,6 @@
 const { myMusic } = require(`../assets/components.js`)
-const store = require(`../states.js`)
-const states = store.states
+const {storeStates} = require(`../states.js`)
+const states = storeStates.states
 class AQUAMyMusic extends HTMLElement {
   constructor() {
     super()
@@ -9,7 +9,7 @@ class AQUAMyMusic extends HTMLElement {
     shadow.innerHTML = myMusic
     run()
 
-    store.add(`total`, root.querySelector(`#total`), `innerText`)
+    storeStates.add(`total`, root.querySelector(`#total`), `innerText`)
 
     const tagSongs = document.querySelector(`aqua-songs`)
     const tagSingers = document.querySelector(`aqua-singers`)
@@ -25,7 +25,7 @@ class AQUAMyMusic extends HTMLElement {
       states.myMusicTagMode = `albums`
     })
 
-    store.addCb(`myMusicTagMode`, (mode) => {
+    storeStates.addCb(`myMusicTagMode`, (mode) => {
       switch (mode) {
         case `songs`:
           tagSongs.style.display = `unset`

@@ -1,13 +1,16 @@
-const Store = require(`./utils/store.js`)
-const states = new Store({
+const {Store, List} = require(`./utils/store.js`)
+const storeStates = new Store({
   playing: false,
   playingSongNum: 0,
   name: ``,
   artist: ``,
   total: 0,
-  sPath: [],
-  sList: [],
+  playMode: `unset`, //unset, singleCycle, listCycle, random
   myMusicTagMode: `songs` //songs, singers, albums
 })
 
-module.exports = states
+const listSList = new List([])
+
+const listSPath = new List([])
+
+module.exports = {storeStates, listSList, listSPath}

@@ -4,8 +4,8 @@ const icons = require(`../assets/icons.js`)
 const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
 const { songslist, songsPath } = require(`../loadSongs.js`)
-const store = require(`../states.js`)
-const states = store.states
+const {listSList, listSPath, storeStates} = require(`../states.js`)
+const states = storeStates.states
 
 class AQUAList extends HTMLElement {
   constructor() {
@@ -15,12 +15,16 @@ class AQUAList extends HTMLElement {
     shadow.innerHTML = songs
     run()
 
+    listSList.addCb((id, song)=> {
+      // console.log(`add ${song.title}`)
+    })
+
     async function run() {
-      const sList = await songslist
-      states.sList.push(...sList)
-      states.sPath.push(songsPath)
-      states.total = sList.length
-      states.sList.forEach((song, i) => {
+      const list = await songslist
+      listSList.list.push(...list)
+      listSPath.list.push(songsPath)
+      states.total = listSList.list.length
+      listSList.list.forEach((song, i) => {
         song.id = i
         root.querySelector(`.list`).innerHTML +=
           `
@@ -43,8 +47,8 @@ class AQUAList extends HTMLElement {
     </div>
         `
       })
-      store.addCb(`playingSongNum`, (i) => {
-        ebus.emit(`play this`, states.sList[i])
+      storeStates.addCb(`playingSongNum`, (i) => {
+        ebus.emit(`play this`, listSList.list[i])
       })
       root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML += icons[el.classList[1]]
@@ -52,8 +56,8 @@ class AQUAList extends HTMLElement {
       root.querySelector(`.list`).addEventListener(`click`, e => {
         const isPlayBtn = e.target.classList.contains(`play`)
         if (isPlayBtn) {
-          for (let i = 0; i < states.sList.length; i++) {
-            const song = states.sList[i]
+          for (let i = 0; i < listSList.list.length; i++) {
+            const song = listSList.list[i]
             if (song.title === e.target.getAttribute(`data-title`)) {
               ebus.emit(`play this`, song)
               states.playingSongNum = i
