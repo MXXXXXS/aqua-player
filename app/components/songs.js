@@ -47,9 +47,6 @@ class AQUAList extends HTMLElement {
     </div>
         `
       })
-      storeStates.addCb(`playingSongNum`, (i) => {
-        ebus.emit(`play this`, listSList.list[i])
-      })
       root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML += icons[el.classList[1]]
       })
@@ -59,8 +56,7 @@ class AQUAList extends HTMLElement {
           for (let i = 0; i < listSList.list.length; i++) {
             const song = listSList.list[i]
             if (song.title === e.target.getAttribute(`data-title`)) {
-              ebus.emit(`play this`, song)
-              states.playingSongNum = i
+              ebus.emit(`play this`, i)
               break
             }
           }

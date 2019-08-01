@@ -1,5 +1,6 @@
 const {Store, List} = require(`./utils/store.js`)
 const storeStates = new Store({
+  sListLoaded: false,
   playing: false,
   playingSongNum: 0,
   name: ``,

@@ -2,7 +2,7 @@ const ebus = require(`../utils/eBus.js`)
 const { controller } = require(`../assets/components.js`)
 const { audioCtx, getMetadata, getSongBuf, getSongSrc } = require(`../audio.js`)
 const second2time = require(`../utils/second2time.js`)
-const { storeStates } = require(`../states.js`)
+const { storeStates, listSList } = require(`../states.js`)
 const states = storeStates.states
 
 class AQUAController extends HTMLElement {
@@ -13,12 +13,12 @@ class AQUAController extends HTMLElement {
     const root = this.shadowRoot
 
     const timeLine = root.querySelector(`#timeLine`)
+    timeLine.value = 0
     const loudness = root.querySelector(`#loudness`)
     const nextSong = root.querySelector(`.next`)
     const lastSong = root.querySelector(`.previous`)
     const initalLoudness = 0.5
     loudness.value = initalLoudness
-    timeLine.value = 0
     const gainNode = audioCtx.createGain()
     gainNode.gain.value = initalLoudness
     let srcAddedTime
@@ -28,48 +28,33 @@ class AQUAController extends HTMLElement {
     let fillFlag
     let srcBuf
     let duration
-
     const name = root.querySelector(`.name`)
     const artist = root.querySelector(`.artist`)
     storeStates.add(`name`, name, `innerText`)
     storeStates.add(`artist`, artist, `innerText`)
-    storeStates.addCb(`playing`, (nowPlaying, wasPlaying) => {
-      //console.log(`From playing cb`)
-      //console.log(nowPlaying, wasPlaying)
-      if (nowPlaying === false && wasPlaying === true) {
-        //console.log(`Stop playing`)
-        stop()
-      }
-      if (nowPlaying === true && wasPlaying === false) {
-        //console.log(`Start playing`)
-        start()
-      }
+
+    listSList.addCb(() => {
+      console.log(`added`)
+      states.sListLoaded = true
     })
-    ebus.on(`play this`, run)
-    async function run(song) {
-      states.name = song.title
-      states.artist = song.artist
-      states.playing = false
-      duration = song.duration
-      //console.log(`received`, song.filePath)
-      srcBuf = await getSongBuf(song.filePath)
-      songPlayingOffset = 0
-      timeLine.value = 0
-      const formatedDuration = second2time(duration)
-      if (formatedDuration.length === 5) { fillFlag = `m+` }
-      else if (formatedDuration.length === 7) { fillFlag = `h` }
-      else if (formatedDuration.length === 8) { fillFlag = `h+` }
-      root.querySelector(`.time-passed`).innerText = formatedDuration.replace(/[^:]/g, `0`)
-      root.querySelector(`.duration`).innerText = formatedDuration
-      states.playing = true
-    }
+
+    storeStates.addCb(`sListLoaded`, (ready) => {
+      console.log(ready, `loadSong`)
+      if (ready) process.nextTick(loadSong) //等待listSList加载第一首歌曲
+    })
+
+    ebus.on(`play this`, async (i) => {
+      if (states.playing)
+        stop()
+      states.playingSongNum = i
+      await loadSong()
+      start()
+    })
     root.querySelector(`.play`).addEventListener(`click`, () => {
       if (!states.playing) {
-        //console.log(`click to start`)
-        states.playing = true
+        start()
       } else {
-        //console.log(`click to stop`)
-        states.playing = false
+        stop()
       }
     })
     timeLine.addEventListener(`mousedown`, (e) => {
@@ -92,23 +77,45 @@ class AQUAController extends HTMLElement {
       gainNode.gain.value = e.target.value
     })
 
-    nextSong.addEventListener(`click`, (e) => {
-      playNextSong()
+    nextSong.addEventListener(`click`, async (e) => {
+      if (states.playingSongNum + 1 < states.total) {
+        if (states.playing)
+          stop()
+        states.playingSongNum += 1
+        await loadSong()
+        start()
+      }
     })
 
-    lastSong.addEventListener(`click`, (e) => {
-      playPreviousSong()
+    lastSong.addEventListener(`click`, async (e) => {
+      if (states.playingSongNum - 1 >= 0) {
+        if (states.playing)
+          stop()
+        states.playingSongNum -= 1
+        await loadSong()
+        start()
+      }
     })
 
-    function stop() {
-      //audioCtx.currentTime - srcAddedTime 为上一次播放开始后, 已经播放的时间
-      //更新此次播放产生的偏移
-      songPlayingOffset = audioCtx.currentTime - srcAddedTime + songPlayingOffset
-      clearInterval(timer)
-      audioSrc.stop()
+    async function loadSong() {
+      let song = listSList.list[states.playingSongNum]
+      audioSrc = audioCtx.createBufferSource()
+      states.name = song.title
+      states.artist = song.artist
+      duration = song.duration
+      srcBuf = await getSongBuf(song.filePath)
+      songPlayingOffset = 0
+      timeLine.value = 0
+      const formatedDuration = second2time(duration)
+      if (formatedDuration.length === 5) { fillFlag = `m+` }
+      else if (formatedDuration.length === 7) { fillFlag = `h` }
+      else if (formatedDuration.length === 8) { fillFlag = `h+` }
+      root.querySelector(`.time-passed`).innerText = formatedDuration.replace(/[^:]/g, `0`)
+      root.querySelector(`.duration`).innerText = formatedDuration
     }
 
     function start() {
+      states.playing = true
       audioSrc = audioCtx.createBufferSource()
       audioSrc.buffer = srcBuf
       audioSrc.connect(gainNode)
@@ -117,33 +124,28 @@ class AQUAController extends HTMLElement {
       audioSrc.start(0, songPlayingOffset)
       timer = setInterval(syncProgressBar, 100)
     }
-
-    function playNextSong() {
-      if (states.playingSongNum + 1 < states.total) {
-        states.playingSongNum += 1
-        return true
-      } else {
-        return false
-      }
-
+    function stop() {
+      states.playing = false
+      //audioCtx.currentTime - srcAddedTime 为上一次播放开始后, 已经播放的时间
+      //更新此次播放产生的偏移
+      songPlayingOffset = audioCtx.currentTime - srcAddedTime + songPlayingOffset
+      clearInterval(timer)
+      audioSrc.stop()
     }
 
-    function playPreviousSong() {
-      if (states.playingSongNum - 1 >= 0) {
-        states.playingSongNum -= 1
-        return true
-      } else {
-        return false
-      }
-    }
-
-    function syncProgressBar() {
+    async function syncProgressBar() {
       const time = parseInt(audioCtx.currentTime - srcAddedTime + songPlayingOffset)
       timeLine.value = (time / duration) * 1000
       if (timeLine.value >= 1000) {
-        stop()
-        playNextSong()
         root.querySelector(`.time-passed`).innerText = root.querySelector(`.duration`).innerText
+        if (states.playingSongNum + 1 < states.total) {
+          if (states.playing) {
+            stop()
+            states.playingSongNum += 1
+            await loadSong()
+            start()
+          }
+        }
       } else {
         root.querySelector(`.time-passed`).innerText = second2time(time, fillFlag)
       }
