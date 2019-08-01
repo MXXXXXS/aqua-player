@@ -33,10 +33,10 @@ class AQUAController extends HTMLElement {
     storeStates.add(`name`, name, `innerText`)
     storeStates.add(`artist`, artist, `innerText`)
 
-    listSList.addCb(() => {
-      console.log(`added`)
-      states.sListLoaded = true
-    })
+    // listSList.addCb(() => {
+    //   // console.log(`added`)
+    //   states.sListLoaded = true
+    // })
 
     storeStates.addCb(`sListLoaded`, (ready) => {
       console.log(ready, `loadSong`)

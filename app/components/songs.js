@@ -3,8 +3,8 @@ const ebus = require(`../utils/eBus.js`)
 const icons = require(`../assets/icons.js`)
 const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
-const { songslist, songsPath } = require(`../loadSongs.js`)
-const {listSList, listSPath, storeStates} = require(`../states.js`)
+const loadSongs = require(`../loadSongs.js`)
+const { listSList, listSPath, storeStates } = require(`../states.js`)
 const states = storeStates.states
 
 class AQUAList extends HTMLElement {
@@ -13,16 +13,19 @@ class AQUAList extends HTMLElement {
     const shadow = this.attachShadow({ mode: `open` })
     const root = this.shadowRoot
     shadow.innerHTML = songs
-    run()
-
-    listSList.addCb((id, song)=> {
-      // console.log(`add ${song.title}`)
+    // run()
+    storeStates.addCb(`sListLoaded`, (ready) => {
+      if (ready) run()
     })
+    loadSongs()
+    // listSList.addCb(() => {
+    //   console.log(`added`)
+    //   states.sListLoaded = true
+    // })
 
     async function run() {
-      const list = await songslist
-      listSList.list.push(...list)
-      listSPath.list.push(songsPath)
+      // listSList.list.push(...list)
+      // listSPath.list.push(songsPath)
       states.total = listSList.list.length
       listSList.list.forEach((song, i) => {
         song.id = i
