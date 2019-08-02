@@ -1,5 +1,5 @@
 <div class="setting">设置</div>
-<div class="items">此PC上的音乐</div>
+<div class="items first-item">此PC上的音乐</div>
 <div class="add">选择查找音乐的位置</div>
 <div class="items">播放</div>
 <div class="adjust">均衡器</div>
@@ -21,11 +21,35 @@
     <div class="tile"></div>
     <div class="tile"></div>
   </div>
+  <div class="ok">完成</div>
 </div>
 <style>
   body {
     margin: 0;
   }
+
+  input {
+    width: 20px;
+    height: 20px;
+  }
+
+  .addTile, .tile, .ok {
+    border: 2px solid transparent;
+  }
+  .addTile:hover, .tile:hover, .ok:hover {
+    border: 2px solid rgb(94, 94, 94);
+  }
+
+  .ok {
+    background-color: gainsboro;
+    margin: 20px 0;
+    float: right;
+    text-align: center;
+    line-height: 30px;
+    width: 150px;
+    height: 30px;
+  }
+
   .setting {
     position: sticky;
     top: 0;
@@ -42,15 +66,29 @@
     margin-top: 26px;
     margin-bottom: 5px;
   }
+
+  .first-item {
+    margin-top: 15px;
+  }
+
   .addPannel {
+    outline: 10000px solid rgba(202, 202, 202, 0.199);
+    z-index: 1;
     box-sizing: border-box;
     padding: 30px;
-    outline: 1px solid blueviolet;
+    border: 1px solid blueviolet;
+    background-color: white; 
+    height: 80vh;
     width: 350px;
-    height: 756px;
+    max-height: 756px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .container {
-    height: 580px;
+    overflow-y: auto;
+    height: calc(100% - 100px);
   }
   .title {
     margin-bottom: 10px;

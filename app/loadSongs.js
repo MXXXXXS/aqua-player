@@ -4,13 +4,6 @@ const { getMetadata } = require(`./audio.js`)
 const searchFolder = require(`./utils/searchFolder.js`)
 const songsPaths = [`D:/UW/CloudMusic`, `E:/Jdownload/ANIME CLASSIC`]
 
-//https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-// [1,2,3,4,5,6].diff( [3,4,5] )
-// => [1, 2, 6]
-Array.prototype.diff = function (a) {
-  return this.filter(function (i) { return a.indexOf(i) < 0 })
-}
-
 async function collectSongs(songPath) {
   const meta = await getMetadata(songPath)
   return {
