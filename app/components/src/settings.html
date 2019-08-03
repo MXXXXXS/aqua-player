@@ -12,14 +12,18 @@
   <div class="title">从本地曲库创建个人"收藏"</div>
   <div class="statement">现在我们正在查看这些文件夹</div>
   <div class="container">
+    <div class="mask"></div>
     <div class="addTile">+</div>
-    <div class="tile">
-      <div class="icon">+</div>
-      <div class="basename">CloudMusic</div>
-      <div class="path">D:/UW/CloudMusic</div>
+    <div class="tilesContainer">
+
+      <!-- <div class="tile">
+        <div class="icon">+</div>
+        <div class="basename">CloudMusic</div>
+        <div class="path">D:/UW/CloudMusic</div>
+      </div>
+      <div class="tile"></div>
+      <div class="tile"></div> -->
     </div>
-    <div class="tile"></div>
-    <div class="tile"></div>
   </div>
   <div class="ok">完成</div>
 </div>
@@ -28,9 +32,24 @@
     margin: 0;
   }
 
+  .mask {
+    z-index: -1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(202, 202, 202, 0.199);
+  }
+
   input {
     width: 20px;
     height: 20px;
+  }
+
+  .addTile > *, .tile > * {
+    pointer-events: none;
   }
 
   .addTile, .tile, .ok {
@@ -72,7 +91,7 @@
   }
 
   .addPannel {
-    outline: 10000px solid rgba(202, 202, 202, 0.199);
+    display: none;
     z-index: 1;
     box-sizing: border-box;
     padding: 30px;
@@ -122,5 +141,13 @@
   }
   .basename {
     font-weight: bold;
+    overflow: hidden;
+    width: 235px;
+    white-space: nowrap;
+  }
+  .path {
+    overflow: hidden;
+    width: 260px;
+    white-space: nowrap;
   }
 </style>

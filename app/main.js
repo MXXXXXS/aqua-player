@@ -1,7 +1,7 @@
 const path = require(`path`)
 const url = require(`url`)
 
-const {app, BrowserWindow} = require(`electron`)
+const {app, BrowserWindow, ipcMain, dialog} = require(`electron`)
 
 let mainWindow
 
@@ -22,6 +22,14 @@ function createWindow() {
   
   mainWindow.on(`closed`, function () {
     mainWindow = null
+  })
+
+  ipcMain.on(`add folder`, (e) => {
+    dialog.showOpenDialog({
+      properties: [`openDirectory`]
+    }, files => {
+      if (files) e.sender.send(`add these`, files)
+    })
   })
 }
 
