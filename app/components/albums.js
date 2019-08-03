@@ -1,6 +1,6 @@
 const { albums } = require(`../assets/components.js`)
 const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
-const {storeStates, listSList, listSPath} = require(`../states.js`)
+const { storeStates, listSList, listSPath } = require(`../states.js`)
 class AQUAAlbums extends HTMLElement {
   constructor() {
     super()
@@ -8,6 +8,12 @@ class AQUAAlbums extends HTMLElement {
     const root = this.shadowRoot
     shadow.innerHTML = albums
 
+    // }
+
+    // connectedCallback() {
+    console.log(`Added to page.`)
+    // const root = this.shadowRoot
+    const main = root.querySelector(`#main`)
     const groupTemplate = (inital, items) => {
       const itemTemplate = (id, item) =>
         `
@@ -30,14 +36,21 @@ class AQUAAlbums extends HTMLElement {
 
     }
 
-    setTimeout(() => {
+    if (storeStates.states.sListLoaded) {
+      run()
+    } else {
+      storeStates.addCb(`sListLoaded`, (ready) => {
+        if (ready) run()
+      })
+    }
+    
+    function run() {
       const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.album]))
       function addGroups(sorted) {
         sorted.forEach(group => {
           const inital = group[0]
           const items = group.slice(1, group.length)
-          groupTemplate(inital, items)
-          root.innerHTML += groupTemplate(inital, items)
+          main.innerHTML += groupTemplate(inital, items)
         })
       }
 
@@ -47,11 +60,6 @@ class AQUAAlbums extends HTMLElement {
       root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML += icons[el.classList[1]]
       })
-    }, 1000)
-
-    run()
-
-    async function run() {
     }
   }
 }

@@ -12,16 +12,6 @@
       margin-left: 20px;
     }
 
-    aqua-singers {
-      display: none;
-    }
-
-    aqua-albums {
-    display: none;
-    align-content: flex-start;
-    flex-wrap: wrap;
-  }
-
     body {
       margin: 0;
     }
@@ -35,7 +25,7 @@
       height: inherit;
     }
 
-    aqua-info {
+    aqua-list {
       display: flex;
       flex-direction: column;
       flex: 1;
@@ -63,7 +53,7 @@
         flex-direction: column;
       }
 
-      aqua-info {
+      aqua-my-music {
         padding: 0;
       }
 
@@ -78,13 +68,15 @@
   <div id="main">
     <aqua-menu-info>
       <aqua-menu class="aqua"></aqua-menu>
-      <aqua-info class="aqua">
+      <aqua-list class="aqua">
         <!-- aqua-songs 不需要添加class="aqua"用以初始化图标, 因为列表是变动的, 在list.js中添加图标 -->
         <aqua-my-music class="aqua"></aqua-my-music>
-        <aqua-songs></aqua-songs>
-        <aqua-singers></aqua-singers>
-        <aqua-albums></aqua-albums>
-      </aqua-info>
+        <div id="router-songsItems">
+          <aqua-songs></aqua-songs>
+          <aqua-singers></aqua-singers>
+          <aqua-albums></aqua-albums>
+        </div>
+      </aqua-list>
       <aqua-settings></aqua-settings>
     </aqua-menu-info>
     <aqua-controller class="aqua"></aqua-controller>

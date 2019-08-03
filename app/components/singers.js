@@ -33,7 +33,15 @@ class AQUASingers extends HTMLElement {
     </div>`
     }
 
-    setTimeout(() => {
+    if (storeStates.states.sListLoaded) {
+      run()
+    } else {
+      storeStates.addCb(`sListLoaded`, (ready) => {
+        if (ready) run()
+      })
+    }
+
+    async function run() {
       const { en: uen, zh: uzh} = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.artist]))
       function addGroups(sorted) {
         sorted.forEach(group => {
@@ -50,10 +58,7 @@ class AQUASingers extends HTMLElement {
       root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML += icons[el.classList[1]]
       })
-    }, 1000)
 
-    run()
-    async function run() {
     }
   }
 }

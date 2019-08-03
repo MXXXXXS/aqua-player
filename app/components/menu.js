@@ -1,4 +1,5 @@
 const {menu} = require(`../assets/components.js`)
+const {storeStates} = require(`../states.js`)
 
 const foldingStyle = `
 div[tabindex="-1"]>div:last-child {
@@ -68,7 +69,9 @@ class AQUAMenu extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({mode: `open`})
+    const root = this.shadowRoot
     shadow.innerHTML = menu
+
     const style = document.createElement(`style`)
     shadow.appendChild(style)
     let closed = false
@@ -81,6 +84,13 @@ class AQUAMenu extends HTMLElement {
         style.innerText = foldingStyle
         closed = true
       }
+    })
+
+    root.querySelector(`#music`).addEventListener(`click`, () => {
+      storeStates.states.RMenuItems = `aqua-list`
+    })
+    root.querySelector(`#settings`).addEventListener(`click`, () => {
+      storeStates.states.RMenuItems = `aqua-settings`
     })
   }
 }

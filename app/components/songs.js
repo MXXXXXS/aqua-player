@@ -3,21 +3,25 @@ const ebus = require(`../utils/eBus.js`)
 const icons = require(`../assets/icons.js`)
 const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
-const loadSongs = require(`../loadSongs.js`)
+
 const { listSList, listSPath, storeStates } = require(`../states.js`)
 const states = storeStates.states
 
-class AQUAList extends HTMLElement {
+class AQUASongs extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({ mode: `open` })
     const root = this.shadowRoot
     shadow.innerHTML = songs
     // run()
-    storeStates.addCb(`sListLoaded`, (ready) => {
-      if (ready) run()
-    })
-    loadSongs()
+    if (storeStates.states.sListLoaded) {
+      run()
+    } else {
+      storeStates.addCb(`sListLoaded`, (ready) => {
+        if (ready) run()
+      })
+    }
+    
     // listSList.addCb(() => {
     //   console.log(`added`)
     //   states.sListLoaded = true
@@ -69,4 +73,4 @@ class AQUAList extends HTMLElement {
   }
 }
 
-module.exports = AQUAList
+module.exports = AQUASongs
