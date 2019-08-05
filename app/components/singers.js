@@ -2,13 +2,15 @@ const icons = require(`../assets/icons.js`)
 const { singers } = require(`../assets/components.js`)
 const {listSList} = require(`../states.js`)
 const {sortUniqueIdWords} = require(`../utils/sortWords.js`)
+const ebus = require(`../utils/eBus.js`)
 
 class AQUASingers extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({ mode: `open` })
-    const root = this.shadowRoot
     shadow.innerHTML = singers
+    const root = this.shadowRoot
+    const main = root.querySelector(`#main`)
 
     const groupTemplate = (inital, items) => {
       const itemTemplate = (id, artist) =>
@@ -41,14 +43,17 @@ class AQUASingers extends HTMLElement {
       })
     }
 
+    ebus.on(`Updated listSList and listSPath`, run)
+
     async function run() {
+      main.innerHTML = ``
       const { en: uen, zh: uzh} = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.artist]))
       function addGroups(sorted) {
         sorted.forEach(group => {
           const inital = group[0]
           const items = group.slice(1, group.length)
           groupTemplate(inital, items)
-          root.innerHTML += groupTemplate(inital, items)
+          main.innerHTML += groupTemplate(inital, items)
         })
       }
       
@@ -56,7 +61,7 @@ class AQUASingers extends HTMLElement {
       addGroups(uzh)
 
       root.querySelectorAll(`.icon`).forEach(el => {
-        el.innerHTML += icons[el.classList[1]]
+        el.innerHTML = icons[el.classList[1]]
       })
 
     }

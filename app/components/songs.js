@@ -13,7 +13,7 @@ class AQUASongs extends HTMLElement {
     const shadow = this.attachShadow({ mode: `open` })
     const root = this.shadowRoot
     shadow.innerHTML = songs
-    // run()
+
     if (storeStates.states.sListLoaded) {
       run()
     } else {
@@ -21,48 +21,45 @@ class AQUASongs extends HTMLElement {
         if (ready) run()
       })
     }
-    
-    // listSList.addCb(() => {
-    //   console.log(`added`)
-    //   states.sListLoaded = true
-    // })
+
+    ebus.on(`Updated listSList and listSPath`, run)
+
+    function renderString(key, i, song) {
+      return `
+      <div data-key="${key}">
+        <div class="checkBox"></div>
+        <div class="name">
+      <div class="text">
+        ${song.title}
+      </div>
+      <div class="icon play" data-key="${key}"></div>
+      <div class="icon add"></div>
+    </div>
+    <div class="attribute">
+      <div class="artist">${song.artist}</div>
+      <div class="album">${song.album}</div>
+      <div class="date">${song.year}</div>
+      <div class="style">${song.genre}</div>
+    </div>
+    <div class="duration">${second2time(Math.round(song.duration))}</div>
+  </div>
+      `
+    }
 
     async function run() {
-      // listSList.list.push(...list)
-      // listSPath.list.push(songsPath)
       states.total = listSList.list.length
-      listSList.list.forEach((song, i) => {
-        song.id = i
-        root.querySelector(`.list`).innerHTML +=
-          `
-        <div data-key="${song.title}">
-          <div class="checkBox"></div>
-          <div class="name">
-        <div class="text">
-          ${song.title}
-        </div>
-        <div class="icon play" data-title="${song.title}"></div>
-        <div class="icon add"></div>
-      </div>
-      <div class="attribute">
-        <div class="artist">${song.artist}</div>
-        <div class="album">${song.album}</div>
-        <div class="date">${song.year}</div>
-        <div class="style">${song.genre}</div>
-      </div>
-      <div class="duration">${second2time(Math.round(song.duration))}</div>
-    </div>
-        `
-      })
+      listSList.cast(`.list`, renderString, root)
       root.querySelectorAll(`.icon`).forEach(el => {
-        el.innerHTML += icons[el.classList[1]]
+        el.innerHTML = icons[el.classList[1]]
       })
       root.querySelector(`.list`).addEventListener(`click`, e => {
+        e.stopPropagation()
         const isPlayBtn = e.target.classList.contains(`play`)
         if (isPlayBtn) {
           for (let i = 0; i < listSList.list.length; i++) {
-            const song = listSList.list[i]
-            if (song.title === e.target.getAttribute(`data-title`)) {
+            const songKey = listSList.list[i][1]
+            if (songKey === parseInt(e.target.dataset.key)) {
+              states.playingSongNum = i
               ebus.emit(`play this`, i)
               break
             }

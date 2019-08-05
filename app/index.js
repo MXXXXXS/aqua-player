@@ -1,6 +1,4 @@
-const {storeStates} = require(`./states.js`)
-const loadSongs = require(`./loadSongs.js`)
-loadSongs()
+const {storeStates, listSPath, listSList} = require(`./states.js`)
 
 const AQUAController = require(`./components/controller.js`)
 const AQUASongs = require(`./components/songs.js`)
@@ -25,7 +23,6 @@ customElements.define(`aqua-settings`, AQUASettings)
 
 const songsItems = new RouterEL(`songsItems`, document, AQUASongs, AQUASingers, AQUAAlbums)
 storeStates.addCb(`RSongsItems`, item => {
-  console.log(`yes`)
   songsItems.to(item)
 })
 songsItems.to(`AQUASongs`)

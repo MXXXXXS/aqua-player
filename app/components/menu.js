@@ -1,5 +1,6 @@
 const {menu} = require(`../assets/components.js`)
 const {storeStates} = require(`../states.js`)
+const icons = require(`../assets/icons.js`)
 
 const foldingStyle = `
 div[tabindex="-1"]>div:last-child {
@@ -91,6 +92,10 @@ class AQUAMenu extends HTMLElement {
     })
     root.querySelector(`#settings`).addEventListener(`click`, () => {
       storeStates.states.RMenuItems = `aqua-settings`
+    })
+
+    root.querySelectorAll(`.icon`).forEach(el => {
+      el.innerHTML = icons[el.classList[1]]
     })
   }
 }

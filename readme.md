@@ -24,6 +24,13 @@
   - 在 IDBOpenDBRequest 上绑定事件, onsuccess, onerror, onupgradeneeded 为常用的几个事件函数
   - 当 indexedDB.open(name, version) 的 version 比当前数值大时会触发 onupgradeneeded 事件函数调用, 之后会触发 onsuccess 事件函数调用. 第一次 indexedDB.open(name, version) 时会因为没有该数据库导致触发一次 onupgradeneeded. 至于为什么 version 从 1 开始可能是因为没有该数据库时内部实现默认为 0.
   - 依照上述行为, 当想要创建多个 IDBObjectStore 时, 逻辑是: 先在 onupgradeneeded 中多次调用 DBOpenRequest.result.createObjectStore 来创建. 完成后, 在 onsuccess 可以获得创建了的 IDBObjectStore. 踩坑: 如果在外部获取 IDBObjectStore 则会因为 createObjectStore 事务正在进行而报错, 一定要依据事件来获得正确的顺序
+  - IDBDatabase.createObjectStore 和 IDBDatabase.deleteObjectStore 都是同步的方法, 必须在 onupgradeneeded 内.
+  - 当有版本变动需求时, 必须在 onupgradeneeded 事件函数内添加
+
+        db.onversionchange = () => {
+        DBOpenRequest.result.close()
+        }
+    以关闭当前版本, 可选则添加 DBOpenRequest.onblocked 事件函数, 以观测 block 事件
 
 TODO
 
@@ -37,10 +44,13 @@ TODO
   - [x] 音量调节
   - [x] 列表选歌播放
   - [x] 切换歌曲
+  - [x] 按钮加入防抖, 加载动作设置了锁, 防止多次加载
 - [x] data-view双向绑定
   - [x] proxy实现单向数据同步, 数据变动引起绑定的所有对象key的value更新
   - [x] view通过事件通知改变对应数据
   - [x] 数组监听
+    - [x] 数组方法劫持
+    - [x] 视图同步
 - [x] 状态管理, 事件驱动, 管理所有的数据变动
 - [x] 列表渲染实现
 - [x] 路由功能
@@ -50,15 +60,15 @@ TODO
   - [x] 底部播放控制
   - [x] 左侧栏
   - [x] 歌曲列表
+    - [x] 重名歌曲播放问题
   - [x] 歌手列表
   - [x] 排序功能实现
-  - [x] 专辑列表
-  - [ ] 重名歌曲播放问题
-  - [x] 已收藏文件夹功能
-  - [ ] 已收藏文件夹列表更新(启动时检查新增, 删除)
-  - [x] 已收藏文件夹歌曲列表更新(启动时检查新增, 删除)
-  - [ ] 设置
   - [ ] 各个列表的分类排序
+  - [x] 专辑列表
+  - [ ] 设置
+    - [x] 已收藏文件夹功能
+    - [x] 已收藏文件夹列表增删
+    - [x] 已收藏文件夹歌曲列表更新(检查文件夹内音乐新增, 删除)
 - [ ] 每次都加载整个文件后才播放, 占内存, 耗时. 使用ffmpeg产生分块数据以即时播放(流式传输)
 - [x] 严重的内存泄漏, 每次切换歌时都大幅增加内存占用
   - 解决: 泄露是因为 getSongSrc 闭包中创建的 AudioBufferSourceNode, 导致每次切歌增加内存占用

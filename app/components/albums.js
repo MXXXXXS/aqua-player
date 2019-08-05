@@ -1,4 +1,6 @@
 const { albums } = require(`../assets/components.js`)
+const icons = require(`../assets/icons.js`)
+const ebus = require(`../utils/eBus.js`)
 const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
 const { storeStates, listSList, listSPath } = require(`../states.js`)
 class AQUAAlbums extends HTMLElement {
@@ -8,11 +10,6 @@ class AQUAAlbums extends HTMLElement {
     const root = this.shadowRoot
     shadow.innerHTML = albums
 
-    // }
-
-    // connectedCallback() {
-    console.log(`Added to page.`)
-    // const root = this.shadowRoot
     const main = root.querySelector(`#main`)
     const groupTemplate = (inital, items) => {
       const itemTemplate = (id, item) =>
@@ -33,7 +30,6 @@ class AQUAAlbums extends HTMLElement {
         const album = item[1]
         return itemTemplate(id, { album: album, artist: listSList.list[id].artist })
       }).join(``)
-
     }
 
     if (storeStates.states.sListLoaded) {
@@ -43,8 +39,11 @@ class AQUAAlbums extends HTMLElement {
         if (ready) run()
       })
     }
-    
+
+    ebus.on(`Updated listSList and listSPath`, run)
+
     function run() {
+      main.innerHTML = ``
       const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.album]))
       function addGroups(sorted) {
         sorted.forEach(group => {
@@ -58,7 +57,7 @@ class AQUAAlbums extends HTMLElement {
       addGroups(uzh)
 
       root.querySelectorAll(`.icon`).forEach(el => {
-        el.innerHTML += icons[el.classList[1]]
+        el.innerHTML = icons[el.classList[1]]
       })
     }
   }

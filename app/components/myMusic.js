@@ -1,4 +1,5 @@
 const { myMusic } = require(`../assets/components.js`)
+const icons = require(`../assets/icons.js`)
 const {storeStates} = require(`../states.js`)
 const states = storeStates.states
 class AQUAMyMusic extends HTMLElement {
@@ -20,6 +21,11 @@ class AQUAMyMusic extends HTMLElement {
     root.querySelector(`.albums`).addEventListener(`click`, () => {
       storeStates.states.RSongsItems = `AQUAAlbums`
     })
+
+    root.querySelectorAll(`.icon`).forEach(el => {
+      el.innerHTML = icons[el.classList[1]]
+    })
+
     async function run() {
     }
   }
