@@ -1,7 +1,6 @@
 const icons = require(`../assets/icons.js`)
 const { singers } = require(`../assets/components.js`)
-const { storeStates } = require(`../states.js`)
-const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
+const { storeStates, shared } = require(`../states.js`)
 const ebus = require(`../utils/eBus.js`)
 
 class AQUASingers extends HTMLElement {
@@ -14,18 +13,19 @@ class AQUASingers extends HTMLElement {
   }
 
   run() {
-    const groupTemplate = (inital, items) => {
-      const itemTemplate = (id, artist) =>
-        `
-      <div class="item" data-id="${id}">
-          <div class="cover">
-            <div class="icon play"></div>
-            <div class="icon add"></div>
-          </div>
-          <div class="artist">${artist}</div>
-        </div>
+    const itemTemplate = (id, artist) =>
       `
-      return `<div>
+    <div class="item" data-id="${id}">
+        <div class="cover">
+          <div class="icon play"></div>
+          <div class="icon add"></div>
+        </div>
+        <div class="artist">${artist}</div>
+      </div>
+    `
+
+    const groupTemplate = (inital, items) =>
+      `<div>
       <div class="letter">${inital}</div>
       <div class="group">
       ${items.map(item => {
@@ -35,10 +35,13 @@ class AQUASingers extends HTMLElement {
   }).join(``)}
     </div>
     </div>`
-    }
+
     const main = this.root.querySelector(`#main`)
     main.innerHTML = ``
-    const { en: uen, zh: uzh } = storeStates.states.sortFn.sortedInitialSingers()
+    shared.sortBuf.sortedInitialSingers = shared.sortBuf.sortedInitialSingers ?
+      shared.sortBuf.sortedInitialSingers :
+      storeStates.states.sortFn.sortedInitialSingers()
+    const { en: uen, zh: uzh } = shared.sortBuf.sortedInitialSingers
     function addGroups(sorted) {
       sorted.forEach(group => {
         const inital = group[0]
@@ -57,16 +60,21 @@ class AQUASingers extends HTMLElement {
   }
 
   connectedCallback() {
-    this.cb = this.run.bind(this)
+    this.cb = () => {
+      console.log(`singer sort`)
+      shared.sortBuf = {}
+      this.run()
+    }
     ebus.on(`Sorting ready`, this.cb)
     console.log(`singers connected`)
-    
+
     if (storeStates.states.sortReady) {
       this.run()
     }
   }
 
   disconnectedCallback() {
+    console.log(`singers disconnected`)
     ebus.removeListener(`Sorting ready`, this.cb)
   }
 }

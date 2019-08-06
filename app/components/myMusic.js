@@ -1,6 +1,6 @@
 const { myMusic } = require(`../assets/components.js`)
 const icons = require(`../assets/icons.js`)
-const {storeStates} = require(`../states.js`)
+const { storeStates } = require(`../states.js`)
 const states = storeStates.states
 class AQUAMyMusic extends HTMLElement {
   constructor() {
@@ -8,7 +8,6 @@ class AQUAMyMusic extends HTMLElement {
     const shadow = this.attachShadow({ mode: `open` })
     const root = this.shadowRoot
     shadow.innerHTML = myMusic
-    run()
 
     storeStates.add(`total`, root.querySelector(`#total`), `innerText`)
 
@@ -26,8 +25,27 @@ class AQUAMyMusic extends HTMLElement {
       el.innerHTML = icons[el.classList[1]]
     })
 
-    async function run() {
+  }
+
+  run() {
+    
+  }
+
+  connectedCallback() {
+    this.cb = () => {
+      shared.sortBuf = {}
+      this.run()
     }
+
+    ebus.on(`Updated listSList and listSPath`, this.cb)
+
+    if (storeStates.states.sListLoaded) {
+      this.run()
+    }
+  }
+
+  disconnectedCallback() {
+    ebus.removeListener(`Updated listSList and listSPath`, this.cb)
   }
 }
 

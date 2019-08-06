@@ -1,6 +1,6 @@
 const path = require(`path`)
 const ebus = require(`./utils/eBus.js`)
-const { listSList, storeStates, listSPath } = require(`./states.js`)
+const { listSList, storeStates, listSPath, shared } = require(`./states.js`)
 const { getMetadata } = require(`./audio.js`)
 const searchFolder = require(`./utils/searchFolder.js`)
 
@@ -95,6 +95,11 @@ async function loadSongs(songsPaths, version) {
     listSPath.changeSource(pathsInDb)
     listSList.changeSource(newList)
     storeStates.states.sListLoaded = true
+
+    listSList.list.forEach((item, i) => {
+      shared.keyItemBuf[item[1]] = i
+    })
+
     ebus.emit(`Updated listSList and listSPath`)
   }
   DBOpenRequest.onerror = e => {
@@ -102,6 +107,8 @@ async function loadSongs(songsPaths, version) {
   }
   DBOpenRequest.onupgradeneeded = async e => {
     console.log(`upgradeneeded`)
+    storeStates.states.sListLoaded = false
+    shared.keyItemBuf = {}
     const db = DBOpenRequest.result
     let pathsInDb = Array.from(db.objectStoreNames)
     const newPaths = songsPaths.diff(pathsInDb)

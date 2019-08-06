@@ -32,6 +32,7 @@ class AQUASettings extends HTMLElement {
 
     //添加tile
     ipcRenderer.on(`add these`, (e, paths) => {
+      paths = paths.diff(listSPath.list.map(item => item[0]))
       listSPath.push(...paths)
     })
 
@@ -52,16 +53,7 @@ class AQUASettings extends HTMLElement {
       }
     })
 
-    if (storeStates.states.sListLoaded) {
-      run()
-    } else {
-      storeStates.addCb(`sListLoaded`, (ready) => {
-        if (ready) run()
-      })
-    }
-    async function run() {
-      listSPath.cast(`.tilesContainer`, renderString, root)
-    }
+    listSPath.cast(`.tilesContainer`, renderString, root)
 
     function renderString(key, i, val) {
       return `
