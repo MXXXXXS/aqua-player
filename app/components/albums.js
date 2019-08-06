@@ -28,7 +28,7 @@ class AQUAAlbums extends HTMLElement {
       return items.map(item => {
         const id = item[0][0]
         const album = item[1]
-        return itemTemplate(id, { album: album, artist: listSList.list[id].artist })
+        return itemTemplate(id, { album: album, artist: listSList.list[id][0].artist })
       }).join(``)
     }
 
@@ -44,7 +44,7 @@ class AQUAAlbums extends HTMLElement {
 
     function run() {
       main.innerHTML = ``
-      const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.album]))
+      const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song[0].album]))
       function addGroups(sorted) {
         sorted.forEach(group => {
           const inital = group[0]

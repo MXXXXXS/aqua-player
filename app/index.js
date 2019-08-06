@@ -1,4 +1,6 @@
 const {storeStates, listSPath, listSList} = require(`./states.js`)
+require(`./sort.js`)
+const ebus = require(`./utils/eBus.js`)
 
 const AQUAController = require(`./components/controller.js`)
 const AQUASongs = require(`./components/songs.js`)

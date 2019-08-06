@@ -52,8 +52,6 @@ class AQUASettings extends HTMLElement {
       }
     })
 
-    // ebus.on(`Updated listSList and listSPath`, run)
-
     if (storeStates.states.sListLoaded) {
       run()
     } else {
@@ -73,14 +71,6 @@ class AQUASettings extends HTMLElement {
       <div class="path">${val}</div>
     </div>`
     }
-
-    ebus.on(`Updated listSList and listSPath`, () => {
-      console.log(`已添加`)
-    })
-
-    ebus.on(`Removed folders`, removedFolders => {
-      console.log(`已删除`)
-    })
 
   }
 }

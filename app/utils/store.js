@@ -138,7 +138,12 @@ class List {
     for (const sel in this.casted) {
       if (this.casted.hasOwnProperty(sel)) {
         const member = this.casted[sel]
-
+        const el = member[2].querySelector(member[0])
+        const cb = member[1]
+        el.innerHTML = ``
+        this.list.forEach((item, i) => {
+          el.innerHTML += cb(item[1], i, item[0])
+        })
       }
     }
   }

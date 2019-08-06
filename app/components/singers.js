@@ -1,7 +1,7 @@
 const icons = require(`../assets/icons.js`)
 const { singers } = require(`../assets/components.js`)
-const {listSList} = require(`../states.js`)
-const {sortUniqueIdWords} = require(`../utils/sortWords.js`)
+const { storeStates } = require(`../states.js`)
+const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
 const ebus = require(`../utils/eBus.js`)
 
 class AQUASingers extends HTMLElement {
@@ -9,9 +9,11 @@ class AQUASingers extends HTMLElement {
     super()
     const shadow = this.attachShadow({ mode: `open` })
     shadow.innerHTML = singers
-    const root = this.shadowRoot
-    const main = root.querySelector(`#main`)
+    this.root = this.shadowRoot
 
+  }
+
+  run() {
     const groupTemplate = (inital, items) => {
       const itemTemplate = (id, artist) =>
         `
@@ -34,37 +36,38 @@ class AQUASingers extends HTMLElement {
     </div>
     </div>`
     }
-
-    if (storeStates.states.sListLoaded) {
-      run()
-    } else {
-      storeStates.addCb(`sListLoaded`, (ready) => {
-        if (ready) run()
+    const main = this.root.querySelector(`#main`)
+    main.innerHTML = ``
+    const { en: uen, zh: uzh } = storeStates.states.sortFn.sortedInitialSingers()
+    function addGroups(sorted) {
+      sorted.forEach(group => {
+        const inital = group[0]
+        const items = group.slice(1, group.length)
+        groupTemplate(inital, items)
+        main.innerHTML += groupTemplate(inital, items)
       })
     }
 
-    ebus.on(`Updated listSList and listSPath`, run)
+    addGroups(uen)
+    addGroups(uzh)
 
-    async function run() {
-      main.innerHTML = ``
-      const { en: uen, zh: uzh} = sortUniqueIdWords(listSList.list.map((song, i) => [i, song.artist]))
-      function addGroups(sorted) {
-        sorted.forEach(group => {
-          const inital = group[0]
-          const items = group.slice(1, group.length)
-          groupTemplate(inital, items)
-          main.innerHTML += groupTemplate(inital, items)
-        })
-      }
-      
-      addGroups(uen)
-      addGroups(uzh)
+    this.root.querySelectorAll(`.icon`).forEach(el => {
+      el.innerHTML = icons[el.classList[1]]
+    })
+  }
 
-      root.querySelectorAll(`.icon`).forEach(el => {
-        el.innerHTML = icons[el.classList[1]]
-      })
-
+  connectedCallback() {
+    this.cb = this.run.bind(this)
+    ebus.on(`Sorting ready`, this.cb)
+    console.log(`singers connected`)
+    
+    if (storeStates.states.sortReady) {
+      this.run()
     }
+  }
+
+  disconnectedCallback() {
+    ebus.removeListener(`Sorting ready`, this.cb)
   }
 }
 

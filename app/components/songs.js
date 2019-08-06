@@ -11,18 +11,8 @@ class AQUASongs extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({ mode: `open` })
-    const root = this.shadowRoot
+    this.root = this.shadowRoot
     shadow.innerHTML = songs
-
-    if (storeStates.states.sListLoaded) {
-      run()
-    } else {
-      storeStates.addCb(`sListLoaded`, (ready) => {
-        if (ready) run()
-      })
-    }
-
-    ebus.on(`Updated listSList and listSPath`, run)
 
     function renderString(key, i, song) {
       return `
@@ -46,13 +36,13 @@ class AQUASongs extends HTMLElement {
       `
     }
 
-    async function run() {
+    this.run = function () {
       states.total = listSList.list.length
-      listSList.cast(`.list`, renderString, root)
-      root.querySelectorAll(`.icon`).forEach(el => {
+      listSList.cast(`.list`, renderString, this.root)
+      this.root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML = icons[el.classList[1]]
       })
-      root.querySelector(`.list`).addEventListener(`click`, e => {
+      this.root.querySelector(`.list`).addEventListener(`click`, e => {
         e.stopPropagation()
         const isPlayBtn = e.target.classList.contains(`play`)
         if (isPlayBtn) {
@@ -67,6 +57,22 @@ class AQUASongs extends HTMLElement {
         }
       })
     }
+  }
+
+  connectedCallback() {
+    this.cb = this.run.bind(this)
+    console.log(`disconnected songs`)
+    ebus.on(`Updated listSList and listSPath`, this.cb)
+    if (storeStates.states.sListLoaded) {
+      this.run()
+    }
+  }
+  
+  disconnectedCallback() {
+    console.log(`disconnected songs`)
+    
+    ebus.removeListener(`Updated listSList and listSPath`, this.cb)
+
   }
 }
 

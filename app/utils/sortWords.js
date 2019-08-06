@@ -1,6 +1,6 @@
 const pinyin = require(`pinyin`)
 
-module.exports = { sortWords, sortIdWords, sortUniqueIdWords }
+module.exports = { sortWords, sortIdWords, sortUniqueIdWords, flatSortUniqueIdWords }
 
 /*
   输入 [ keyWord, keyWord, ]
@@ -124,4 +124,27 @@ function sortUniqueIdWords(id_keyWords) {
     })
   }
   return {en: distinctGroup(en), zh: distinctGroup(zh)}
+}
+
+/*
+  输入 [
+    [id, keyWord],
+    [id, keyWord],
+  ]
+  返回
+  {
+    [ //数字, 英文字母作为一组
+      [[id, id,], keyWords], [[id, id,], keyWords], ⇨ 按 keyWord 排序 , keyWord 不重复
+    ],
+    [ //汉字或假名作为一组
+      [[id, id,], keyWords], [[id, id,], keyWords], ⇨ 按 keyWord 排序 , keyWord 不重复
+    ]
+  }
+*/
+function flatSortUniqueIdWords(id_keyWords) {
+  const { en, zh } = sortUniqueIdWords(id_keyWords)
+  return {
+    en: en.map(group => group.slice(1, group.length)).flat(),
+    zh: zh.map(group => group.slice(1, group.length)).flat()
+  }
 }

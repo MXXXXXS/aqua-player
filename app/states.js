@@ -1,5 +1,7 @@
 const {Store, List} = require(`./utils/store.js`)
 const storeStates = new Store({
+  sortReady: false,
+  sortFn: ``,
   currentDBVer: ``,
   sListLoaded: false,
   playing: false,
