@@ -9,11 +9,86 @@
   <div class="preference">
     <div class="icon random"></div>
     <div class="randomAll">无序播放所有(<span id="total"></span>)</div>
-    <div class="sort">排序依据: <span href="">添加日期</span></div>
-    <div class="type">类型: <span href="">所有流派</span></div>
+    <div class="sort">
+      <span>排序依据: </span>
+      <span id="sortBy">无</span>
+      <div class="padSortBy">
+        <div class="menu menuSortBy">
+          <div class="item" data-selected="selected">无</div>
+          <div class="item">A到Z</div>
+          <div class="item">歌手</div>
+          <div class="item">专辑</div>
+        </div>
+        <div class="mask"></div>
+      </div>
+    </div>
+    <div class="type">
+      <span>类型: </span>
+      <span id="type">所有流派</span>
+      <div class="padType">
+        <div class="menu menuType">
+          <div class="item" data-selected="selected">所有流派</div>
+          <div class="item">Other</div>
+          <div class="item">R&B</div>
+          <div class="item">未知流派</div>
+        </div>
+        <div class="mask"></div>
+      </div>
+    </div>
   </div>
 </div>
 <style>
+   * {
+     cursor: default;
+   }
+   .mask {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    /* background-color: rgba(202, 202, 202, 0.199); */
+   }
+   .menu {
+     z-index: 1;
+    box-shadow: rgba(128, 128, 128, 0.49) 0 10px 13px;
+    padding: 1px;
+    background-color: whitesmoke;
+    border: 1px black solid;
+   }
+   .item:hover {
+    box-shadow: inset 0 0 2px 15px rgba(218, 218, 218, 0.5); 
+   }
+   [data-selected="selected"] {
+    background-color: rgb(171, 219, 213);
+   }
+   .item {
+     line-height: 28px;
+    height: 28px;
+    width: 105px;
+    padding: 0 10px;
+    box-sizing: border-box;
+   }
+   .menuSortBy {
+    position: absolute;
+    left: 62px;
+    top: -5px;
+    /* 上下移动时以28px为单位(字体行高) */
+   }
+   .menuType {
+    position: absolute;
+    left: 32px;
+    top: -5px;
+    /* 上下移动时以28px为单位(字体行高) */
+   }
+   /* #sortBy {
+    position: relative;
+    left: 62px;
+   } */
+  #sortBy, #type {
+    color: rgb(113, 204, 192);
+  }
   .icon {
     display: flex;
   }
@@ -22,6 +97,9 @@
   }
   .sort,
   .type {
+    position: relative;
+    align-self: start;
+    margin-top: 16px;
     margin-left: 20px;
   }
 

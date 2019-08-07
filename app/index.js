@@ -4,7 +4,7 @@
 Array.prototype.diff = function (a) {
   return this.filter(function (i) { return a.indexOf(i) < 0 })
 }
-const {storeStates, listSPath, listSList, shared} = require(`./states.js`)
+const {storeStates, listSPath, listSList, shared, sortType} = require(`./states.js`)
 require(`./sort.js`)
 const ebus = require(`./utils/eBus.js`)
 

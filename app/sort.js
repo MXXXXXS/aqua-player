@@ -10,7 +10,8 @@ let keySingers,
   sortedYears,
   sortedAlbums,
   sortedInitialSongs,
-  sortedInitialSingers
+  sortedInitialSingers,
+  sortedGenres
 
 ebus.on(`Updated listSList and listSPath`, run)
 
@@ -20,6 +21,7 @@ function run() {
   keyYears = []
   keyAlbums = []
   keySongs = []
+  keyGenres = []
 
   listSList.list.forEach(item => {
     const key = item[1]
@@ -28,10 +30,12 @@ function run() {
     keyYears.push([key, song.year])
     keyAlbums.push([key, song.album])
     keySongs.push([key, song.title])
+    keyGenres.push([key, song.genre])
   })
 
   sortedYears = () => flatSortUniqueIdWords(keyYears)
   sortedAlbums = () => flatSortUniqueIdWords(keyAlbums)
+  sortedGenres = () => flatSortUniqueIdWords(keyGenres)
   sortedInitialSongs = () => sortUniqueIdWords(keySongs)
   sortedInitialSingers = () => sortUniqueIdWords(keySingers)
   sortedSingers = () => {
@@ -46,7 +50,8 @@ function run() {
     sortedInitialSingers,
     sortedSingers,
     sortedAlbums,
-    sortedYears
+    sortedYears,
+    sortedGenres
   }
   storeStates.states.sortReady = true
   ebus.emit(`Sorting ready`)
