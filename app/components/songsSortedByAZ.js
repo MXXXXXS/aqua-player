@@ -3,7 +3,6 @@ const icons = require(`../assets/icons.js`)
 const { songsSortedByAZ } = require(`../assets/components.js`)
 const { listSList, storeStates, shared } = require(`../states.js`)
 const second2time = require(`../utils/second2time.js`)
-const keyItemBuf = shared.keyItemBuf
 const states = storeStates.states
 
 class AQUASongsSortedByAZ extends HTMLElement {
@@ -46,7 +45,7 @@ class AQUASongsSortedByAZ extends HTMLElement {
     let strBuf = ``
     const key = item[0]
     key.forEach(k => {
-      const song = listSList.list[keyItemBuf[k]][0]
+      const song = listSList.list[shared.keyItemBuf[k]][0]
       strBuf += itemTemplate(k, song)
     })
     return strBuf
@@ -95,7 +94,6 @@ class AQUASongsSortedByAZ extends HTMLElement {
   connectedCallback() {
     this.cb = () => {
       console.log(`singer sort`)
-      shared.keyItemBuf = {}
       this.run()
     }
     ebus.on(`Sorting ready`, this.cb)

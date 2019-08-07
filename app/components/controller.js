@@ -2,7 +2,7 @@ const ebus = require(`../utils/eBus.js`)
 const { controller } = require(`../assets/components.js`)
 const { audioCtx, getMetadata, getSongBuf, getSongSrc } = require(`../audio.js`)
 const second2time = require(`../utils/second2time.js`)
-const { storeStates, listSList } = require(`../states.js`)
+const { storeStates, listSList, shared } = require(`../states.js`)
 const icons = require(`../assets/icons.js`)
 const states = storeStates.states
 
@@ -19,17 +19,16 @@ class Debounce {
   }
 }
 
-const debouncePlay = new Debounce()
-const debounceNext = new Debounce()
-const debouncePrevious = new Debounce()
+const debounceFn = new Debounce()
 
 class AQUAController extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({ mode: `open` })
     shadow.innerHTML = controller
-    const root = this.shadowRoot
+    this.root = this.shadowRoot
 
+    const root = this.root
     const timeLine = root.querySelector(`#timeLine`)
     timeLine.value = 0
     const loudness = root.querySelector(`#loudness`)
@@ -42,16 +41,23 @@ class AQUAController extends HTMLElement {
     let srcAddedTime
     let songPlayingOffset = 0
     let timer
-    let audioSrc = audioCtx.createBufferSource()
+    let audioSrc
     let fillFlag
     let srcBuf
     let duration
     let songLoading = false
-    const debounceLatency = 400
+    let currentSongFinished = true
+    const debounceLatency = 200
     const name = root.querySelector(`.name`)
     const artist = root.querySelector(`.artist`)
     storeStates.add(`name`, name, `innerText`)
     storeStates.add(`artist`, artist, `innerText`)
+
+    states.playingSongNum = parseInt(localStorage.getItem(`playingSongNum`)) || 0
+
+    storeStates.addCb(`playingSongNum`, (val) => {
+      localStorage.setItem(`playingSongNum`, val)
+    })
 
     async function playNewOne() {
       if (!songLoading) {
@@ -68,20 +74,23 @@ class AQUAController extends HTMLElement {
       loadSong()
     } else {
       storeStates.addCb(`sListLoaded`, (ready) => {
-        if (ready && listSList.list.length !== 0) loadSong()
+        if (ready && currentSongFinished)
+          loadSong()
       })
     }
 
     ebus.on(`play this`, () => {
-      debouncePlay.debounce(playNewOne, debounceLatency)
+      debounceFn.debounce(playNewOne, debounceLatency)
     })
 
     root.querySelector(`.play`).addEventListener(`click`, () => {
-      if (!states.playing) {
-        start()
-      } else {
-        stop()
-      }
+      debounceFn.debounce(() => {
+        if (states.playing) {
+          stop()
+        } else {
+          start()
+        }
+      }, debounceLatency)
     })
     timeLine.addEventListener(`mousedown`, (e) => {
       clearInterval(timer)
@@ -106,44 +115,51 @@ class AQUAController extends HTMLElement {
     nextSong.addEventListener(`click`, async (e) => {
       if (states.playingSongNum + 1 < states.total) {
         states.playingSongNum += 1
-        debounceNext.debounce(playNewOne, debounceLatency)
+        debounceFn.debounce(playNewOne, debounceLatency)
       }
     })
 
     lastSong.addEventListener(`click`, async (e) => {
       if (states.playingSongNum - 1 >= 0) {
         states.playingSongNum -= 1
-        debouncePrevious.debounce(playNewOne, debounceLatency)
+        debounceFn.debounce(playNewOne, debounceLatency)
       }
     })
 
     async function loadSong() {
-      let song = listSList.list[states.playingSongNum][0]
-      audioSrc = audioCtx.createBufferSource()
-      states.name = song.title
-      states.artist = song.artist
-      duration = song.duration
-      srcBuf = await getSongBuf(song.filePath)
-      songPlayingOffset = 0
-      timeLine.value = 0
-      const formatedDuration = second2time(duration)
-      if (formatedDuration.length === 5) { fillFlag = `m+` }
-      else if (formatedDuration.length === 7) { fillFlag = `h` }
-      else if (formatedDuration.length === 8) { fillFlag = `h+` }
-      root.querySelector(`.time-passed`).innerText = formatedDuration.replace(/[^:]/g, `0`)
-      root.querySelector(`.duration`).innerText = formatedDuration
+      //当listSList.list为空时, states.playingSongNum为 -1
+      if (states.playingSongNum >= 0) {
+        //从当前播放列表索引歌曲
+        let song = listSList.list[shared.playList[states.playingSongNum]][0]
+        audioSrc = audioCtx.createBufferSource()
+        states.name = song.title
+        states.artist = song.artist
+        duration = song.duration
+        srcBuf = await getSongBuf(song.filePath)
+        songPlayingOffset = 0
+        timeLine.value = 0
+        const formatedDuration = second2time(duration)
+        if (formatedDuration.length === 5) { fillFlag = `m+` }
+        else if (formatedDuration.length === 7) { fillFlag = `h` }
+        else if (formatedDuration.length === 8) { fillFlag = `h+` }
+        root.querySelector(`.time-passed`).innerText = formatedDuration.replace(/[^:]/g, `0`)
+        root.querySelector(`.duration`).innerText = formatedDuration
+      }
     }
 
     function start() {
-      states.playing = true
-      audioSrc = audioCtx.createBufferSource()
-      audioSrc.buffer = srcBuf
-      audioSrc.connect(gainNode)
-      gainNode.connect(audioCtx.destination)
-      srcAddedTime = audioCtx.currentTime
-      audioSrc.start(0, songPlayingOffset)
-      timer = setInterval(syncProgressBar, 100)
-      songLoading = false
+      if (srcBuf) {
+        states.playing = true
+        audioSrc = audioCtx.createBufferSource()
+        audioSrc.buffer = srcBuf
+        audioSrc.connect(gainNode)
+        gainNode.connect(audioCtx.destination)
+        srcAddedTime = audioCtx.currentTime
+        audioSrc.start(0, songPlayingOffset)
+        timer = setInterval(syncProgressBar, 100)
+        songLoading = false
+        currentSongFinished = false
+      }
     }
     function stop() {
       states.playing = false
@@ -162,6 +178,7 @@ class AQUAController extends HTMLElement {
         if (states.playingSongNum + 1 < states.total) {
           if (states.playing) {
             stop()
+            currentSongFinished = true
             states.playingSongNum += 1
             await loadSong()
             start()
@@ -175,6 +192,15 @@ class AQUAController extends HTMLElement {
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
+  }
+
+  connectedCallback() {
+    console.log(`Controller connected`)
+
+  }
+
+  disconnectedCallback() {
+    console.log(`Controller disconnected`)
   }
 }
 module.exports = AQUAController

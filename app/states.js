@@ -2,7 +2,8 @@ const {Store, List} = require(`./utils/store.js`)
 
 const shared = {
   sortBuf: {},
-  keyItemBuf: {}
+  keyItemBuf: {},
+  playList: []
 }
 
 const storeStates = new Store({

@@ -1,3 +1,9 @@
+//https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
+// [1,2,3,4,5,6].diff( [3,4,5] )
+// => [1, 2, 6]
+Array.prototype.diff = function (a) {
+  return this.filter(function (i) { return a.indexOf(i) < 0 })
+}
 const {storeStates, listSPath, listSList, shared} = require(`./states.js`)
 require(`./sort.js`)
 const ebus = require(`./utils/eBus.js`)
@@ -12,12 +18,6 @@ const AQUASettings = require(`./components/settings.js`)
 const AQUASongsSortedByAZ = require(`./components/songsSortedByAZ`)
 
 const {RouterEL, Router} = require(`./utils/router.js`)
-//https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-// [1,2,3,4,5,6].diff( [3,4,5] )
-// => [1, 2, 6]
-Array.prototype.diff = function (a) {
-  return this.filter(function (i) { return a.indexOf(i) < 0 })
-}
 
 customElements.define(`aqua-menu`, AQUAMenu)
 customElements.define(`aqua-controller`, AQUAController)

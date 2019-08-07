@@ -70,6 +70,7 @@ function inspectSongs(db, songsPaths) {
 }
 
 async function loadSongs(songsPaths, version) {
+  //有songsPaths传入, 触发更新, 以同步数据库
   if (Array.isArray(songsPaths)) {
     version = storeStates.states.currentDBVer + 1
   }
@@ -94,12 +95,22 @@ async function loadSongs(songsPaths, version) {
 
     listSPath.changeSource(pathsInDb)
     listSList.changeSource(newList)
-    storeStates.states.sListLoaded = true
-
+    //已更新, 但没触发变化信号, 用于初始化
+    shared.playList = []
+    
     listSList.list.forEach((item, i) => {
       shared.keyItemBuf[item[1]] = i
+      shared.playList.push(i)
     })
+    
+    const legal = storeStates.states.playingSongNum <= shared.playList.length &&
+    shared.playList.length !== 0
 
+    if (!legal) {
+      storeStates.states.playingSongNum = shared.playList.length - 1
+    }
+    //触发变化信号
+    storeStates.states.sListLoaded = true
     ebus.emit(`Updated listSList and listSPath`)
   }
   DBOpenRequest.onerror = e => {
@@ -111,19 +122,21 @@ async function loadSongs(songsPaths, version) {
     shared.keyItemBuf = {}
     const db = DBOpenRequest.result
     let pathsInDb = Array.from(db.objectStoreNames)
-    const newPaths = songsPaths.diff(pathsInDb)
-    const dropPaths = pathsInDb.diff(songsPaths)
-    newPaths.forEach(pathToAdd => {
-      console.log(`pathToAdd: `, pathToAdd)
-      db.createObjectStore(pathToAdd, { autoIncrement: true })
-    })
-    dropPaths.forEach(pathToDrop => {
-      console.log(`pathToDrop: `, pathToDrop)
-      db.deleteObjectStore(pathToDrop)
-    })
-    db.onversionchange = () => {
-      DBOpenRequest.result.close()
-      console.log(`Version change, closing current db`)
+    if (songsPaths) { //第一次启动数据库时, songsPaths不存在, 但又会触发upgradeneeded
+      const newPaths = songsPaths.diff(pathsInDb)
+      const dropPaths = pathsInDb.diff(songsPaths)
+      newPaths.forEach(pathToAdd => {
+        console.log(`pathToAdd: `, pathToAdd)
+        db.createObjectStore(pathToAdd, { autoIncrement: true })
+      })
+      dropPaths.forEach(pathToDrop => {
+        console.log(`pathToDrop: `, pathToDrop)
+        db.deleteObjectStore(pathToDrop)
+      })
+      db.onversionchange = () => {
+        DBOpenRequest.result.close()
+        console.log(`Version change, closing current db`)
+      }
     }
   }
 }
