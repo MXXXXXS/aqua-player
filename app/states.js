@@ -19,9 +19,7 @@ const storeStates = new Store({
   total: 0,
   playMode: `unset`, //unset, singleCycle, listCycle, random
   RSongsItems: `AQUASongsSortedByAZ`, //AQUASongs, AQUASongsSortedByAZ, AQUASingers, AQUAAlbums
-  RMenuItems: `aqua-my-music`, //aqua-my-music, aqua-settings
-  menuSortBy: `无`,
-  menuType: `所有流派`
+  RMenuItems: `aqua-my-music` //aqua-my-music, aqua-settings
 })
 
 const listSList = new List([])
