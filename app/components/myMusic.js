@@ -2,6 +2,8 @@ const { myMusic } = require(`../assets/components.js`)
 const { List } = require(`../utils/store.js`)
 const icons = require(`../assets/icons.js`)
 const { storeStates, sortType } = require(`../states.js`)
+const ebus = require(`../utils/eBus.js`)
+const states = storeStates.states
 class AQUAMyMusic extends HTMLElement {
   constructor() {
     super()
@@ -17,8 +19,22 @@ class AQUAMyMusic extends HTMLElement {
     const sortBy = root.querySelector(`#sortBy`)
     const type = root.querySelector(`#type`)
 
+    storeStates.add(`filterSortBy`, sortBy, `innerText`)
+    storeStates.add(`filterType`, type, `innerText`)
+
     this.sortBy = new List([`无`, `A到Z`, `无`])
     this.type = new List([`所有流派`, ``, `所有流派`])
+
+    let curTag = {
+      i: 0,
+      set index(i) {
+        renderSortBy(sortByList[i])
+        this.i = i
+      },
+      get index() {
+        return this.i
+      }
+    }
 
     //同步显示的项目数
     storeStates.add(`total`, root.querySelector(`#total`), `innerText`)
@@ -26,12 +42,15 @@ class AQUAMyMusic extends HTMLElement {
     //三个选项卡切换
     root.querySelector(`.songs`).addEventListener(`click`, () => {
       storeStates.states.RSongsItems = `AQUASongs`
+      ebus.emit(`component switch`, `AQUASongs`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
     root.querySelector(`.singers`).addEventListener(`click`, () => {
       storeStates.states.RSongsItems = `AQUASingers`
+      ebus.emit(`component switch`, `AQUASingers`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
     root.querySelector(`.albums`).addEventListener(`click`, () => {
       storeStates.states.RSongsItems = `AQUAAlbums`
+      ebus.emit(`component switch`, `AQUAAlbums`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
 
     //图标载入
@@ -44,10 +63,10 @@ class AQUAMyMusic extends HTMLElement {
     })
     //同步"排序依据", 同步"类型"
     this.sortBy.addCb((p, val, oldVal) => {
-      sortBy.innerText = val
+      states.filterSortBy = val
     })
     this.type.addCb((p, val, oldVal) => {
-      type.innerText = val
+      states.filterType = val
     })
 
     //先隐藏两个面板
@@ -79,17 +98,6 @@ class AQUAMyMusic extends HTMLElement {
       })
     }
 
-    let curTag = {
-      i: 0,
-      set index(i) {
-        renderSortBy(sortByList[i])
-        this.i = i
-      },
-      get index() {
-        return this.i
-      }
-    }
-
     //初始渲染
     curTag.index = 0
 
@@ -109,23 +117,23 @@ class AQUAMyMusic extends HTMLElement {
       switch (RSongsItems) {
         case `AQUASongs`:
           curTag.index = 0
-          sortBy.innerText = this.sortBy.list[curTag.index][0]
-          type.innerText = this.type.list[curTag.index][0]
+          states.filterSortBy = this.sortBy.list[curTag.index][0]
+          states.filterType = this.type.list[curTag.index][0]
           highLightSelected(menuSortBy, sortBy)
           highLightSelected(menuType, type)
           root.querySelector(`.type`).style.display = `block`
           break
         case `AQUASingers`:
           curTag.index = 1
-          sortBy.innerText = this.sortBy.list[curTag.index][0]
+          states.filterSortBy = this.sortBy.list[curTag.index][0]
           highLightSelected(menuSortBy, sortBy)
           highLightSelected(menuType, type)
           root.querySelector(`.type`).style.display = `none`
           break
         case `AQUAAlbums`:
           curTag.index = 2
-          sortBy.innerText = this.sortBy.list[curTag.index][0]
-          type.innerText = this.type.list[curTag.index][0]
+          states.filterSortBy = this.sortBy.list[curTag.index][0]
+          states.filterType = this.type.list[curTag.index][0]
           highLightSelected(menuSortBy, sortBy)
           highLightSelected(menuType, type)
           root.querySelector(`.type`).style.display = `block`
@@ -144,6 +152,7 @@ class AQUAMyMusic extends HTMLElement {
         const offset = sortByList[curTag.index].indexOf(selectedEl.innerText) * -28
         menuSortBy.style.top = (-5 + offset).toString() + `px` //这个magic number "-5" 是在css里调整样式得到的
         padSortBy.style.display = `none`
+        ebus.emit(`component switch`, states.RSongsItems, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
       }
     })
     menuType.addEventListener(`click`, e => {
@@ -153,9 +162,10 @@ class AQUAMyMusic extends HTMLElement {
         this.type.set(curTag.index, text)
         menuType.querySelector(`[data-selected="selected"]`).removeAttribute(`data-selected`)
         selectedEl.setAttribute(`data-selected`, `selected`)
-        const offset = this.sortTypeRenderArr.indexOf(selectedEl.innerText) * -28
+        const offset = this.typeRenderArr.indexOf(selectedEl.innerText) * -28
         menuType.style.top = (-5 + offset).toString() + `px`
         padType.style.display = `none`
+        ebus.emit(`component switch`, states.RSongsItems, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
       }
     })
 
@@ -177,8 +187,8 @@ class AQUAMyMusic extends HTMLElement {
     this.sortBy.changeSource([`无`, `A到Z`, `无`])
     this.type.changeSource([`所有流派`, ``, `所有流派`])
     sortType.changeSource([])
-    this.sortTypeRenderArr = [`所有流派`, ...uen.map(item => item[1]), ...uzh.map(item => item[1])]
-    sortType.push(...this.sortTypeRenderArr)
+    this.typeRenderArr = [`所有流派`, ...uen.map(item => item[1]), ...uzh.map(item => item[1])]
+    sortType.push(...this.typeRenderArr)
 
     this.root.querySelector(`[data-selected="selected"]`).removeAttribute(`data-selected`)
     this.root.querySelector(`.menuSortBy .item`).setAttribute(`data-selected`, `selected`)

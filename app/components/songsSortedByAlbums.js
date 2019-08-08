@@ -5,7 +5,7 @@ const { listSList, storeStates, shared } = require(`../states.js`)
 const second2time = require(`../utils/second2time.js`)
 const states = storeStates.states
 
-class AQUASongsSortedByAZ extends HTMLElement {
+class AQUASongsSortedByAlbums extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({ mode: `open` })
@@ -36,38 +36,33 @@ class AQUASongsSortedByAZ extends HTMLElement {
     <div class="duration">${second2time(Math.round(song.duration))}</div>
   </div>
       `
-    
-    const groupTemplate = (inital, items) =>
+
+    const groupTemplate = (group) =>
       `<div>
-      <div class="letter">${inital}</div>
+      <div class="letter">${group[1]}</div>
       <div class="group">
-      ${items.map(item => {
+      ${group[0].map(k => {
     let strBuf = ``
-    const key = item[0]
-    key.forEach(k => {
-      const song = listSList.list[shared.keyItemBuf[k]][0]
-      strBuf += itemTemplate(k, song)
-    })
+    const song = listSList.list[shared.keyItemBuf[k]][0]
+    strBuf += itemTemplate(k, song)
     return strBuf
   }).join(``)}
     </div>
     </div>`
     const main = this.root.querySelector(`#main`)
     main.innerHTML = ``
-    shared.sortBuf.sortedInitialSongs = shared.sortBuf.sortedInitialSongs ?
-      shared.sortBuf.sortedInitialSongs :
-      storeStates.states.sortFn.sortedInitialSongs()
-    const { en: uen, zh: uzh } = shared.sortBuf.sortedInitialSongs
+    shared.sortBuf.sortedAlbums = shared.sortBuf.sortedAlbums ?
+      shared.sortBuf.sortedAlbums :
+      storeStates.states.sortFn.sortedAlbums()
+    const { en: uen, zh: uzh } = shared.sortBuf.sortedAlbums
 
     function addGroups(sorted) {
       sorted.forEach(group => {
-        const inital = group[0]
-        const items = group.slice(1, group.length)
-        // groupTemplate(inital, items)
-        main.innerHTML += groupTemplate(inital, items)
+        groupTemplate(group)
+        main.innerHTML += groupTemplate(group)
       })
     }
-    
+
     addGroups(uen)
     addGroups(uzh)
 
@@ -97,7 +92,7 @@ class AQUASongsSortedByAZ extends HTMLElement {
       this.run()
     }
     ebus.on(`Sorting ready`, this.cb)
-    console.log(`AQUASongsSortedByAZ connected`)
+    console.log(`AQUASongsSortedByAlbums connected`)
 
     if (storeStates.states.sortReady) {
       this.run()
@@ -105,9 +100,9 @@ class AQUASongsSortedByAZ extends HTMLElement {
   }
 
   disconnectedCallback() {
-    console.log(`AQUASongsSortedByAZ disconnected`)
+    console.log(`AQUASongsSortedByAlbums disconnected`)
     ebus.removeListener(`Sorting ready`, this.cb)
   }
 }
 
-module.exports = AQUASongsSortedByAZ
+module.exports = AQUASongsSortedByAlbums

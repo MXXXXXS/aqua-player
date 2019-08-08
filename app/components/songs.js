@@ -61,7 +61,7 @@ class AQUASongs extends HTMLElement {
 
   connectedCallback() {
     this.cb = this.run.bind(this)
-    console.log(`disconnected songs`)
+    console.log(`connected songs`)
     ebus.on(`Updated listSList and listSPath`, this.cb)
     if (storeStates.states.sListLoaded) {
       this.run()
@@ -70,7 +70,7 @@ class AQUASongs extends HTMLElement {
   
   disconnectedCallback() {
     console.log(`disconnected songs`)
-    
+    listSList.removeCasted(`.list`, this.root)
     ebus.removeListener(`Updated listSList and listSPath`, this.cb)
 
   }

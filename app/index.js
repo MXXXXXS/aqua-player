@@ -5,8 +5,9 @@ Array.prototype.diff = function (a) {
   return this.filter(function (i) { return a.indexOf(i) < 0 })
 }
 const {storeStates, listSPath, listSList, shared, sortType} = require(`./states.js`)
-require(`./sort.js`)
 const ebus = require(`./utils/eBus.js`)
+require(`./sort.js`)
+require(`./componentSwitcher.js`)
 
 const AQUAController = require(`./components/controller.js`)
 const AQUASongs = require(`./components/songs.js`)
@@ -17,22 +18,7 @@ const AQUAAlbums = require(`./components/albums.js`)
 const AQUASettings = require(`./components/settings.js`)
 const AQUASongsSortedByAZ = require(`./components/songsSortedByAZ`)
 
-const {RouterEL, Router} = require(`./utils/router.js`)
-
 customElements.define(`aqua-menu`, AQUAMenu)
 customElements.define(`aqua-controller`, AQUAController)
 customElements.define(`aqua-my-music`, AQUAMyMusic)
 customElements.define(`aqua-settings`, AQUASettings)
-
-const songsItems = new RouterEL(`songsItems`, document, AQUASongs, AQUASongsSortedByAZ, AQUASingers, AQUAAlbums)
-storeStates.addCb(`RSongsItems`, item => {
-  songsItems.to(item)
-})
-songsItems.to(`AQUASongsSortedByAZ`)
-
-const menuItems = new Router(`menuItems`)
-menuItems.add(`aqua-list`, `aqua-settings`)
-storeStates.addCb(`RMenuItems`, item => {
-  menuItems.show(item)
-})
-menuItems.show(`aqua-list`)

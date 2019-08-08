@@ -1,0 +1,123 @@
+<div id="main">
+
+  </div>
+  <style>
+    .play>* {
+      pointer-events: none;
+    }
+  
+    .name .text {
+      margin-right: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 14px;
+    }
+  
+    .name {
+      display: flex;
+      align-items: center;
+      height: inherit;
+      width: 20vw;
+    }
+  
+    .checkBox {
+      visibility: hidden;
+      width: 20px;
+      height: 20px;
+      margin: 12px;
+      outline: 1px solid rgba(31, 190, 164, 0.479);
+    }
+  
+    .group>div:hover .checkBox {
+      visibility: visible;
+    }
+  
+    .group>div:nth-child(2n-1) {
+      background-color: rgb(240, 240, 240);
+    }
+  
+    .group>div:hover {
+      background-color: rgb(220, 220, 220);
+    }
+  
+    .group svg {
+      margin: auto;
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: purple;
+    }
+  
+    .group>div:hover .icon {
+      display: flex;
+    }
+  
+    .group .icon:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  
+    .group .icon {
+      display: none;
+      flex-shrink: 0;
+      height: 48px;
+      width: 48px;
+    }
+  
+    .attribute {
+      flex: 1;
+      display: flex;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 20px;
+      font-size: 12px
+    }
+  
+    .artist,
+    .album {
+      flex:1;
+      overflow: hidden;
+      margin-right: 20px;
+    }
+  
+    .date {
+      margin-right: 20px;
+    }
+  
+    .duration {
+      font-size: 12px;
+      margin-right: 10px;
+    }
+  
+    .group>div {
+      display: flex;
+      align-items: center;
+      height: 48px;
+    }
+  
+    .style {
+      overflow: hidden;
+      flex:1;
+    }
+  
+    @media (max-width: 1200px) {
+      .album {
+        display: none;
+      }
+  
+      .name {
+        width: 25vw;
+      }
+    }
+  
+    @media (max-width: 850px) {
+      .date {
+        display: none;
+      }
+    }
+  
+    @media (max-width: 700px) {
+      .style {
+        display: none;
+      }
+    }
+  </style>

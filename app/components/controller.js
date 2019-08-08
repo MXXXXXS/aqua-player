@@ -14,7 +14,7 @@ class Debounce {
     window.clearTimeout(this.tId)
     this.tId = window.setTimeout(() => {
       fn()
-      window.clearTimeout()
+      window.clearTimeout(this.tId)
     }, ms)
   }
 }

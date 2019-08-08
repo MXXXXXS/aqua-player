@@ -8,9 +8,11 @@ class AQUAAlbums extends HTMLElement {
     super()
     const shadow = this.attachShadow({ mode: `open` })
     const root = this.shadowRoot
+    this.root = root
     shadow.innerHTML = albums
+  }
 
-    const main = root.querySelector(`#main`)
+  run() {
     const groupTemplate = (inital, items) => {
       const itemTemplate = (id, item) =>
         `
@@ -31,35 +33,43 @@ class AQUAAlbums extends HTMLElement {
         return itemTemplate(id, { album: album, artist: listSList.list[id][0].artist })
       }).join(``)
     }
-
-    if (storeStates.states.sListLoaded) {
-      run()
-    } else {
-      storeStates.addCb(`sListLoaded`, (ready) => {
-        if (ready) run()
+    const root = this.root
+    const main = root.querySelector(`#main`)
+    main.innerHTML = ``
+    const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song[0].album]))
+    function addGroups(sorted) {
+      sorted.forEach(group => {
+        const inital = group[0]
+        const items = group.slice(1, group.length)
+        main.innerHTML += groupTemplate(inital, items)
       })
     }
 
-    ebus.on(`Updated listSList and listSPath`, run)
+    addGroups(uen)
+    addGroups(uzh)
 
-    function run() {
-      main.innerHTML = ``
-      const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song[0].album]))
-      function addGroups(sorted) {
-        sorted.forEach(group => {
-          const inital = group[0]
-          const items = group.slice(1, group.length)
-          main.innerHTML += groupTemplate(inital, items)
-        })
-      }
+    root.querySelectorAll(`.icon`).forEach(el => {
+      el.innerHTML = icons[el.classList[1]]
+    })
 
-      addGroups(uen)
-      addGroups(uzh)
+  }
 
-      root.querySelectorAll(`.icon`).forEach(el => {
-        el.innerHTML = icons[el.classList[1]]
-      })
+  connectedCallback() {
+    this.cb = () => {
+      console.log(`album sort`)
+      this.run()
     }
+    ebus.on(`Sorting ready`, this.cb)
+    console.log(`albums connected`)
+
+    if (storeStates.states.sortReady) {
+      this.run()
+    }
+  }
+
+  disconnectedCallback() {
+    console.log(`albums disconnected`)
+    ebus.removeListener(`Sorting ready`, this.cb)
   }
 }
 

@@ -155,6 +155,14 @@ class List {
       el.innerHTML += cb(item[1], i, item[0])
     })
   }
+  removeCasted(elSelector, scope) {
+    for (let i = 0; i < this.casted.length; i++) {
+      const el = this.casted[i]
+      if (el[0] === elSelector && el[2] === scope) {
+        this.casted.splice(i, 1)
+      }
+    }
+  }
   updateCasted(...args) {
     const changeType = args[0]
     switch (changeType) {
@@ -199,12 +207,12 @@ class List {
           const start = args[1]
           const deleteCount = args[2]
           const items = args.slice(3, args.length)
-  
+
           const elKey = this.list[start][1]
-  
+
           //先删除对应元素
           const startEl = el.querySelector(`[data-key="${elKey}"]`)
-  
+
           for (let i = 0; i < deleteCount - 1; i++) {
             el.removeChild(startEl.nextElementSibling)
           }
