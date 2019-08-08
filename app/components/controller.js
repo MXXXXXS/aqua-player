@@ -192,6 +192,10 @@ class AQUAController extends HTMLElement {
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
+
+    storeStates.addCb(`themeColor`, themeColor => {
+      root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
+    })
   }
 
   connectedCallback() {

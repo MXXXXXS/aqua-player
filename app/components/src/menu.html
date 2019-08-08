@@ -1,4 +1,4 @@
-<div class="sideBar">
+<div id="main">
   <div class="item" id="switch">
     <div class="icon menu"></div>
   </div>
@@ -65,7 +65,7 @@
     stroke: black;
   }
 
-  .sideBar {
+  #main {
     overflow: hidden;
     transition: width 0.2s cubic-bezier(0.19, 1, 0.22, 1);
     min-height: 400px;
@@ -110,7 +110,7 @@
   }
 
   #search .icon:hover {
-    color: rgb(1, 231, 231);
+    color: var(--themeColor, rgb(113, 204, 192));
   }
 
   #search svg {
@@ -160,7 +160,7 @@
 
   #playList>div:first-child:focus {
     outline: none;
-    box-shadow: inset 4px 0 rgb(1, 231, 231);
+    box-shadow: inset 4px 0 var(--themeColor, rgb(113, 204, 192));
   }
 
   #playList>div:first-child:hover {
@@ -176,7 +176,7 @@
   .item:nth-child(n+3):focus,
   .albums>.item:focus {
     outline: none;
-    box-shadow: inset 4px 0 rgb(1, 231, 231);
+    box-shadow: inset 4px 0 var(--themeColor, rgb(113, 204, 192));
   }
 
   .item:nth-child(n+3):hover,
@@ -200,7 +200,7 @@
       display: none;
     }
 
-    .sideBar {
+    #main {
       width: 50px;
     }
 
@@ -249,7 +249,7 @@
 #search input {
   flex:1;
 }
-    .sideBar {
+    #main {
       width: 100%;
       height: 50px;
       overflow: hidden;
@@ -267,7 +267,7 @@
   }
 
   /* @media (max-width: 768px) {
-    .sideBar {
+    #main {
       min-height: 300px;
     }
 

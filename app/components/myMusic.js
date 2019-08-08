@@ -35,7 +35,10 @@ class AQUAMyMusic extends HTMLElement {
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
-
+    //主题色绑定
+    storeStates.addCb(`themeColor`, themeColor => {
+      root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
+    })
     //同步"排序依据", 同步"类型"
     storeStates.add(`menuSortBy`, sortBy, `innerText`)
     storeStates.add(`menuType`, type, `innerText`)

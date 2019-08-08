@@ -20,6 +20,11 @@ class AQUASettings extends HTMLElement {
     const addFolder = root.querySelector(`.addTile`)
     const tilesContainer = root.querySelector(`.tilesContainer`)
 
+    //主题色绑定
+    storeStates.addCb(`themeColor`, themeColor => {
+      root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
+    })
+    
     add.addEventListener(`click`, () => {
       pannel.style.display = `unset`
     })

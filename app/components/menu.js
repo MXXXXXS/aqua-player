@@ -7,7 +7,7 @@ div[tabindex="-1"]>div:last-child {
   display: none;
 }
 
-.sideBar {
+#main {
   width: 50px;
 }
 
@@ -46,7 +46,7 @@ div[tabindex="-1"]>div:last-child {
 
 const menuOpen = 
 `
-.sideBar {
+#main {
   min-height: 300px;
 }
 
@@ -72,6 +72,11 @@ class AQUAMenu extends HTMLElement {
     const shadow = this.attachShadow({mode: `open`})
     const root = this.shadowRoot
     shadow.innerHTML = menu
+
+    //主题色绑定
+    storeStates.addCb(`themeColor`, themeColor => {
+      root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
+    })
 
     const style = document.createElement(`style`)
     shadow.appendChild(style)

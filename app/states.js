@@ -7,6 +7,7 @@ const shared = {
 }
 
 const storeStates = new Store({
+  themeColor: `rgb(113, 204, 192)`,
   sortReady: false,
   sortFn: ``,
   currentDBVer: ``,
