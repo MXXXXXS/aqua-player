@@ -16,8 +16,9 @@ class AQUASongsSortedByAlbums extends HTMLElement {
 
   run() {
     states.total = listSList.list.length
-    const itemTemplate = (key, song) =>
-      `
+    const itemTemplate = function (key, song) {
+      if (states.filterType === song.genre || states.filterType === `所有流派`) {
+        return `
       <div data-key="${key}">
         <div class="checkBox"></div>
         <div class="name">
@@ -36,19 +37,30 @@ class AQUASongsSortedByAlbums extends HTMLElement {
     <div class="duration">${second2time(Math.round(song.duration))}</div>
   </div>
       `
+      } else {
+        return ``
+      }
+    }
 
-    const groupTemplate = (group) =>
-      `<div>
+    const groupTemplate = function (group) {
+      const itemsString = group[0].map(k => {
+        let strBuf = ``
+        const song = listSList.list[shared.keyItemBuf[k]][0]
+        strBuf += itemTemplate(k, song)
+        return strBuf
+      }).join(``)
+      if (itemsString !== ``) {
+        return `<div>
       <div class="letter">${group[1]}</div>
       <div class="group">
-      ${group[0].map(k => {
-    let strBuf = ``
-    const song = listSList.list[shared.keyItemBuf[k]][0]
-    strBuf += itemTemplate(k, song)
-    return strBuf
-  }).join(``)}
+      ${itemsString}
     </div>
     </div>`
+      } else {
+        return ``
+      }
+    }
+
     const main = this.root.querySelector(`#main`)
     main.innerHTML = ``
     shared.sortBuf.sortedAlbums = shared.sortBuf.sortedAlbums ?

@@ -10,6 +10,7 @@ let keySingers,
   sortedYears,
   sortedAlbums,
   sortedInitialSongs,
+  sortedInitialAlbums,
   sortedInitialSingers,
   sortedGenres
 
@@ -34,9 +35,16 @@ function run() {
   })
 
   sortedYears = () => flatSortUniqueIdWords(keyYears)
-  sortedAlbums = () => flatSortUniqueIdWords(keyAlbums)
   sortedGenres = () => flatSortUniqueIdWords(keyGenres)
   sortedInitialSongs = () => sortUniqueIdWords(keySongs)
+  sortedInitialAlbums = () => sortUniqueIdWords(keyAlbums)
+  sortedAlbums = () => {
+    const { en, zh } = sortedInitialAlbums()
+    return {
+      en: en.map(group => group.slice(1, group.length)).flat(),
+      zh: zh.map(group => group.slice(1, group.length)).flat()
+    }
+  }
   sortedInitialSingers = () => sortUniqueIdWords(keySingers)
   sortedSingers = () => {
     const { en, zh } = sortedInitialSingers()
@@ -49,6 +57,7 @@ function run() {
     sortedInitialSongs,
     sortedInitialSingers,
     sortedSingers,
+    sortedInitialAlbums,
     sortedAlbums,
     sortedYears,
     sortedGenres

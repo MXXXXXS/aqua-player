@@ -15,7 +15,8 @@ class AQUASongs extends HTMLElement {
     shadow.innerHTML = songs
 
     function renderString(key, i, song) {
-      return `
+      if (states.filterType === song.genre || states.filterType === `所有流派`) {
+        return `
       <div data-key="${key}">
         <div class="checkBox"></div>
         <div class="name">
@@ -34,6 +35,9 @@ class AQUASongs extends HTMLElement {
     <div class="duration">${second2time(Math.round(song.duration))}</div>
   </div>
       `
+      } else {
+        return ``
+      }
     }
 
     this.run = function () {

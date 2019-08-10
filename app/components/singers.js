@@ -13,9 +13,9 @@ class AQUASingers extends HTMLElement {
   }
 
   run() {
-    const itemTemplate = (id, artist) =>
+    const itemTemplate = (key, artist) =>
       `
-    <div class="item" data-id="${id}">
+    <div class="item" data-key="${key}">
         <div class="cover">
           <div class="icon play"></div>
           <div class="icon add"></div>
@@ -29,9 +29,9 @@ class AQUASingers extends HTMLElement {
       <div class="letter">${inital}</div>
       <div class="group">
       ${items.map(item => {
-    const id = item[0]
+    const key = item[0][0]
     const artist = item[1]
-    return itemTemplate(id, artist)
+    return itemTemplate(key, artist)
   }).join(``)}
     </div>
     </div>`

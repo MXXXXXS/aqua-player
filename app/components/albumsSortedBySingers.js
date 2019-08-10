@@ -1,16 +1,15 @@
-const ebus = require(`../utils/eBus.js`)
 const icons = require(`../assets/icons.js`)
-const { songsSortedByAZ } = require(`../assets/components.js`)
-const { listSList, storeStates, shared } = require(`../states.js`)
-const second2time = require(`../utils/second2time.js`)
+const { albumsSortedBySingers } = require(`../assets/components.js`)
+const { storeStates, shared } = require(`../states.js`)
 const states = storeStates.states
+const ebus = require(`../utils/eBus.js`)
 
-class AQUASongsSortedBySingers extends HTMLElement {
+class AQUAAlbumsSortedBySingers extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({ mode: `open` })
+    shadow.innerHTML = albumsSortedBySingers
     this.root = this.shadowRoot
-    shadow.innerHTML = songsSortedByAZ
 
   }
 
@@ -18,23 +17,16 @@ class AQUASongsSortedBySingers extends HTMLElement {
     const itemTemplate = function (key, song) {
       if (states.filterType === song.genre || states.filterType === `所有流派`) {
         return `
-      <div data-key="${key}">
-        <div class="checkBox"></div>
-        <div class="name">
-      <div class="text">
-        ${song.title}
-      </div>
-      <div class="icon play" data-key="${key}"></div>
-      <div class="icon add"></div>
-    </div>
-    <div class="attribute">
-      <div class="artist">${song.artist}</div>
-      <div class="album">${song.album}</div>
-      <div class="date">${song.year}</div>
-      <div class="style">${song.genre}</div>
-    </div>
-    <div class="duration">${second2time(Math.round(song.duration))}</div>
-  </div>
+      <div class="item" data-key="${key}">
+          <div class="cover">
+            <div class="icon play"></div>
+            <div class="icon add"></div>
+          </div>
+          <div class="info">
+          <div class="name">${song.album}</div>
+          <div class="artist">${song.artist}</div>
+        </div>
+        </div>
       `
       } else {
         return ``
@@ -42,12 +34,23 @@ class AQUASongsSortedBySingers extends HTMLElement {
     }
 
     const groupTemplate = function (group) {
-      const itemsString = group[0].map(k => {
+      const keys = []
+      const albums = []
+      group[0].forEach(key => {
+        const album = listSList.list[shared.keyItemBuf[key]][0].album
+        if (!albums.includes(album)) {
+          albums.push(album)
+          keys.push(key)
+        }
+      })
+
+      const itemsString = keys.map(k => {
         let strBuf = ``
         const song = listSList.list[shared.keyItemBuf[k]][0]
         strBuf += itemTemplate(k, song)
         return strBuf
       }).join(``)
+
       if (itemsString !== ``) {
         return `<div>
     <div class="letter">${group[1]}</div>
@@ -66,7 +69,6 @@ class AQUASongsSortedBySingers extends HTMLElement {
       shared.sortBuf.sortedSingers :
       storeStates.states.sortFn.sortedSingers()
     const { en: uen, zh: uzh } = shared.sortBuf.sortedSingers
-
     function addGroups(sorted) {
       sorted.forEach(group => {
         groupTemplate(group)
@@ -77,21 +79,6 @@ class AQUASongsSortedBySingers extends HTMLElement {
     addGroups(uen)
     addGroups(uzh)
 
-    this.root.querySelector(`#main`).addEventListener(`click`, e => {
-      e.stopPropagation()
-      const isPlayBtn = e.target.classList.contains(`play`)
-      if (isPlayBtn) {
-        for (let i = 0; i < listSList.list.length; i++) {
-          const songKey = listSList.list[i][1]
-          if (songKey === parseInt(e.target.dataset.key)) {
-            states.playingSongNum = i
-            ebus.emit(`play this`, i)
-            break
-          }
-        }
-      }
-    })
-
     this.root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
@@ -99,11 +86,12 @@ class AQUASongsSortedBySingers extends HTMLElement {
 
   connectedCallback() {
     this.cb = () => {
-      console.log(`singer sort`)
+      console.log(`albums sort by year`)
+      shared.sortBuf = {}
       this.run()
     }
     ebus.on(`Sorting ready`, this.cb)
-    console.log(`AQUASongsSortedBySingers connected`)
+    console.log(`AQUAAlbumsSortedBySingers connected`)
 
     if (storeStates.states.sortReady) {
       this.run()
@@ -111,9 +99,9 @@ class AQUASongsSortedBySingers extends HTMLElement {
   }
 
   disconnectedCallback() {
-    console.log(`AQUASongsSortedBySingers disconnected`)
+    console.log(`AQUAAlbumsSortedBySingers disconnected`)
     ebus.removeListener(`Sorting ready`, this.cb)
   }
 }
 
-module.exports = AQUASongsSortedBySingers
+module.exports = AQUAAlbumsSortedBySingers

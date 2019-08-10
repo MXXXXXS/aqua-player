@@ -3,6 +3,7 @@ const icons = require(`../assets/icons.js`)
 const ebus = require(`../utils/eBus.js`)
 const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
 const { storeStates, listSList, listSPath } = require(`../states.js`)
+const states = storeStates.states
 class AQUAAlbums extends HTMLElement {
   constructor() {
     super()
@@ -13,40 +14,43 @@ class AQUAAlbums extends HTMLElement {
   }
 
   run() {
-    const groupTemplate = (inital, items) => {
-      const itemTemplate = (id, item) =>
-        `
-      <div data-id="${id}">
+    const albums = []
+    const albumNames = []
+    listSList.list.forEach(item => {
+      const key = item[1]
+      const song = item[0]
+
+      if (!albumNames.includes(song.album)) {
+        albums.push([key, song])
+        albumNames.push(song.album)
+      }
+    })
+
+    const itemTemplate = function (key, song) {
+      if (states.filterType === song.genre || states.filterType === `所有流派`) {
+        return `
+      <div data-key="${key}">
         <div class="cover">
           <div class="icon play"></div>
           <div class="icon add"></div>
         </div>
         <div class="info">
-          <div class="name">${item.album}</div>
-          <div class="artist">${item.artist}</div>
+          <div class="name">${song.album}</div>
+          <div class="artist">${song.artist}</div>
         </div>
       </div>
       `
-      return items.map(item => {
-        const id = item[0][0]
-        const album = item[1]
-        return itemTemplate(id, { album: album, artist: listSList.list[id][0].artist })
-      }).join(``)
+      } else {
+        return ``
+      }
     }
+
     const root = this.root
     const main = root.querySelector(`#main`)
     main.innerHTML = ``
-    const { en: uen, zh: uzh } = sortUniqueIdWords(listSList.list.map((song, i) => [i, song[0].album]))
-    function addGroups(sorted) {
-      sorted.forEach(group => {
-        const inital = group[0]
-        const items = group.slice(1, group.length)
-        main.innerHTML += groupTemplate(inital, items)
-      })
-    }
-
-    addGroups(uen)
-    addGroups(uzh)
+    albums.forEach(item => {
+      main.innerHTML += itemTemplate(...item)
+    })
 
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
