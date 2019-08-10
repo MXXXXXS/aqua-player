@@ -15,8 +15,7 @@ async function getSongBuf(songPath) {
     })
   })
     .catch(e => { console.log(e) })
-  const arrSound = sound.buffer.slice(sound.byteOffset, sound.byteOffset + sound.byteLength)
-  return await audioCtx.decodeAudioData(arrSound)
+  return await audioCtx.decodeAudioData(sound.buffer)
 }
 
 function getSongSrc(srcBuf, gainNode) {

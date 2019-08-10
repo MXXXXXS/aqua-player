@@ -46,7 +46,7 @@ function sortWords(arr) {
   groupsZh = groupsZh.map(group => {
     /\w/.test(group[0]) ?
       group[0] = `拼音` + group[0] :
-      group[0] = `假名` + group[0]
+      group[0] = `# ` + group[0]
     return group
   })
   

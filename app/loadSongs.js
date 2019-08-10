@@ -13,7 +13,7 @@ async function collectSongs(songPath) {
     artist: meta.common.artist ? meta.common.artist : `未知艺术家`,
     album: meta.common.album ? meta.common.album : `未知专辑`,
     year: meta.common.year ? meta.common.year : `未知年份`,
-    genre: meta.common.genre ? meta.common.genre[0] : `未知流派`,
+    genre: meta.common.genre ? meta.common.genre[0].toUpperCase() : `未知流派`,
     duration: meta.format.duration,
     type: meta.format.codec
   }

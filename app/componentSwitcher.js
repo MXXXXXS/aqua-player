@@ -8,6 +8,7 @@ const AQUASettings = require(`./components/settings.js`)
 const AQUASongsSortedByAZ = require(`./components/songsSortedByAZ.js`)
 const AQUASongsSortedBySingers = require(`./components/songsSortedBySingers.js`)
 const AQUASongsSortedByAlbums = require(`./components/songsSortedByAlbums.js`)
+const AQUAAlbumsSortedByYears = require(`./components/albumsSortedByYears.js`)
 
 const ebus = require(`./utils/eBus.js`)
 const { RouterEL, Router } = require(`./utils/router.js`)
@@ -21,7 +22,7 @@ storeStates.addCb(`RMenuItems`, item => {
 })
 
 menuItems.show(`aqua-list`)
-const songsItems = new RouterEL(`songsItems`, document, AQUASongs, AQUASongsSortedByAZ, AQUASongsSortedBySingers, AQUASongsSortedByAlbums, AQUASingers, AQUAAlbums)
+const songsItems = new RouterEL(`songsItems`, document,AQUAAlbumsSortedByYears, AQUASongs, AQUASongsSortedByAZ, AQUASongsSortedBySingers, AQUASongsSortedByAlbums, AQUASingers, AQUAAlbums)
 //初始打开时默认显示
 songsItems.to(`AQUASongs`)
 
@@ -37,6 +38,7 @@ if (storeStates.states.sortReady) {
 ebus.on(`component switch`, switcher)
 
 function switcher(RSongsItems, filterSortBy, filterType) {
+  console.log(...arguments)
   switch (RSongsItems) {
     case `AQUASongs`:
       if (filterSortBy === `A到Z` && filterType === `所有流派`) {
@@ -47,14 +49,25 @@ function switcher(RSongsItems, filterSortBy, filterType) {
         songsItems.to(`AQUASongsSortedBySingers`)
       } else if (filterSortBy === `专辑` && filterType === `所有流派`) {
         songsItems.to(`AQUASongsSortedByAlbums`)
+      } else {
+        songsItems.to(`AQUASongs`)
       }
       break
     case `AQUASingers`:
       songsItems.to(`AQUASingers`)
       break
     case `AQUAAlbums`:
-      songsItems.to(`AQUAAlbums`)
-            
+      if (filterSortBy === `发行年份` && filterType === `所有流派`) {
+        songsItems.to(`AQUAAlbumsSortedByYears`)
+      } else if (filterSortBy === `无` && filterType === `所有流派`) {
+        songsItems.to(`AQUAAlbums`)
+      } else if (filterSortBy === `A到Z` && filterType === `所有流派`) {
+        // songsItems.to(`AQUASongsSortedBySingers`)
+      } else if (filterSortBy === `歌手` && filterType === `所有流派`) {
+        // songsItems.to(`AQUASongsSortedByAlbums`)
+      } else {
+        songsItems.to(`AQUAAlbums`)
+      }
       break
   }
 }

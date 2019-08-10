@@ -2,7 +2,8 @@
   <div class="cover-info-center">
     <div class="cover-info">
       <div class="cover">
-        <img src="./assets/cover/avatar.png" alt="cover" srcset="">
+        <img src="" alt="cover">
+        <div class="svgContainer"></div>
       </div>
       <div class="info">
         <div class="name">
@@ -51,11 +52,24 @@
   .cover img {
     width: inherit;
     object-fit: cover;
+    display: none;
+  }
+
+  .svgContainer {
+    display: flex;
+    width: inherit;
+    height: inherit;
+  }
+
+  .svgContainer>svg {
+    width: 30px;
+    height: 30px;
   }
 
   svg {
     fill: none;
     stroke: white;
+    margin: auto;
   }
 
   .icon {

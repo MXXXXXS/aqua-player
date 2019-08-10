@@ -15,7 +15,6 @@ class AQUASongsSortedBySingers extends HTMLElement {
   }
 
   run() {
-    states.total = listSList.list.length
     const itemTemplate = (key, song) =>
       `
       <div data-key="${key}">

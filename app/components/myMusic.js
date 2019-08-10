@@ -187,7 +187,7 @@ class AQUAMyMusic extends HTMLElement {
     this.sortBy.changeSource([`无`, `A到Z`, `无`])
     this.type.changeSource([`所有流派`, ``, `所有流派`])
     sortType.changeSource([])
-    this.typeRenderArr = [`所有流派`, ...uen.map(item => item[1]), ...uzh.map(item => item[1])]
+    this.typeRenderArr = [`所有流派`, ...uen.map(item => item[1].toUpperCase()), ...uzh.map(item => item[1].toUpperCase())]
     sortType.push(...this.typeRenderArr)
 
     this.root.querySelector(`[data-selected="selected"]`).removeAttribute(`data-selected`)
@@ -196,6 +196,11 @@ class AQUAMyMusic extends HTMLElement {
 
     this.root.querySelector(`.menuSortBy`).style.top = `-5px`
     this.root.querySelector(`.menuType`).style.top = `-5px`
+
+    //文件夹增删后, 重置各个排序, 并重新挂载
+    const sortBy = states.RSongsItems === `AQUASingers` ? `A到Z` : `无`
+    states.filterSortBy = sortBy
+    ebus.emit(`component switch`, states.RSongsItems, sortBy , `所有流派`)
   }
 
   connectedCallback() {

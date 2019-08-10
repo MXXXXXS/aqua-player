@@ -1,3 +1,5 @@
+const fs = require(`fs`)
+const path = require(`path`)
 const ebus = require(`../utils/eBus.js`)
 const { controller } = require(`../assets/components.js`)
 const { audioCtx, getMetadata, getSongBuf, getSongSrc } = require(`../audio.js`)
@@ -47,6 +49,8 @@ class AQUAController extends HTMLElement {
     let duration
     let songLoading = false
     let currentSongFinished = true
+    let imgBlob
+    let imgUrl
     const debounceLatency = 200
     const name = root.querySelector(`.name`)
     const artist = root.querySelector(`.artist`)
@@ -131,6 +135,9 @@ class AQUAController extends HTMLElement {
       if (states.playingSongNum >= 0) {
         //从当前播放列表索引歌曲
         let song = listSList.list[shared.playList[states.playingSongNum]][0]
+        //加载图片
+        drawCover(song.picture)
+        //加载音乐
         audioSrc = audioCtx.createBufferSource()
         states.name = song.title
         states.artist = song.artist
@@ -196,6 +203,22 @@ class AQUAController extends HTMLElement {
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
+
+    async function drawCover(picture) {
+      URL.revokeObjectURL(imgUrl)
+      if (picture) {
+        imgBlob = new Blob([picture.data], { type: picture.format })
+        imgUrl = window.URL.createObjectURL(imgBlob)
+        root.querySelector(`img`).src = imgUrl
+        root.querySelector(`img`).style.display = `block`
+        root.querySelector(`.svgContainer`).style.display = `none`
+      } else {
+        root.querySelector(`img`).style.display = `none`
+        const svgContainer = root.querySelector(`.svgContainer`)
+        svgContainer.innerHTML = icons[`cover`]
+        svgContainer.style.display = `flex`
+      }
+    }
   }
 
   connectedCallback() {
