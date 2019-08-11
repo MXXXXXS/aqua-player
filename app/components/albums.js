@@ -2,7 +2,7 @@ const { albums } = require(`../assets/components.js`)
 const icons = require(`../assets/icons.js`)
 const ebus = require(`../utils/eBus.js`)
 const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
-const { storeStates, listSList, listSPath } = require(`../states.js`)
+const { storeStates, listSList, shared } = require(`../states.js`)
 const states = storeStates.states
 class AQUAAlbums extends HTMLElement {
   constructor() {
@@ -11,6 +11,8 @@ class AQUAAlbums extends HTMLElement {
     const root = this.shadowRoot
     this.root = root
     shadow.innerHTML = albums
+
+    this.coverBuffers = []
   }
 
   run() {
@@ -29,8 +31,9 @@ class AQUAAlbums extends HTMLElement {
     const itemTemplate = function (key, song) {
       if (states.filterType === song.genre || states.filterType === `所有流派`) {
         return `
-      <div data-key="${key}">
+      <div class="item" data-key="${key}">
         <div class="cover">
+        <div class="coverContainer"></div>
           <div class="icon play"></div>
           <div class="icon add"></div>
         </div>
@@ -55,7 +58,17 @@ class AQUAAlbums extends HTMLElement {
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
+    
+    const allItems = Array.from(this.root.querySelectorAll(`.item`))
+    states.total = allItems.length
 
+    allItems.forEach((item, i) => {
+      const key = item.dataset.key
+      const song = listSList.list[shared.keyItemBuf[key]][0]
+      this.coverBuffers.push({})
+      shared.drawCover(this.coverBuffers[i], song.picture, icons, `.item[data-key="${key}"] .coverContainer`, root)
+    })
+    
   }
 
   connectedCallback() {
@@ -73,6 +86,9 @@ class AQUAAlbums extends HTMLElement {
 
   disconnectedCallback() {
     console.log(`albums disconnected`)
+    this.coverBuffers.forEach(coverBuffer => {
+      URL.revokeObjectURL(coverBuffer.imgUrl)
+    })
     ebus.removeListener(`Sorting ready`, this.cb)
   }
 }

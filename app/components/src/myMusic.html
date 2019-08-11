@@ -137,11 +137,19 @@
   .tags>div {
     margin-top: 10px;
     padding: 0 0 3px 0;
-    border-bottom: 2px rgba(0, 224, 224, 0) solid;
+    border-bottom-color: transparent; 
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    color: rgb(100, 100, 100)
   }
 
   .tags>div:hover {
-    border-bottom: 2px rgb(8, 184, 184) solid;
+    color: black;
+  }
+
+  #acticeTag {
+    color: black;
+    border-bottom-color: var(--themeColor, rgb(113, 204, 192)); 
   }
 
   .line {

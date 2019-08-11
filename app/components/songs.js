@@ -17,7 +17,7 @@ class AQUASongs extends HTMLElement {
     function renderString(key, i, song) {
       if (states.filterType === song.genre || states.filterType === `所有流派`) {
         return `
-      <div data-key="${key}">
+      <div class="item" data-key="${key}">
         <div class="checkBox"></div>
         <div class="name">
       <div class="text">
@@ -41,11 +41,14 @@ class AQUASongs extends HTMLElement {
     }
 
     this.run = function () {
-      states.total = listSList.list.length
       listSList.cast(`.list`, renderString, this.root)
+
       this.root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML = icons[el.classList[1]]
       })
+    
+      states.total = this.root.querySelectorAll(`.item`).length
+      
       this.root.querySelector(`.list`).addEventListener(`click`, e => {
         e.stopPropagation()
         const isPlayBtn = e.target.classList.contains(`play`)

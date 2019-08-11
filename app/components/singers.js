@@ -1,6 +1,7 @@
 const icons = require(`../assets/icons.js`)
 const { singers } = require(`../assets/components.js`)
 const { storeStates, shared } = require(`../states.js`)
+const states = storeStates.states
 const ebus = require(`../utils/eBus.js`)
 
 class AQUASingers extends HTMLElement {
@@ -57,6 +58,8 @@ class AQUASingers extends HTMLElement {
     this.root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
+    
+    states.total = this.root.querySelectorAll(`.item`).length
   }
 
   connectedCallback() {

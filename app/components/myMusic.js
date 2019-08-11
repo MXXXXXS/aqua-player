@@ -39,17 +39,26 @@ class AQUAMyMusic extends HTMLElement {
     //同步显示的项目数
     storeStates.add(`total`, root.querySelector(`#total`), `innerText`)
 
+    //初始化当前下标
+    root.querySelector(`.songs`).setAttribute(`id`, `acticeTag`)
+
     //三个选项卡切换
     root.querySelector(`.songs`).addEventListener(`click`, () => {
       storeStates.states.RSongsItems = `AQUASongs`
+      root.querySelector(`#acticeTag`).removeAttribute(`id`)
+      root.querySelector(`.songs`).setAttribute(`id`, `acticeTag`)
       ebus.emit(`component switch`, `AQUASongs`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
     root.querySelector(`.singers`).addEventListener(`click`, () => {
       storeStates.states.RSongsItems = `AQUASingers`
+      root.querySelector(`#acticeTag`).removeAttribute(`id`)
+      root.querySelector(`.singers`).setAttribute(`id`, `acticeTag`)
       ebus.emit(`component switch`, `AQUASingers`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
     root.querySelector(`.albums`).addEventListener(`click`, () => {
       storeStates.states.RSongsItems = `AQUAAlbums`
+      root.querySelector(`#acticeTag`).removeAttribute(`id`)
+      root.querySelector(`.albums`).setAttribute(`id`, `acticeTag`)
       ebus.emit(`component switch`, `AQUAAlbums`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
 
@@ -200,7 +209,7 @@ class AQUAMyMusic extends HTMLElement {
     //文件夹增删后, 重置各个排序, 并重新挂载
     const sortBy = states.RSongsItems === `AQUASingers` ? `A到Z` : `无`
     states.filterSortBy = sortBy
-    ebus.emit(`component switch`, states.RSongsItems, sortBy , `所有流派`)
+    ebus.emit(`component switch`, states.RSongsItems, sortBy, `所有流派`)
   }
 
   connectedCallback() {

@@ -49,8 +49,7 @@ class AQUAController extends HTMLElement {
     let duration
     let songLoading = false
     let currentSongFinished = true
-    let imgBlob
-    let imgUrl
+    const coverBuffer = {}
     const debounceLatency = 200
     const name = root.querySelector(`.name`)
     const artist = root.querySelector(`.artist`)
@@ -136,7 +135,7 @@ class AQUAController extends HTMLElement {
         //从当前播放列表索引歌曲
         let song = listSList.list[shared.playList[states.playingSongNum]][0]
         //加载图片
-        drawCover(song.picture)
+        shared.drawCover(coverBuffer, song.picture, icons, `.cover`, root)
         //加载音乐
         audioSrc = audioCtx.createBufferSource()
         states.name = song.title
@@ -203,22 +202,6 @@ class AQUAController extends HTMLElement {
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
-
-    async function drawCover(picture) {
-      URL.revokeObjectURL(imgUrl)
-      if (picture) {
-        imgBlob = new Blob([picture.data], { type: picture.format })
-        imgUrl = window.URL.createObjectURL(imgBlob)
-        root.querySelector(`img`).src = imgUrl
-        root.querySelector(`img`).style.display = `block`
-        root.querySelector(`.svgContainer`).style.display = `none`
-      } else {
-        root.querySelector(`img`).style.display = `none`
-        const svgContainer = root.querySelector(`.svgContainer`)
-        svgContainer.innerHTML = icons[`cover`]
-        svgContainer.style.display = `flex`
-      }
-    }
   }
 
   connectedCallback() {

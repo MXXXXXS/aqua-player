@@ -11,40 +11,55 @@
   </div> -->
 </div>
 <style>
-  .icon  svg {
+  .icon svg {
     margin: auto;
     width: 16px;
     height: 16px;
     fill: none;
     stroke: white;
   }
+
   .cover:hover .icon:hover {
-      padding: 0px;
-      transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
-    }
-    .icon {
-      transform-origin: center;
-      transform: scale(0);
-    }
-    .cover:hover .icon {
-      transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
-      transform: scale(1);
-      box-sizing: border-box;
-      background-clip: content-box;
-      padding: 4px;
-      border-radius: 50%;
-      color: rgba(0, 0, 0, 0.199);
-      background-color: currentColor;
-      display: flex;
-      width: 54px;
-      height: 54px;
-    }
+    padding: 0px;
+    transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .icon {
+    transform-origin: center;
+    transform: scale(0);
+  }
+
+  .cover:hover .icon {
+    transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: scale(1);
+    box-sizing: border-box;
+    background-clip: content-box;
+    padding: 4px;
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.199);
+    background-color: currentColor;
+    display: flex;
+    width: 54px;
+    height: 54px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .cover:hover .play {
+    left: 32%;
+  }
+
+  .cover:hover .add {
+    left: 68%;
+  }
+
   body {
     margin: 0;
   }
 
   .info {
-    width:180px;
+    width: 180px;
   }
 
   .artist {
@@ -71,13 +86,34 @@
   }
 
   .cover {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
     margin: 10px;
     width: 160px;
     height: 160px;
+  }
 
+  .cover>div {
+    position: absolute;
+  }
+
+  .coverContainer {
+    display: flex;
+    width: inherit;
+    height: inherit;
+    background-color: rgb(230, 230, 230);
+  }
+
+  .coverContainer img {
+    width: inherit;
+    object-fit: cover;
+  }
+
+  .coverContainer svg {
+    fill: none;
+    stroke: white;
+    margin: auto;
+    width: 60px;
+    height: 60px;
   }
 </style>
 <script type="module" src="../../assets/devIcon.js"></script>

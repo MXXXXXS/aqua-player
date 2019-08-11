@@ -11,6 +11,7 @@ class AQUAAlbumsSortedBySingers extends HTMLElement {
     shadow.innerHTML = albumsSortedBySingers
     this.root = this.shadowRoot
 
+    this.coverBuffers = []
   }
 
   run() {
@@ -19,6 +20,7 @@ class AQUAAlbumsSortedBySingers extends HTMLElement {
         return `
       <div class="item" data-key="${key}">
           <div class="cover">
+          <div class="coverContainer"></div>
             <div class="icon play"></div>
             <div class="icon add"></div>
           </div>
@@ -82,6 +84,16 @@ class AQUAAlbumsSortedBySingers extends HTMLElement {
     this.root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
+    
+    const allItems = Array.from(this.root.querySelectorAll(`.item`))
+    states.total = allItems.length
+
+    allItems.forEach((item, i) => {
+      const key = item.dataset.key
+      const song = listSList.list[shared.keyItemBuf[key]][0]
+      this.coverBuffers.push({})
+      shared.drawCover(this.coverBuffers[i], song.picture, icons, `.item[data-key="${key}"] .coverContainer`, this.root)
+    })
   }
 
   connectedCallback() {
@@ -100,6 +112,9 @@ class AQUAAlbumsSortedBySingers extends HTMLElement {
 
   disconnectedCallback() {
     console.log(`AQUAAlbumsSortedBySingers disconnected`)
+    this.coverBuffers.forEach(coverBuffer => {
+      URL.revokeObjectURL(coverBuffer.imgUrl)
+    })
     ebus.removeListener(`Sorting ready`, this.cb)
   }
 }

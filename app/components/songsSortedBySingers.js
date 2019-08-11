@@ -18,7 +18,7 @@ class AQUASongsSortedBySingers extends HTMLElement {
     const itemTemplate = function (key, song) {
       if (states.filterType === song.genre || states.filterType === `所有流派`) {
         return `
-      <div data-key="${key}">
+      <div class="item" data-key="${key}">
         <div class="checkBox"></div>
         <div class="name">
       <div class="text">
@@ -95,6 +95,8 @@ class AQUASongsSortedBySingers extends HTMLElement {
     this.root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
+
+    states.total = this.root.querySelectorAll(`.item`).length
   }
 
   connectedCallback() {

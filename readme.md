@@ -37,7 +37,7 @@ TODO
 - [x] 解决声音播放的问题
 - [x] 寻找一个合适的audio文件metadata分析库
 - [x] 调试electron主进程和渲染进程
-- [ ] 学习audio api实现播放器功能
+- [x] 学习audio api实现播放器功能
   - [x] 起始状态各按钮点击情况
   - [x] 播放暂停功能
   - [x] 时间轨控制播放
@@ -67,6 +67,7 @@ TODO
   - [x] 排序结果缓存
   - [x] 各个列表的分类排序
   - [x] 专辑列表
+  - [x] 封面显示
   - [ ] 设置
     - [x] 已收藏文件夹功能
     - [x] 已收藏文件夹列表增删
@@ -97,4 +98,6 @@ BUG修复
 
 预览
 
-![Alt preview](assets/sample.jpg)
+![Alt preview](assets/sample0.jpg)
+
+![Alt preview](assets/sample1.jpg)
