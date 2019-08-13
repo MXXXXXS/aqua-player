@@ -1,6 +1,8 @@
 const { Store, List } = require(`./utils/store.js`)
 
 const shared = {
+  timer: ``,
+  audioState: 0,
   sortBuf: {},
   keyItemBuf: {},
   playList: [],
@@ -26,12 +28,15 @@ const shared = {
 
 const storeStates = new Store({
   themeColor: `rgb(113, 204, 192)`,
+  duration: ``,
+  offset: 0,
+  gainVal: 0.5,
   sortReady: false,
   sortFn: ``,
   currentDBVer: ``,
   sListLoaded: false,
   playing: false,
-  playingSongNum: 0,
+  keyOfSrcBuf: 0,
   name: ``,
   artist: ``,
   total: 0,

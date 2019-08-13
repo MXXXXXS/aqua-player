@@ -56,7 +56,7 @@ class AQUASongs extends HTMLElement {
           for (let i = 0; i < listSList.list.length; i++) {
             const songKey = listSList.list[i][1]
             if (songKey === parseInt(e.target.dataset.key)) {
-              states.playingSongNum = i
+              states.keyOfSrcBuf = i
               ebus.emit(`play this`, i)
               break
             }

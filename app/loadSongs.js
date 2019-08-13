@@ -103,11 +103,11 @@ async function loadSongs(songsPaths, version) {
       shared.playList.push(i)
     })
     
-    const legal = storeStates.states.playingSongNum <= shared.playList.length &&
+    const legal = storeStates.states.keyOfSrcBuf <= shared.playList.length &&
     shared.playList.length !== 0
 
     if (!legal) {
-      storeStates.states.playingSongNum = shared.playList.length - 1
+      storeStates.states.keyOfSrcBuf = shared.playList.length - 1
     }
     //触发变化信号
     storeStates.states.sListLoaded = true

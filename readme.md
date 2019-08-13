@@ -31,6 +31,11 @@
         DBOpenRequest.result.close()
         }
     以关闭当前版本, 可选则添加 DBOpenRequest.onblocked 事件函数, 以观测 block 事件
+- 关于播放停止的问题, 依据w3c的描述, 总结一下
+  - onended事件, 对于所有的 AudioScheduledSourceNodes 在 stop() 所定义的 stop time 触发, 对于  AudioBufferSourceNode(继承自AudioScheduledSourceNodes) 当达到 duration 时或整个 buffer 被播放后, 这个事件也会触发
+  - buffer 没有 stopped 时, 多次调用 stop() 只会应用最后一次
+  - buffer 已经 stopped 后, 后续 stop() 无效
+  - 播放会自动停止, 当 buffer 的 audio data 已经被完全播放, 或达到 stop() 所设定的停止时间
 
 TODO
 
