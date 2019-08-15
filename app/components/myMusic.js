@@ -118,7 +118,11 @@ class AQUAMyMusic extends HTMLElement {
       const offset = selectedIndex * -28
       menu.querySelector(`[data-selected="selected"]`).removeAttribute(`data-selected`)
       selectedEl.setAttribute(`data-selected`, `selected`)
-      menu.style.top = (-5 + offset).toString() + `px` //这个magic number "-5" 是在css里调整样式得到的
+      if (offset - 5 >= -89) {
+        menu.style.top = (-5 + offset).toString() + `px` //这个magic number "-5" 是在css里调整样式得到的
+      } else {
+        menu.style.top = `-89px` //-89px是防止列表过长而溢出
+      }
     }
 
     //监听当前选项卡, 切换"排序依据"的内容
@@ -159,7 +163,11 @@ class AQUAMyMusic extends HTMLElement {
         menuSortBy.querySelector(`[data-selected="selected"]`).removeAttribute(`data-selected`)
         selectedEl.setAttribute(`data-selected`, `selected`)
         const offset = sortByList[curTag.index].indexOf(selectedEl.innerText) * -28
-        menuSortBy.style.top = (-5 + offset).toString() + `px` //这个magic number "-5" 是在css里调整样式得到的
+        if (offset - 5 >= -89) {
+          menuSortBy.style.top = (-5 + offset).toString() + `px` //这个magic number "-5" 是在css里调整样式得到的
+        } else {
+          menuSortBy.style.top = `-89px` //-89px是防止列表过长而溢出
+        }
         padSortBy.style.display = `none`
         ebus.emit(`component switch`, states.RSongsItems, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
       }
@@ -172,7 +180,11 @@ class AQUAMyMusic extends HTMLElement {
         menuType.querySelector(`[data-selected="selected"]`).removeAttribute(`data-selected`)
         selectedEl.setAttribute(`data-selected`, `selected`)
         const offset = this.typeRenderArr.indexOf(selectedEl.innerText) * -28
-        menuType.style.top = (-5 + offset).toString() + `px`
+        if (offset - 5 >= -89) {
+          menuType.style.top = (-5 + offset).toString() + `px` //这个magic number "-5" 是在css里调整样式得到的
+        } else {
+          menuType.style.top = `-89px` //-89px是防止列表过长而溢出
+        }
         padType.style.display = `none`
         ebus.emit(`component switch`, states.RSongsItems, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
       }

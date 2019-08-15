@@ -7,34 +7,37 @@
     <div class="icon cross"></div>
     <div class="icon search"></div>
   </div>
-  <div tabindex="-1" class="item" id="music">
-    <div class="icon music"></div>
-    <div class="text">我的音乐</div>
-  </div>
-  <div tabindex="-1" class="item" id="lastPlayed">
-    <div class="icon clock"></div>
-    <div class="text">最近播放的内容</div>
-  </div>
-  <div tabindex="-1" class="item" id="playing">
-    <div class="icon wave"></div>
-    <div class="text">正在播放</div>
-  </div>
-  <div id="line0"></div>
-  <div id="playList">
-    <div tabindex="-1">
-      <div class="icon playList"></div>
-      <div class="text">播放列表</div>
+  <div class="items">
+    <div class="item highlight myMusic">
+      <div class="icon music"></div>
+      <div class="text">我的音乐</div>
     </div>
-    <div class="icon add"></div>
-  </div>
-  <div class="albums">
-    <div tabindex="-1" class="item albums">
-      <div class="icon album"></div>
-      <div>deemo</div>
+    <div class="icon search mini"></div>
+    <div class="item highlight lastPlayed">
+      <div class="icon clock"></div>
+      <div class="text">最近播放的内容</div>
+    </div>
+    <div class="item highlight playing">
+      <div class="icon wave"></div>
+      <div class="text">正在播放</div>
+    </div>
+    <div id="line0"></div>
+    <div id="playList">
+      <div class="highlight">
+        <div class="icon playList"></div>
+        <div class="text">播放列表</div>
+      </div>
+      <div class="icon add"></div>
+    </div>
+    <div class="albums">
+      <div class="item albums highlight">
+        <div class="icon album"></div>
+        <div>deemo</div>
+      </div>
     </div>
   </div>
   <div id="line1"></div>
-  <div tabindex="-1" class="item" id="settings">
+  <div class="item highlight settings">
     <div class="icon gear"></div>
     <div class="text">设置</div>
   </div>
@@ -44,9 +47,9 @@
     margin: 0;
   }
 
-  /* .item>* {
+  .highlight>* {
     pointer-events: none;
-  } */
+  }
 
   .text {
     white-space: nowrap;
@@ -68,13 +71,13 @@
   #main {
     overflow: hidden;
     transition: width 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-    min-height: 400px;
+    
     height: 100%;
     width: 320px;
     background-color: rgb(242, 242, 242);
     display: flex;
     flex-direction: column;
-
+    position: relative;
   }
 
   .close {
@@ -88,12 +91,28 @@
     background-color: inherit;
   }
 
+  .items {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
   #line0,
   #line1 {
     align-self: center;
     width: 290px;
-    height: 0px;
-    outline: 1px rgba(0, 0, 0, 0.1) solid;
+    height: 1px;
+    position: absolute;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  #line0 {
+    top: 149px;
+  }
+
+  #line1 {
+    bottom: 51px;
   }
 
   #search {
@@ -103,7 +122,7 @@
   }
 
   #search .icon {
-    outline: none;
+
     width: 40px;
     height: 40px;
     background-color: rgb(250, 250, 250);
@@ -137,7 +156,7 @@
   #search input {
     margin-left: 10px;
     padding: 0 0 0 10px;
-    outline: none;
+
     border: none;
     width: 210px;
     height: 40px;
@@ -153,18 +172,13 @@
     flex: 1;
   }
 
-  #playList>div:hover,
-  #playList>.add:hover {
+  .highlight:hover,
+  .add:hover {
     background-color: rgba(0, 0, 0, 0.1)
   }
 
-  #playList>div:first-child:focus {
-    outline: none;
+  #actived {
     box-shadow: inset 4px 0 var(--themeColor, rgb(113, 204, 192));
-  }
-
-  #playList>div:first-child:hover {
-    background-color: rgba(0, 0, 0, 0.1);
   }
 
   .icon {
@@ -173,30 +187,19 @@
     height: 50px;
   }
 
-  .item:nth-child(n+3):focus,
-  .albums>.item:focus {
-    outline: none;
-    box-shadow: inset 4px 0 var(--themeColor, rgb(113, 204, 192));
-  }
-
-  .item:nth-child(n+3):hover,
-  .albums>.item:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-
-  .item,
-  #playList>div {
-    box-shadow: inset 4px 0 rgba(236, 236, 236, 0);
-  }
-
   .item,
   #playList {
     line-height: 50px;
     display: flex;
   }
 
-  @media (min-width: 769px) and (max-width: 1024px) {
-    div[tabindex="-1"]>div:last-child {
+  .mini {
+    display: none;
+  }
+
+  /* 侧栏隐藏 */
+  /* @media (min-width: 769px) and (max-width: 1024px) {
+    .highlight>div:last-child {
       display: none;
     }
 
@@ -204,13 +207,8 @@
       width: 50px;
     }
 
-    #line0 {
+    #line0, #line1 {
       display: none;
-    }
-
-    #line1 {
-      outline: none;
-      flex: 1;
     }
 
     .albums,
@@ -233,27 +231,28 @@
     #playList {
       flex-direction: column;
     }
-  }
 
-  @media (max-width: 768px) {
-    /* #search .icon.search {
-    width: 50px;
-    height: 50px;
-    background-color: transparent;
-} */
+    .myMusic .text {
+      display: none;
+    }
+  } */
 
-#search {
-    flex: 1;
-    padding-right: 10px;
-}
-#search input {
-  flex:1;
-}
+  /* 顶部搜索框显示 */
+  /* @media (max-width: 768px) {
+    #search {
+      flex: 1;
+      padding-right: 10px;
+    }
+
+    #search input {
+      flex: 1;
+    }
+
     #main {
       width: 100%;
       height: 50px;
       overflow: hidden;
-      min-height: 0;
+      
       flex-direction: row;
     }
 
@@ -264,19 +263,80 @@
     .albums {
       display: none;
     }
-  }
+  } */
 
+  /* 顶部搜索框隐藏 */
   /* @media (max-width: 768px) {
-    #main {
-      min-height: 300px;
+    .items {
+      flex-direction: row;
     }
 
+    .lastPlayed {
+      display: none;
+    }    
+
+    .item:nth-child(n + 4),
+    #line0,
+    #line1,
+    #playList,
+    .albums {
+      display: none;
+    }
+
+    #search {
+      display: none;
+    }
+
+    #actived {
+      box-shadow: none;
+    }
+
+    .myMusic {
+      flex: 1;
+    }
+
+    .myMusic:hover {
+      background-color: transparent;
+    }
+
+    .myMusic>.icon {
+      display: none;
+    }
+
+    .myMusic .search {
+      display: flex;
+    }
+
+    .mini {
+      display: flex;
+    }
+
+    .mini:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .myMusic>.text {
+      font-weight: bold;
+    }
+
+    #main {
+      width: 100%;
+      height: 50px;
+      overflow: hidden;
+      
+      flex-direction: row;
+    }
+
+  } */
+
+  /* 下拉列表 */
+  @media (max-width: 768px) {
     #line0 {
       display: none;
     }
 
     #line1 {
-      outline: none;
+      
       flex: 1;
     }
 
@@ -285,6 +345,15 @@
     #wave,
     #search {
       display: none;
+    }
+  }
+
+  /* 变成小方块 */
+  /* @media (max-width: 768px) {
+    #main {
+      width: 50px;
+      height: 50px;
+      overflow: hidden;
     }
   } */
 </style>

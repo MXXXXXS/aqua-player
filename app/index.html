@@ -7,7 +7,6 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>AQUA Player</title>
   <style>
-
     aqua-settings {
       margin-left: 20px;
     }
@@ -23,6 +22,7 @@
 
     aqua-menu {
       height: inherit;
+      z-index: 2;
     }
 
     aqua-list {
@@ -30,7 +30,6 @@
       flex-direction: column;
       flex: 1;
       padding: 0 20px;
-      width: 100%;
       overflow-y: auto;
     }
 
@@ -48,6 +47,14 @@
       flex-direction: column;
     }
 
+    /* 侧栏隐藏 */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      aqua-menu {
+        position: relative;
+        width: 50px;
+      }
+    }
+
     @media (max-width: 768px) {
       aqua-menu-info {
         flex-direction: column;
@@ -58,7 +65,7 @@
       }
 
       aqua-menu {
-        height: 50px;
+        position: absolute;
       }
     }
   </style>
@@ -69,7 +76,6 @@
     <aqua-menu-info>
       <aqua-menu class="aqua"></aqua-menu>
       <aqua-list class="aqua">
-        <!-- aqua-songs 不需要添加class="aqua"用以初始化图标, 因为列表是变动的, 在list.js中添加图标 -->
         <aqua-my-music class="aqua"></aqua-my-music>
         <div id="router-songsItems">
         </div>
@@ -78,6 +84,7 @@
     </aqua-menu-info>
     <aqua-controller class="aqua"></aqua-controller>
   </div>
+  <aqua-current-playing></aqua-current-playing>
   <script src="index.js"></script>
 </body>
 

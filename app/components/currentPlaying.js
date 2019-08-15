@@ -1,4 +1,4 @@
-const { controller } = require(`../assets/components.js`)
+const {currentPlaying} = require(`../assets/components.js`)
 const {
   changeSongAndPlay,
   playBack,
@@ -9,19 +9,19 @@ const { storeStates, shared } = require(`../states.js`)
 const icons = require(`../assets/icons.js`)
 const states = storeStates.states
 
-class AQUAController extends HTMLElement {
+class AQUACurrentPlaying extends HTMLElement {
   constructor() {
     super()
-    const shadow = this.attachShadow({ mode: `open` })
-    shadow.innerHTML = controller
+    const shadow = this.attachShadow({mode: `open`})
+    shadow.innerHTML = currentPlaying
     this.root = this.shadowRoot
 
     //引用dom元素
     const root = this.root
     const timeLine = root.querySelector(`#timeLine`)
     timeLine.value = 0
-    const loudness = root.querySelector(`#loudness`)
-    loudness.value = states.gainVal
+    // const loudness = root.querySelector(`#loudness`)
+    // loudness.value = states.gainVal
     const timePassed = root.querySelector(`.time-passed`)
     const duration = root.querySelector(`.duration`)
     const nextSong = root.querySelector(`.next`)
@@ -108,9 +108,9 @@ class AQUAController extends HTMLElement {
       }
     })
 
-    loudness.addEventListener(`input`, (e) => {
-      states.gainVal = e.target.value
-    })
+    // loudness.addEventListener(`input`, (e) => {
+    //   states.gainVal = e.target.value
+    // })
 
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
@@ -121,15 +121,11 @@ class AQUAController extends HTMLElement {
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
-  }
 
-  connectedCallback() {
-    console.log(`Controller connected`)
-
-  }
-
-  disconnectedCallback() {
-    console.log(`Controller disconnected`)
+    //退出"正在播放"s
+    root.querySelector(`.back`).addEventListener(`click`, e => {
+      states.RMainCurrentPlaying = `#main`
+    })
   }
 }
-module.exports = AQUAController
+module.exports = AQUACurrentPlaying

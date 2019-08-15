@@ -1,14 +1,14 @@
 const fs = require(`fs`)
 
 const ebus = require(`./utils/eBus.js`)
-const mm = require(`music-metadata`)
-
+const second2time = require(`./utils/second2time.js`)
 const { storeStates, listSList, shared } = require(`./states.js`)
 const states = storeStates.states
 
 const audioCtx = new AudioContext()
 const gainNode = audioCtx.createGain()
 const interval = 100
+const coverBuffer = {}
 
 //全局状态初始化
 states.keyOfSrcBuf = parseInt(localStorage.getItem(`keyOfSrcBuf`)) || 0
@@ -19,12 +19,13 @@ storeStates.addCb(`keyOfSrcBuf`, (val) => {
   localStorage.setItem(`keyOfSrcBuf`, val)
 })
 
+//状态变量
 let srcBuf
 let audioSrc
-let lastStartTime = 0//audioCtx.currentTime when started
+let lastStartTime = 0 //audioCtx.currentTime when started
 let lastOffset = 0
 
-async function initialSrcBuf(successCb = () => {}, errorCb = () => {}) {
+async function initialSrcBuf(successCb = () => { }, errorCb = () => { }) {
   let song
   try {
     song = listSList.list[shared.keyItemBuf[states.keyOfSrcBuf]][0]
@@ -109,10 +110,140 @@ function clearSrcBufAndAudioSrc() {
   }
 }
 
+async function changeSong() {
+  switch (shared.audioState) {
+    case 0:
+      await loadSong()
+      createAudioSrc()
+      break
+    case 1:
+      clearSrcBufAndAudioSrc()
+      await loadSong()
+      createAudioSrc()
+      break
+    case 2:
+      clearSrcBufAndAudioSrc()
+      await loadSong()
+      createAudioSrc()
+      break
+    case 3:
+      stopAudioSrc()
+      clearSrcBufAndAudioSrc()
+      await loadSong()
+      createAudioSrc()
+      break
+    case 4:
+      clearSrcBufAndAudioSrc()
+      await loadSong()
+      createAudioSrc()
+      break
+  }
+}
+
+async function changeSongAndPlay() {
+  await changeSong()
+  triggerAudioSrc()
+}
+
+async function playBack() {
+
+  switch (shared.audioState) {
+    case 0:
+      await initialSrcBuf()
+      createAudioSrc()
+      triggerAudioSrc()
+      break
+    case 1:
+      createAudioSrc()
+      triggerAudioSrc()
+      break
+    case 2:
+      triggerAudioSrc()
+      break
+    case 3:
+      stopAudioSrc()
+      createAudioSrc()
+      triggerAudioSrc()
+      break
+    case 4:
+      createAudioSrc()
+      triggerAudioSrc()
+      break
+  }
+  states.currentSongFinished = false
+}
+
+function drawCover(picture) {
+  URL.revokeObjectURL(coverBuffer.imgUrl)
+  if (picture) {
+    coverBuffer.imgBlob = new Blob([picture.data], { type: picture.format })
+    coverBuffer.imgUrl = window.URL.createObjectURL(coverBuffer.imgBlob)
+    states.coverSrc = coverBuffer.imgUrl
+  } else {
+    states.coverSrc = ``
+  }
+}
+
+async function loadSong() {
+  //当listSList.list为空时, states.keyOfSrcBuf为 -1
+  if (states.keyOfSrcBuf >= 0) {
+    //从当前播放列表索引歌曲
+    let song = listSList.list[shared.playList[states.keyOfSrcBuf]][0]
+    //加载图片
+    drawCover(song.picture)
+    //同步名称, 歌手, 时长, 总时长
+    states.name = song.title
+    states.artist = song.artist
+    states.duration = song.duration
+    //格式化时间码
+    const formatedDuration = second2time(states.duration)
+    if (formatedDuration.length === 5) { states.fillFlag = `m+` }
+    else if (formatedDuration.length === 7) { states.fillFlag = `h` }
+    else if (formatedDuration.length === 8) { states.fillFlag = `h+` }
+    states.timePassedText = formatedDuration.replace(/[^:]/g, `0`)
+    states.formatedDuration = formatedDuration
+    //归零进度条
+    states.offset = 0
+    //初始化srcBuf
+    await initialSrcBuf(() => {
+      console.log(`source buffer loaded`)
+    })
+  }
+}
+
+//初始化加载
+if (storeStates.states.sListLoaded && listSList.list.length !== 0) {
+  changeSong()
+} else {
+  storeStates.addCb(`sListLoaded`, (ready) => {
+    if (ready && states.currentSongFinished)
+      changeSong()
+  })
+}
+
+//点歌
+ebus.on(`play this`, () => {
+  changeSongAndPlay()
+})
+
+//进度条同步与播放完自动切歌
+storeStates.addCb(`offset`, offset => {
+  if (offset > states.duration) {
+    states.currentSongFinished = true
+    stopAudioSrc()
+    states.offset = states.duration
+    states.timePassedText = second2time(states.duration, states.fillFlag)
+    if (states.keyOfSrcBuf + 1 < states.total) {
+      states.keyOfSrcBuf += 1
+      changeSongAndPlay()
+    }
+  } else {
+    states.timePassedText = second2time(offset, states.fillFlag)
+  }
+})
+
 module.exports = {
-  initialSrcBuf,
-  createAudioSrc,
-  triggerAudioSrc,
-  stopAudioSrc,
-  clearSrcBufAndAudioSrc
+  changeSongAndPlay,
+  playBack,
+  stopAudioSrc
 }

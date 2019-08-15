@@ -3,7 +3,7 @@ const {storeStates} = require(`../states.js`)
 const icons = require(`../assets/icons.js`)
 
 const foldingStyle = `
-div[tabindex="-1"]>div:last-child {
+.highlight>div:last-child {
   display: none;
 }
 
@@ -11,13 +11,8 @@ div[tabindex="-1"]>div:last-child {
   width: 50px;
 }
 
-#line0 {
+#line0, #line1 {
   display: none;
-}
-
-#line1 {
-  outline: none;
-  flex: 1;
 }
 
 .albums,
@@ -40,29 +35,8 @@ div[tabindex="-1"]>div:last-child {
 #playList {
   flex-direction: column;
 }
-`
 
-//(max-width: 768px) open menu
-
-const menuOpen = 
-`
-#main {
-  min-height: 300px;
-}
-
-#line0 {
-  display: none;
-}
-
-#line1 {
-  outline: none;
-  flex: 1;
-}
-
-.albums,
-#playList .add,
-#wave,
-#search {
+.myMusic .text {
   display: none;
 }
 `
@@ -78,6 +52,10 @@ class AQUAMenu extends HTMLElement {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
+    const main = root.querySelector(`#main`)
+
+    main.querySelector(`.music`).id = `actived`
+
     const style = document.createElement(`style`)
     shadow.appendChild(style)
     let closed = false
@@ -92,11 +70,23 @@ class AQUAMenu extends HTMLElement {
       }
     })
 
-    root.querySelector(`#music`).addEventListener(`click`, () => {
+    main.addEventListener(`click`, e => {
+      if (e.target.classList.contains(`highlight`)) {
+        main.querySelector(`#actived`).removeAttribute(`id`)
+        e.target.setAttribute(`id`, `actived`)
+      }
+    })
+
+    root.querySelector(`.myMusic`).addEventListener(`click`, () => {
       storeStates.states.RMenuItems = `aqua-list`
     })
-    root.querySelector(`#settings`).addEventListener(`click`, () => {
+
+    root.querySelector(`.settings`).addEventListener(`click`, () => {
       storeStates.states.RMenuItems = `aqua-settings`
+    })
+    
+    root.querySelector(`.playing`).addEventListener(`click`, e => {
+      storeStates.states.RMainCurrentPlaying = `aqua-current-playing`
     })
 
     root.querySelectorAll(`.icon`).forEach(el => {

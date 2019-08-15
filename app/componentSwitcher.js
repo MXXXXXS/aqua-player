@@ -11,11 +11,21 @@ const AQUASongsSortedByAlbums = require(`./components/songsSortedByAlbums.js`)
 const AQUAAlbumsSortedByYears = require(`./components/albumsSortedByYears.js`)
 const AQUAAlbumsSortedBySingers = require(`./components/albumsSortedBySingers.js`)
 const AQUAAlbumsSortedByAZ = require(`./components/albumsSortedByAZ.js`)
+const AQUACurrentPlaying = require(`./components/currentPlaying.js`)
 
 const ebus = require(`./utils/eBus.js`)
 const { RouterEL, Router } = require(`./utils/router.js`)
 const { storeStates } = require(`./states.js`)
 const states = storeStates.states
+
+//条件显示
+const currentPlayingSwitcher = new Router(`currentPlayingSwitcher`)
+currentPlayingSwitcher.add(`#main`, `aqua-current-playing`)
+storeStates.addCb(`RMainCurrentPlaying`, item => {
+  currentPlayingSwitcher.show(item)
+})
+
+currentPlayingSwitcher.show(`#main`)
 
 const menuItems = new Router(`menuItems`)
 menuItems.add(`aqua-list`, `aqua-settings`)
@@ -24,18 +34,12 @@ storeStates.addCb(`RMenuItems`, item => {
 })
 
 menuItems.show(`aqua-list`)
+
+//条件渲染
 const songsItems = new RouterEL(`songsItems`, document, AQUAAlbumsSortedBySingers, AQUAAlbumsSortedByAZ, AQUAAlbumsSortedByYears, AQUASongs, AQUASongsSortedByAZ, AQUASongsSortedBySingers, AQUASongsSortedByAlbums, AQUASingers, AQUAAlbums)
+
 //初始打开时默认显示
 songsItems.to(`AQUASongs`)
-
-if (storeStates.states.sortReady) {
-  run()
-} else {
-  storeStates.addCb(`sortReady`, (ready) => {
-    if (ready)
-      run()
-  })
-}
 
 ebus.on(`component switch`, switcher)
 
@@ -73,7 +77,16 @@ function switcher(RSongsItems, filterSortBy, filterType) {
       break
   }
 }
-  
+
+if (storeStates.states.sortReady) {
+  run()
+} else {
+  storeStates.addCb(`sortReady`, (ready) => {
+    if (ready)
+      run()
+  })
+}
+
 function run() {
   
 }

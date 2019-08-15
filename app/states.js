@@ -36,6 +36,11 @@ const storeStates = new Store({
   currentDBVer: ``,
   sListLoaded: false,
   playing: false,
+  currentSongFinished: false,
+  fillFlag: ``,
+  formatedDuration: ``,
+  timePassedText: ``,
+  coverSrc: ``,
   keyOfSrcBuf: 0,
   name: ``,
   artist: ``,
@@ -43,6 +48,7 @@ const storeStates = new Store({
   playMode: `unset`, //unset, singleCycle, listCycle, random
   RSongsItems: `AQUASongs`, //AQUASongs, AQUASingers, AQUAAlbums
   RMenuItems: `aqua-my-music`, //aqua-my-music, aqua-settings
+  RMainCurrentPlaying: `#main`,
   filterSortBy: ``,
   filterType: ``
 })
