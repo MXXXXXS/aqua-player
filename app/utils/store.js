@@ -17,7 +17,7 @@ class Store {
             const subscribers = _this.binded[p].subscribers
             subscribers.forEach(item => {
               const obj = item[0]
-              const bindedKeys = item[1]
+              const bindedKeys = item.slice(1, item.length)
               bindedKeys.forEach(bindedKey => {
                 obj[bindedKey] = value
               })
@@ -38,12 +38,17 @@ class Store {
     if (subscribers.length === 0) {
       subscribers.push([obj, [...keysToBind]])
     } else {
+      let added = false
       for (let i = 0; i < subscribers.length; i++) {
         const item = subscribers[i]
         if (item[0] === obj) {
           item[1].push(...keysToBind)
+          added = true
           break
         }
+      }
+      if (!added) {
+        subscribers.push([obj, ...keysToBind])
       }
     }
   }

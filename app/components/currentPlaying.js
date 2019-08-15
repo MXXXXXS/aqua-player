@@ -1,18 +1,18 @@
-const {currentPlaying} = require(`../assets/components.js`)
+const { currentPlaying } = require(`../assets/components.js`)
 const {
   changeSongAndPlay,
   playBack,
   stopAudioSrc
 } = require(`../player.js`)
 const second2time = require(`../utils/second2time.js`)
-const { storeStates, shared } = require(`../states.js`)
+const { storeStates, shared, playList, listSList } = require(`../states.js`)
 const icons = require(`../assets/icons.js`)
 const states = storeStates.states
 
 class AQUACurrentPlaying extends HTMLElement {
   constructor() {
     super()
-    const shadow = this.attachShadow({mode: `open`})
+    const shadow = this.attachShadow({ mode: `open` })
     shadow.innerHTML = currentPlaying
     this.root = this.shadowRoot
 
@@ -23,11 +23,11 @@ class AQUACurrentPlaying extends HTMLElement {
     // const loudness = root.querySelector(`#loudness`)
     // loudness.value = states.gainVal
     const timePassed = root.querySelector(`.time-passed`)
-    const duration = root.querySelector(`.duration`)
+    const totalTime = root.querySelector(`.totalTime`)
     const nextSong = root.querySelector(`.next`)
     const lastSong = root.querySelector(`.previous`)
-    const name = root.querySelector(`.name`)
-    const artist = root.querySelector(`.artist`)
+    const title = root.querySelector(`.title`)
+    const singerAndAlbum = root.querySelector(`.singerAndAlbum`)
     const play = root.querySelector(`.play`)
     const coverContainer = root.querySelector(`.cover`)
 
@@ -35,7 +35,7 @@ class AQUACurrentPlaying extends HTMLElement {
     storeStates.addCb(`coverSrc`, src => {
       const el = coverContainer
       el.innerHTML = ``
-      if (src !== ``) {
+      if (src !== `svg`) {
         const img = document.createElement(`img`)
         img.src = src
         img.onload = () => {
@@ -49,8 +49,8 @@ class AQUACurrentPlaying extends HTMLElement {
     })
 
     //歌曲信息绑定
-    storeStates.add(`name`, name, `innerText`)
-    storeStates.add(`artist`, artist, `innerText`)
+    storeStates.add(`name`, title, `innerText`)
+    storeStates.add(`artist`, singerAndAlbum, `innerText`)
 
     //已消逝时长文字绑定
     storeStates.addCb(`timePassedText`, text => {
@@ -64,7 +64,7 @@ class AQUACurrentPlaying extends HTMLElement {
 
     //总时长文字绑定
     storeStates.addCb(`formatedDuration`, text => {
-      duration.innerText = text
+      totalTime.innerText = text
     })
 
     //按钮动作绑定
@@ -84,7 +84,7 @@ class AQUACurrentPlaying extends HTMLElement {
     })
 
     nextSong.addEventListener(`click`, async (e) => {
-      if (states.keyOfSrcBuf + 1 < states.total) {
+      if (states.keyOfSrcBuf + 1 < playList.list.length) {
         states.keyOfSrcBuf += 1
         changeSongAndPlay()
       }
@@ -112,6 +112,49 @@ class AQUACurrentPlaying extends HTMLElement {
     //   states.gainVal = e.target.value
     // })
 
+    //列表渲染
+    function renderString(key, i, songKey) {
+      const index = shared.keyItemBuf[songKey]
+      const song = listSList.list[index][0]
+      return `
+      <div class="item" data-key="${songKey}">
+        <div class="checkBox"></div>
+        <div class="name">
+      <div class="text">
+        ${song.title}
+      </div>
+      <div class="icon play" data-key="${songKey}"></div>
+      <div class="icon add"></div>
+    </div>
+    <div class="attribute">
+      <div class="artist">${song.artist}</div>
+      <div class="album">${song.album}</div>
+      <div class="date">${song.year}</div>
+      <div class="style">${song.genre}</div>
+    </div>
+    <div class="duration">${second2time(Math.round(song.duration))}</div>
+  </div>
+      `
+    }
+
+    this.run = function () {
+      playList.cast(`.list`, renderString, this.root)
+
+      //更新图标
+      this.root.querySelectorAll(`.icon`).forEach(el => {
+        el.innerHTML = icons[el.classList[1]]
+      })
+
+      this.root.querySelector(`.list`).addEventListener(`click`, e => {
+        const isPlayBtn = e.target.classList.contains(`play`)
+        if (isPlayBtn) {
+          const key = e.target.dataset.key
+          states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
+          ebus.emit(`play this`, states.keyOfSrcBuf)
+        }
+      })
+    }
+
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
@@ -122,10 +165,25 @@ class AQUACurrentPlaying extends HTMLElement {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
-    //退出"正在播放"s
+    //退出"正在播放"
     root.querySelector(`.back`).addEventListener(`click`, e => {
       states.RMainCurrentPlaying = `#main`
     })
+  }
+
+  connectedCallback() {
+    this.cb = this.run.bind(this)
+    console.log(`connected songs`)
+    ebus.on(`Updated listSList and listSPath`, this.cb)
+    if (storeStates.states.sListLoaded) {
+      this.run()
+    }
+  }
+
+  disconnectedCallback() {
+    console.log(`disconnected songs`)
+    listSList.removeCasted(`.list`, this.root)
+    ebus.removeListener(`Updated listSList and listSPath`, this.cb)
   }
 }
 module.exports = AQUACurrentPlaying

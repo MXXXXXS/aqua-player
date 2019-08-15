@@ -36,7 +36,7 @@ const storeStates = new Store({
   currentDBVer: ``,
   sListLoaded: false,
   playing: false,
-  currentSongFinished: false,
+  currentSongFinished: true,
   fillFlag: ``,
   formatedDuration: ``,
   timePassedText: ``,
@@ -59,4 +59,6 @@ const listSPath = new List([])
 
 const sortType = new List([])
 
-module.exports = { storeStates, listSList, listSPath, shared, sortType }
+const playList = new List([])
+
+module.exports = { storeStates, listSList, listSPath, shared, sortType, playList }

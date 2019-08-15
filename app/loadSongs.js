@@ -1,6 +1,6 @@
 const path = require(`path`)
 const ebus = require(`./utils/eBus.js`)
-const { listSList, storeStates, listSPath, shared } = require(`./states.js`)
+const { listSList, storeStates, listSPath, shared, playList } = require(`./states.js`)
 const { getMetadata } = require(`./audio.js`)
 const searchFolder = require(`./utils/searchFolder.js`)
 
@@ -95,21 +95,24 @@ async function loadSongs(songsPaths, version) {
 
     listSPath.changeSource(pathsInDb)
     listSList.changeSource(newList)
-    //已更新, 但没触发变化信号, 用于初始化
-    shared.playList = []
-    
+
+    /***********************初始化***********************/
     listSList.list.forEach((item, i) => {
       shared.keyItemBuf[item[1]] = i
-      shared.playList.push(i)
     })
-    
-    const legal = storeStates.states.keyOfSrcBuf <= shared.playList.length &&
-    shared.playList.length !== 0
 
+    playList.changeSource(Object.keys(shared.keyItemBuf))
+
+    //检查当前的歌曲指针是否在播放列表之内, 播放列表不为空
+    const legal = storeStates.states.keyOfSrcBuf <= playList.list.length &&
+      playList.list.length !== 0
+    //超过播放列表长度则指向播放列表最后一项, 若播放列表为空, 则为 -1
     if (!legal) {
-      storeStates.states.keyOfSrcBuf = shared.playList.length - 1
+      storeStates.states.keyOfSrcBuf = playList.list.length - 1
     }
-    //触发变化信号
+    /***********************初始化***********************/
+    
+    //初始化完成信号
     storeStates.states.sListLoaded = true
     ebus.emit(`Updated listSList and listSPath`)
   }

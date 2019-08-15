@@ -2,7 +2,7 @@ const fs = require(`fs`)
 
 const ebus = require(`./utils/eBus.js`)
 const second2time = require(`./utils/second2time.js`)
-const { storeStates, listSList, shared } = require(`./states.js`)
+const { storeStates, listSList, shared, playList } = require(`./states.js`)
 const states = storeStates.states
 
 const audioCtx = new AudioContext()
@@ -10,14 +10,14 @@ const gainNode = audioCtx.createGain()
 const interval = 100
 const coverBuffer = {}
 
-//全局状态初始化
-states.keyOfSrcBuf = parseInt(localStorage.getItem(`keyOfSrcBuf`)) || 0
-
 //状态绑定
 storeStates.add(`gainVal`, gainNode.gain, `value`)
 storeStates.addCb(`keyOfSrcBuf`, (val) => {
   localStorage.setItem(`keyOfSrcBuf`, val)
 })
+
+//全局状态初始化
+states.keyOfSrcBuf = parseInt(localStorage.getItem(`keyOfSrcBuf`)) || 0
 
 //状态变量
 let srcBuf
@@ -26,9 +26,9 @@ let lastStartTime = 0 //audioCtx.currentTime when started
 let lastOffset = 0
 
 async function initialSrcBuf(successCb = () => { }, errorCb = () => { }) {
-  let song
   try {
-    song = listSList.list[shared.keyItemBuf[states.keyOfSrcBuf]][0]
+    const key = playList.list[states.keyOfSrcBuf][0]
+    let song = listSList.list[shared.keyItemBuf[key]][0]
     if (shared.audioState === 0) {
       shared.audioState = 0.5
       states.duration = song.duration
@@ -180,7 +180,7 @@ function drawCover(picture) {
     coverBuffer.imgUrl = window.URL.createObjectURL(coverBuffer.imgBlob)
     states.coverSrc = coverBuffer.imgUrl
   } else {
-    states.coverSrc = ``
+    states.coverSrc = `svg`
   }
 }
 
@@ -188,7 +188,8 @@ async function loadSong() {
   //当listSList.list为空时, states.keyOfSrcBuf为 -1
   if (states.keyOfSrcBuf >= 0) {
     //从当前播放列表索引歌曲
-    let song = listSList.list[shared.playList[states.keyOfSrcBuf]][0]
+    const key = playList.list[states.keyOfSrcBuf][0]
+    let song = listSList.list[shared.keyItemBuf[key]][0]
     //加载图片
     drawCover(song.picture)
     //同步名称, 歌手, 时长, 总时长

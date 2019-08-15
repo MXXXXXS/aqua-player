@@ -5,7 +5,7 @@ const {
   stopAudioSrc
 } = require(`../player.js`)
 const second2time = require(`../utils/second2time.js`)
-const { storeStates, shared } = require(`../states.js`)
+const { storeStates, shared, playList } = require(`../states.js`)
 const icons = require(`../assets/icons.js`)
 const states = storeStates.states
 
@@ -35,7 +35,7 @@ class AQUAController extends HTMLElement {
     storeStates.addCb(`coverSrc`, src => {
       const el = coverContainer
       el.innerHTML = ``
-      if (src !== ``) {
+      if (src !== `svg`) {
         const img = document.createElement(`img`)
         img.src = src
         img.onload = () => {
@@ -84,7 +84,7 @@ class AQUAController extends HTMLElement {
     })
 
     nextSong.addEventListener(`click`, async (e) => {
-      if (states.keyOfSrcBuf + 1 < states.total) {
+      if (states.keyOfSrcBuf + 1 < playList.list.length) {
         states.keyOfSrcBuf += 1
         changeSongAndPlay()
       }
@@ -125,7 +125,6 @@ class AQUAController extends HTMLElement {
 
   connectedCallback() {
     console.log(`Controller connected`)
-
   }
 
   disconnectedCallback() {

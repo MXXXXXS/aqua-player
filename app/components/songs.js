@@ -4,7 +4,7 @@ const icons = require(`../assets/icons.js`)
 const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
 
-const { listSList, listSPath, storeStates } = require(`../states.js`)
+const { listSList, storeStates, playList } = require(`../states.js`)
 const states = storeStates.states
 
 class AQUASongs extends HTMLElement {
@@ -46,21 +46,15 @@ class AQUASongs extends HTMLElement {
       this.root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML = icons[el.classList[1]]
       })
-    
+
       states.total = this.root.querySelectorAll(`.item`).length
-      
+
       this.root.querySelector(`.list`).addEventListener(`click`, e => {
-        e.stopPropagation()
         const isPlayBtn = e.target.classList.contains(`play`)
         if (isPlayBtn) {
-          for (let i = 0; i < listSList.list.length; i++) {
-            const songKey = listSList.list[i][1]
-            if (songKey === parseInt(e.target.dataset.key)) {
-              states.keyOfSrcBuf = i
-              ebus.emit(`play this`, i)
-              break
-            }
-          }
+          const key = e.target.dataset.key
+          states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
+          ebus.emit(`play this`, states.keyOfSrcBuf)
         }
       })
     }
@@ -74,12 +68,11 @@ class AQUASongs extends HTMLElement {
       this.run()
     }
   }
-  
+
   disconnectedCallback() {
     console.log(`disconnected songs`)
     listSList.removeCasted(`.list`, this.root)
     ebus.removeListener(`Updated listSList and listSPath`, this.cb)
-
   }
 }
 
