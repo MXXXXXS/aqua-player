@@ -5,7 +5,7 @@ const shared = {
   audioState: 0,
   sortBuf: {},
   keyItemBuf: {},
-  playList: [],
+  playListBuf: [],
   drawCover: function (coverBuffer, picture, icons, elSelector, scope) {
     URL.revokeObjectURL(coverBuffer.imgUrl)
     const el = scope.querySelector(elSelector)
@@ -50,7 +50,8 @@ const storeStates = new Store({
   RMenuItems: `aqua-my-music`, //aqua-my-music, aqua-settings
   RMainCurrentPlaying: `#main`,
   filterSortBy: ``,
-  filterType: ``
+  filterType: ``,
+  shuffled: false
 })
 
 const listSList = new List([])

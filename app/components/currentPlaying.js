@@ -30,6 +30,7 @@ class AQUACurrentPlaying extends HTMLElement {
     const singerAndAlbum = root.querySelector(`.singerAndAlbum`)
     const play = root.querySelector(`.play`)
     const coverContainer = root.querySelector(`.cover`)
+    const randomize = root.querySelector(`.random`)
 
     //专辑封面显示
     storeStates.addCb(`coverSrc`, src => {
@@ -68,6 +69,17 @@ class AQUACurrentPlaying extends HTMLElement {
     })
 
     //按钮动作绑定
+    randomize.addEventListener(`click`, () => {
+      if (states.shuffled) {
+        states.shuffled = false
+        playList.changeSource(shared.playListBuf)
+      } else {
+        states.shuffled = true
+        const keys = playList.list.map(item => item[0])
+        playList.changeSource(keys.shuffle())
+      }
+    })
+
     lastSong.addEventListener(`click`, (e) => {
       if (states.keyOfSrcBuf - 1 >= 0) {
         states.keyOfSrcBuf -= 1

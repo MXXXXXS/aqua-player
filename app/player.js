@@ -1,5 +1,7 @@
 const fs = require(`fs`)
 
+const Vibrant = require(`node-vibrant`)
+
 const ebus = require(`./utils/eBus.js`)
 const second2time = require(`./utils/second2time.js`)
 const { storeStates, listSList, shared, playList } = require(`./states.js`)
@@ -24,6 +26,7 @@ let srcBuf
 let audioSrc
 let lastStartTime = 0 //audioCtx.currentTime when started
 let lastOffset = 0
+let img
 
 async function initialSrcBuf(successCb = () => { }, errorCb = () => { }) {
   try {
@@ -173,12 +176,22 @@ async function playBack() {
   states.currentSongFinished = false
 }
 
-function drawCover(picture) {
+async function drawCover(picture) {
   URL.revokeObjectURL(coverBuffer.imgUrl)
   if (picture) {
     coverBuffer.imgBlob = new Blob([picture.data], { type: picture.format })
     coverBuffer.imgUrl = window.URL.createObjectURL(coverBuffer.imgBlob)
     states.coverSrc = coverBuffer.imgUrl
+    //主题色变化
+    img = document.createElement(`img`)
+    img.src = coverBuffer.imgUrl
+    const result = await Vibrant.from(Buffer.from(picture.data), {
+      colorCount: 3,
+      quality: 10
+    }).getPalette()
+    const themeColor = result.Muted.rgb
+    console.log(result)
+    states.themeColor = `rgb(${themeColor[0]}, ${themeColor[1]}, ${themeColor[2]})`
   } else {
     states.coverSrc = `svg`
   }

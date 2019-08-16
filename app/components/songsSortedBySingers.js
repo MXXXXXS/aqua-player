@@ -78,17 +78,11 @@ class AQUASongsSortedBySingers extends HTMLElement {
     addGroups(uzh)
 
     this.root.querySelector(`#main`).addEventListener(`click`, e => {
-      e.stopPropagation()
       const isPlayBtn = e.target.classList.contains(`play`)
       if (isPlayBtn) {
-        for (let i = 0; i < listSList.list.length; i++) {
-          const songKey = listSList.list[i][1]
-          if (songKey === parseInt(e.target.dataset.key)) {
-            states.playingSongNum = i
-            ebus.emit(`play this`, i)
-            break
-          }
-        }
+        const key = e.target.dataset.key
+        states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
+        ebus.emit(`play this`, states.keyOfSrcBuf)
       }
     })
 

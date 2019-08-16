@@ -4,6 +4,19 @@
 Array.prototype.diff = function (a) {
   return this.filter(function (i) { return a.indexOf(i) < 0 })
 }
+
+Array.prototype.shuffle = function () {
+  let input = this
+  for (let i = input.length - 1; i >= 0; i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1))
+    const randomItem = input[randomIndex]
+
+    input[randomIndex] = input[i]
+    input[i] = randomItem
+  }
+  return input
+}
+
 const {storeStates, listSPath, listSList, shared, sortType, playList} = require(`./states.js`)
 const ebus = require(`./utils/eBus.js`)
 require(`./sort.js`)

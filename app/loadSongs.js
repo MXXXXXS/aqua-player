@@ -110,6 +110,8 @@ async function loadSongs(songsPaths, version) {
     if (!legal) {
       storeStates.states.keyOfSrcBuf = playList.list.length - 1
     }
+
+    shared.playListBuf = playList.list.map(item => item[0])
     /***********************初始化***********************/
     
     //初始化完成信号

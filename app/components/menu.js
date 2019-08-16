@@ -3,6 +3,18 @@ const {storeStates} = require(`../states.js`)
 const icons = require(`../assets/icons.js`)
 
 const foldingStyle = `
+/*
+.mask {
+  z-index: -1;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(202, 202, 202, 0.199);
+ }
+*/
 .highlight>div:last-child {
   display: none;
 }
