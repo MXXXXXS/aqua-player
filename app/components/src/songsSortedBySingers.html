@@ -9,6 +9,7 @@
     z-index: 0;
     text-transform: capitalize;
     font-size: 18px;
+    color: var(--themeColor, rgb(113, 204, 192));
   }
 
   .play>* {
@@ -34,7 +35,7 @@
     width: 20px;
     height: 20px;
     margin: 12px;
-    outline: 1px solid rgba(31, 190, 164, 0.479);
+    outline: 1px solid black;
   }
 
   .group {
@@ -58,7 +59,7 @@
     width: 16px;
     height: 16px;
     fill: none;
-    stroke: purple;
+    stroke: black;
   }
 
   .group>div:hover .icon {
@@ -87,12 +88,20 @@
 
   .artist,
   .album {
-    flex: 1;
     overflow: hidden;
     margin-right: 20px;
   }
 
+  .artist {
+    width: 20vw;
+  }
+
+  .album {
+    flex: 1;
+  }
+
   .date {
+    width: 50px;
     margin-right: 20px;
   }
 

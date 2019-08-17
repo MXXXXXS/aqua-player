@@ -86,6 +86,12 @@ class AQUAAlbumsSortedByAZ extends HTMLElement {
       this.coverBuffers.push({})
       shared.drawCover(this.coverBuffers[i], song.picture, icons, `.item[data-key="${key}"] .coverContainer`, this.root)
     })
+
+    //主题色同步
+    this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
+    storeStates.addCb(`themeColor`, themeColor => {
+      this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
+    })
   }
 
   connectedCallback() {

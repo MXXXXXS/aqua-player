@@ -67,6 +67,7 @@ class AQUAMyMusic extends HTMLElement {
       el.innerHTML = icons[el.classList[1]]
     })
     //主题色绑定
+    this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })

@@ -1,5 +1,6 @@
 const {menu} = require(`../assets/components.js`)
 const {storeStates} = require(`../states.js`)
+const states = storeStates.states
 const icons = require(`../assets/icons.js`)
 
 const foldingStyle = `
@@ -60,6 +61,7 @@ class AQUAMenu extends HTMLElement {
     shadow.innerHTML = menu
 
     //主题色绑定
+    root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })

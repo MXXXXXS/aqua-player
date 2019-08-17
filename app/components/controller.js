@@ -141,6 +141,7 @@ class AQUAController extends HTMLElement {
     })
 
     //主题色同步
+    this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })

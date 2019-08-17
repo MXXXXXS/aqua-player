@@ -91,6 +91,12 @@ class AQUASongsSortedBySingers extends HTMLElement {
     })
 
     states.total = this.root.querySelectorAll(`.item`).length
+    
+    //主题色同步
+    this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
+    storeStates.addCb(`themeColor`, themeColor => {
+      this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
+    })
   }
 
   connectedCallback() {

@@ -1,5 +1,6 @@
 const { settings } = require(`../assets/components.js`)
 const { listSPath, storeStates, listSList } = require(`../states.js`)
+const states = storeStates.states
 const { ipcRenderer } = require(`electron`)
 const path = require(`path`)
 const ebus = require(`../utils/eBus.js`)
@@ -21,6 +22,7 @@ class AQUASettings extends HTMLElement {
     const tilesContainer = root.querySelector(`.tilesContainer`)
 
     //主题色绑定
+    root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })

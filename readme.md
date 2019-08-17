@@ -77,7 +77,13 @@ TODO
     - [x] 已收藏文件夹功能
     - [x] 已收藏文件夹列表增删
     - [x] 已收藏文件夹歌曲列表更新(检查文件夹内音乐新增, 删除)
-  - [x] 正在播放列表
+  - [ ] 正在播放列表
+    - [x] 基础结构
+    - [x] 背景虚化
+    - [x] 按钮功能
+    - [x] 收起列表
+    - [ ] 音量调节
+    - [ ] 全屏
   - [x] 随机播放列表
 - [x] 主题色切换
 - [x] 专辑封面主题色提取
@@ -111,3 +117,5 @@ BUG修复
 ![Alt preview](assets/sample0.jpg)
 
 ![Alt preview](assets/sample1.jpg)
+
+![Alt preview](assets/sample2.jpg)

@@ -20,7 +20,7 @@
     "pinyin": "^2.9.0"
   },
   "devDependencies": {
-    "electron": "^5.0.9",
+    "electron": "^v6.0.2",
     "eslint": "^6.1.0",
     "nodemon": "^1.19.1"
   }

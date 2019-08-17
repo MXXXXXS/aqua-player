@@ -17,9 +17,13 @@ storeStates.add(`gainVal`, gainNode.gain, `value`)
 storeStates.addCb(`keyOfSrcBuf`, (val) => {
   localStorage.setItem(`keyOfSrcBuf`, val)
 })
+storeStates.addCb(`themeColor`, (val) => {
+  localStorage.setItem(`themeColor`, val)
+})
 
 //全局状态初始化
 states.keyOfSrcBuf = parseInt(localStorage.getItem(`keyOfSrcBuf`)) || 0
+states.themeColor = localStorage.getItem(`themeColor`)
 
 //状态变量
 let srcBuf
@@ -188,10 +192,11 @@ async function drawCover(picture) {
     const result = await Vibrant.from(Buffer.from(picture.data), {
       colorCount: 3,
       quality: 10
-    }).getPalette()
-    const themeColor = result.Muted.rgb
-    console.log(result)
-    states.themeColor = `rgb(${themeColor[0]}, ${themeColor[1]}, ${themeColor[2]})`
+    }).getPalette().catch(e => console.error(e))
+    if (result) {
+      const themeColor = result.Muted.rgb
+      states.themeColor = `rgb(${themeColor[0]}, ${themeColor[1]}, ${themeColor[2]})`
+    }
   } else {
     states.coverSrc = `svg`
   }

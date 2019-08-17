@@ -29,24 +29,31 @@ class AQUACurrentPlaying extends HTMLElement {
     const title = root.querySelector(`.title`)
     const singerAndAlbum = root.querySelector(`.singerAndAlbum`)
     const play = root.querySelector(`.play`)
-    const coverContainer = root.querySelector(`.cover`)
+    const coverContainers = Array.from(root.querySelectorAll(`.cover`))
     const randomize = root.querySelector(`.random`)
+    const controller = root.querySelector(`#controller`)
+    const arrow = root.querySelector(`.arrow`)
+    const list = root.querySelector(`.list`)
 
+    //一些自有状态
+    let hidden = false
+    
     //专辑封面显示
     storeStates.addCb(`coverSrc`, src => {
-      const el = coverContainer
-      el.innerHTML = ``
-      if (src !== `svg`) {
-        const img = document.createElement(`img`)
-        img.src = src
-        img.onload = () => {
-          el.appendChild(img)
+      coverContainers.forEach(el => {
+        el.innerHTML = ``
+        if (src !== `svg`) {
+          const img = document.createElement(`img`)
+          img.src = src
+          img.onload = () => {
+            el.appendChild(img)
+          }
+        } else {
+          el.innerHTML = icons[`cover`]
+          el.style.display = `flex`
+          el.querySelector(`svg`).style.margin = `auto`
         }
-      } else {
-        el.innerHTML = icons[`cover`]
-        el.style.display = `flex`
-        el.querySelector(`svg`).style.margin = `auto`
-      }
+      })
     })
 
     //歌曲信息绑定
@@ -69,6 +76,32 @@ class AQUACurrentPlaying extends HTMLElement {
     })
 
     //按钮动作绑定
+    arrow.addEventListener(`click`, () => {
+      if (hidden) {
+        hidden = false
+        arrow.style.transform = `rotate(0deg)`
+        list.style.transition = `transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1)`
+        list.style.transform = `translateY(0)`
+        controller.style.transition = `transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1)`
+        controller.style.transform = `translateY(0)`
+      } else {
+        hidden = true
+        arrow.style.transform = `rotate(-180deg)`
+        list.style.transition = `transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1)`
+        list.style.transform = `translateY(200vh)`
+        controller.style.transition = `transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1)`
+        controller.style.transform = `translateY(calc(100vh - 300px))`
+      }
+    })
+
+    controller.addEventListener(`transitionend`, e => {
+      controller.style.transition = `unset`
+    })
+
+    list.addEventListener(`transitionend`, e => {
+      controller.style.transition = `unset`
+    })
+
     randomize.addEventListener(`click`, () => {
       if (states.shuffled) {
         states.shuffled = false
@@ -78,6 +111,11 @@ class AQUACurrentPlaying extends HTMLElement {
         const keys = playList.list.map(item => item[0])
         playList.changeSource(keys.shuffle())
       }
+      
+      //更新图标
+      this.root.querySelectorAll(`.icon`).forEach(el => {
+        el.innerHTML = icons[el.classList[1]]
+      })
     })
 
     lastSong.addEventListener(`click`, (e) => {
@@ -173,8 +211,9 @@ class AQUACurrentPlaying extends HTMLElement {
     })
 
     //主题色同步
+    this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
     storeStates.addCb(`themeColor`, themeColor => {
-      root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
+      this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
     //退出"正在播放"
