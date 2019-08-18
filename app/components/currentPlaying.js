@@ -33,7 +33,9 @@ class AQUACurrentPlaying extends HTMLElement {
     const randomize = root.querySelector(`.random`)
     const controller = root.querySelector(`#controller`)
     const arrow = root.querySelector(`.arrow`)
+    const hideList = root.querySelector(`.playList`)
     const list = root.querySelector(`.list`)
+    const fullScreen = root.querySelector(`.fullScreen`)
 
     //一些自有状态
     let hidden = false
@@ -76,7 +78,15 @@ class AQUACurrentPlaying extends HTMLElement {
     })
 
     //按钮动作绑定
-    arrow.addEventListener(`click`, () => {
+    fullScreen.addEventListener(`click`, () => {
+      if (!document.fullscreenElement) {
+        this.root.querySelector(`#main`).requestFullscreen()
+      } else {
+        document.exitFullscreen()
+      }
+    })
+
+    function toggleList() {
       if (hidden) {
         hidden = false
         arrow.style.transform = `rotate(0deg)`
@@ -90,9 +100,13 @@ class AQUACurrentPlaying extends HTMLElement {
         list.style.transition = `transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1)`
         list.style.transform = `translateY(200vh)`
         controller.style.transition = `transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1)`
-        controller.style.transform = `translateY(calc(100vh - 300px))`
+        controller.style.transform = `translateY(calc(100vh - 320px))`
       }
-    })
+    }
+
+    arrow.addEventListener(`click`, toggleList)
+
+    hideList.addEventListener(`click`, toggleList)
 
     controller.addEventListener(`transitionend`, e => {
       controller.style.transition = `unset`
