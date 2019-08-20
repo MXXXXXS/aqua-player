@@ -4,9 +4,7 @@ const states = storeStates.states
 const { ipcRenderer } = require(`electron`)
 const path = require(`path`)
 const ebus = require(`../utils/eBus.js`)
-const { loadSongs, removeSongs } = require(`../loadSongs.js`)
-
-loadSongs()
+const { modifyStars, refreshSongs } = require(`../loadSongs.js`)
 
 class AQUASettings extends HTMLElement {
   constructor() {
@@ -21,25 +19,38 @@ class AQUASettings extends HTMLElement {
     const addFolder = root.querySelector(`.addTile`)
     const tilesContainer = root.querySelector(`.tilesContainer`)
 
+    let oldList
+
     //主题色绑定
     root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
-    
+
+    //点击"选择查找音乐位置"
     add.addEventListener(`click`, () => {
+      oldList = listSPath.list.map(item => item[0])
       pannel.style.display = `unset`
     })
 
     //点击"完成"
-    okBtn.addEventListener(`click`, () => {
-      loadSongs(listSPath.list.map(item => item[0]))
+    okBtn.addEventListener(`click`, async () => {
       pannel.style.display = `none`
+      const newList = listSPath.list.map(item => item[0])
+      const foldersToRemove = oldList.elsNotIn(newList)
+      const foldersToAdd = newList.elsNotIn(oldList)
+      Promise.all([
+        modifyStars(`add`, foldersToAdd),
+        modifyStars(`remove`, foldersToRemove)
+      ]).then(() => {
+        console.log(`promise all`)
+        refreshSongs()
+      })
     })
 
     //添加tile
     ipcRenderer.on(`add these`, (e, paths) => {
-      paths = paths.diff(listSPath.list.map(item => item[0]))
+      paths = paths.elsNotIn(listSPath.list.map(item => item[0]))
       listSPath.push(...paths)
     })
 
@@ -71,6 +82,8 @@ class AQUASettings extends HTMLElement {
     </div>`
     }
 
+    modifyStars(`getFolders`)
+      .then(folders => listSPath.changeSource(folders))
   }
 }
 

@@ -1,0 +1,275 @@
+<div id="main">
+  <div class="head">
+    <div class="coverContainer">
+      <div class="decorationSquare0"></div>
+      <div class="decorationSquare1"></div>
+      <div class="cover"></div>
+    </div>
+    <div class="infoAndController">
+      <div class="info">
+        <div class="listName">Hollow knight</div>
+        <div class="description"><span>15</span>首歌曲•1小时17分钟</div>
+      </div>
+      <div class="controller">
+        <div class="button">
+          <div class="icon play"></div>
+          <div>全部播放</div>
+        </div>
+        <div class="button">
+          <div class="icon add"></div>
+          <div>添加到</div>
+        </div>
+        <div class="button">
+          <div class="icon"></div>
+          <div>重命名</div>
+        </div>
+        <div class="button">
+          <div class="icon"></div>
+          <div>删除</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="list">
+    <div>
+      <div class="checkBox"></div>
+      <div class="name">
+        <div class="text">
+          Departures ~あなたにおくるアイの歌~
+        </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="attribute">
+        <div class="artist">未知艺术家</div>
+        <div class="album">GREATESTHITS2011-2017'ALTEREGO'</div>
+        <div class="date">2017年</div>
+        <div class="style">R&B</div>
+      </div>
+      <div class="duration">3:07</div>
+    </div>
+  </div>
+</div>
+<style>
+  .head {
+    background-color: lightskyblue;
+  }
+
+  .info {
+    margin-top: 40px;
+  }
+
+  .button .icon {
+    stroke: white;
+    fill: none;
+  }
+
+  svg {
+    margin: auto;
+  }
+
+  .icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+  }
+
+  .controller {
+    display: flex;
+    margin-bottom: 36px;
+  }
+
+  .button>* {
+    pointer-events: none;
+  }
+
+  .button:hover {
+    border-radius: 50px;
+    background-color: gray;
+  }
+
+  .button {
+    cursor: pointer;
+    width: max-content;
+    font-size: 14px;
+    padding-right: 15px;
+    padding-left: 5px;
+    line-height: 36px;
+    display: flex;
+    margin-right: 50px;
+  }
+
+  .infoAndController {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .listName {
+    font-size: 32px;
+    margin: 10px 0;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .head {
+    display: flex;
+  }
+
+  .coverContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 36px;
+  }
+
+  .decorationSquare0,
+  .decorationSquare1 {
+    height: 8px;
+    background-color: rgba(105, 105, 105, 0.247)
+  }
+
+  .decorationSquare0 {
+    width: 188px;
+  }
+
+  .decorationSquare1 {
+    width: 204px;
+  }
+
+  .cover {
+    width: 220px;
+    height: 220px;
+  }
+
+  .play>* {
+    pointer-events: none;
+  }
+
+  .name .text {
+    margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  .name {
+    display: flex;
+    align-items: center;
+    height: inherit;
+    width: 20vw;
+  }
+
+  .checkBox {
+    visibility: hidden;
+    width: 20px;
+    height: 20px;
+    margin: 12px;
+    outline: 1px solid black;
+  }
+
+  .list>div:hover .checkBox {
+    visibility: visible;
+  }
+
+  .list>div:nth-child(2n-1) {
+    background-color: rgb(240, 240, 240);
+  }
+
+  .list>div:hover {
+    background-color: rgb(220, 220, 220);
+  }
+
+  .list svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: black;
+  }
+
+  .list>div:hover .icon {
+    display: flex;
+  }
+
+  .list .icon:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .list .icon {
+    display: none;
+    flex-shrink: 0;
+    height: 48px;
+    width: 48px;
+  }
+
+  .attribute {
+    flex: 1;
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 20px;
+    font-size: 12px
+  }
+
+  .artist,
+  .album {
+    overflow: hidden;
+    margin-right: 20px;
+  }
+
+  .artist {
+    width: 20vw;
+  }
+
+  .album {
+    flex: 1;
+  }
+
+  .date {
+    width: 50px;
+    margin-right: 20px;
+  }
+
+  .duration {
+    font-size: 12px;
+    margin-right: 10px;
+  }
+
+  .list>div {
+    display: flex;
+    align-items: center;
+    height: 48px;
+  }
+
+  .style {
+    overflow: hidden;
+    flex: 1;
+  }
+
+  @media (max-width: 1200px) {
+    .album {
+      display: none;
+    }
+
+    .name {
+      width: 25vw;
+    }
+  }
+
+  @media (max-width: 850px) {
+    .date {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .style {
+      display: none;
+    }
+  }
+</style>
+<script type="module" src="../../assets/devIcon.js"></script>

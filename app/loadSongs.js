@@ -1,13 +1,17 @@
 const path = require(`path`)
+const fs = require(`fs`)
 const ebus = require(`./utils/eBus.js`)
 const { listSList, storeStates, listSPath, shared, playList } = require(`./states.js`)
 const { getMetadata } = require(`./audio.js`)
 const searchFolder = require(`./utils/searchFolder.js`)
 
-async function collectSongs(songPath) {
+async function getSongMeta(songPath) {
+  songPath = path.normalize(songPath)
   const meta = await getMetadata(songPath)
   return {
-    filePath: songPath,
+    playList: [],
+    folder: path.dirname(songPath),
+    path: songPath,
     picture: meta.common.picture ? meta.common.picture[0] : undefined,
     title: meta.common.title ? meta.common.title : path.basename(songPath),
     artist: meta.common.artist ? meta.common.artist : `未知艺术家`,
@@ -19,131 +23,331 @@ async function collectSongs(songPath) {
   }
 }
 
-function inspectSongs(db, songsPaths) {
-  const buf = []
-  for (let i = 0; i < songsPaths.length; i++) {
-    if (Array.from(db.objectStoreNames).includes(songsPaths[i])) {
-      buf.push(new Promise((res, rej) => {
-        const songsPath = songsPaths[i]
+function modifyStars(method, arg) {
+  return new Promise((resolve, reject) => {
+    const dbOpenReq = window.indexedDB.open(`myMusic`)
 
-        const request = db.transaction([songsPath], `readonly`)
-          .objectStore(songsPath)
-          .get(`list`)
+    dbOpenReq.onsuccess = e => {
+      const db = dbOpenReq.result
+      const tx = db.transaction(`stars`, `readwrite`)
+      const stars = tx.objectStore(`stars`)
 
-        request.onerror = e => { rej(e) }
+      tx.oncomplete = () => {
+        console.log(`stars modified`)
+      }
 
-        request.onblocked = e => { request }
-
-        request.onsuccess = async e => {
-          let inDB = request.result || []
-          const initialLength = inDB.length
-          const inDBTitle = inDB.map(song => path.basename(song.filePath))
-          const inFs = searchFolder(path.resolve(songsPath), false).map(p => path.basename(p))
-
-          const songsToDrop = inDBTitle.diff(inFs)
-          const songsToAdd = inFs.diff(inDBTitle)
-
-          for (let i = 0; i < songsToAdd.length; i++) {
-            const basename = songsToAdd[i]
-            inDB.push(await collectSongs(path.join(songsPath, basename)))
+      switch (method) {
+        case `add`: {
+          if (arg.length !== 0) {
+            const folder_idx = stars.index(`folder_idx`)
+            arg.forEach(folder => {
+              const req = folder_idx.openKeyCursor(folder)
+              req.onsuccess = async () => {
+                if (!req.result) {
+                  const paths = searchFolder(folder)
+                  const songs = await Promise.all(paths.map(p => getSongMeta(p)))
+                  const tx = db.transaction(`stars`, `readwrite`)
+                  const stars = tx.objectStore(`stars`)
+                  Promise.all(songs.map(song => new Promise((res, rej) => {
+                    const req = stars.add(song)
+                    req.onsuccess = () => {
+                      res()
+                    }
+                    req.onerror = e => {
+                      rej(e)
+                    }
+                  })
+                  )).then(() => { resolve() })
+                    .catch(e => reject(e))
+                }
+              }
+              req.onerror = (e) => {
+                console.error(`Error in "modifyStars" at "folder_idx.openKeyCursor" with method "add"\n${e}`)
+              }
+            })
+          } else {
+            resolve()
           }
-
-          songsToDrop.forEach(songToDrop => {
-            for (let i = 0; i < inDB.length; i++) {
-              const song = inDB[i]
-              if (song.filePath === path.join(songsPath, songToDrop))
-                inDB.splice(i, 1)
-            }
-          })
-
-          db.transaction([songsPath], `readwrite`)
-            .objectStore(songsPath)
-            .put(inDB, `list`)
-
-          console.log(`当前仓库: ${songsPath}\n库内已有: ${initialLength} 项\n移除: ${songsToDrop.length} 项, 新增: ${songsToAdd.length} 项`)
-          res(inDB)
         }
-      }).catch(e => { console.error(e) }))
-    }
-  }
-  return buf
-}
-
-async function loadSongs(songsPaths, version) {
-  //有songsPaths传入, 触发更新, 以同步数据库
-  if (Array.isArray(songsPaths)) {
-    version = storeStates.states.currentDBVer + 1
-  }
-
-  let DBOpenRequest
-
-  if (!version) {
-    DBOpenRequest = window.indexedDB.open(`aqua-player`)
-  } else {
-    DBOpenRequest = window.indexedDB.open(`aqua-player`, version)
-  }
-  DBOpenRequest.onblocked = e => {
-    console.log(`Waiting for old version db closing`)
-  }
-  DBOpenRequest.onsuccess = async e => {
-    console.log(`success`)
-    const db = DBOpenRequest.result
-    storeStates.states.currentDBVer = db.version
-    const pathsInDb = Array.from(db.objectStoreNames)
-
-    const newList = (await Promise.all(await inspectSongs(db, pathsInDb))).flat()
-
-    listSPath.changeSource(pathsInDb)
-    listSList.changeSource(newList)
-
-    /***********************初始化***********************/
-    listSList.list.forEach((item, i) => {
-      shared.keyItemBuf[item[1]] = i
-    })
-
-    playList.changeSource(Object.keys(shared.keyItemBuf))
-
-    //检查当前的歌曲指针是否在播放列表之内, 播放列表不为空
-    const legal = storeStates.states.keyOfSrcBuf <= playList.list.length &&
-      playList.list.length !== 0
-    //超过播放列表长度则指向播放列表最后一项, 若播放列表为空, 则为 -1
-    if (!legal) {
-      storeStates.states.keyOfSrcBuf = playList.list.length - 1
-    }
-
-    shared.playListBuf = playList.list.map(item => item[0])
-    /***********************初始化***********************/
-    
-    //初始化完成信号
-    storeStates.states.sListLoaded = true
-    ebus.emit(`Updated listSList and listSPath`)
-  }
-  DBOpenRequest.onerror = e => {
-    console.error(e.srcElement.error.message)
-  }
-  DBOpenRequest.onupgradeneeded = async e => {
-    console.log(`upgradeneeded`)
-    storeStates.states.sListLoaded = false
-    shared.keyItemBuf = {}
-    const db = DBOpenRequest.result
-    let pathsInDb = Array.from(db.objectStoreNames)
-    if (songsPaths) { //第一次启动数据库时, songsPaths不存在, 但又会触发upgradeneeded
-      const newPaths = songsPaths.diff(pathsInDb)
-      const dropPaths = pathsInDb.diff(songsPaths)
-      newPaths.forEach(pathToAdd => {
-        console.log(`pathToAdd: `, pathToAdd)
-        db.createObjectStore(pathToAdd, { autoIncrement: true })
-      })
-      dropPaths.forEach(pathToDrop => {
-        console.log(`pathToDrop: `, pathToDrop)
-        db.deleteObjectStore(pathToDrop)
-      })
-      db.onversionchange = () => {
-        DBOpenRequest.result.close()
-        console.log(`Version change, closing current db`)
+          break
+        case `remove`: {
+          if (arg.length !== 0) {
+            const folder_idx = stars.index(`folder_idx`)
+            arg.forEach(folder => {
+              const req = folder_idx.openCursor(folder)
+              req.onsuccess = async () => {
+                const cursor = req.result
+                if (cursor) {
+                  cursor.delete()
+                  cursor.continue()
+                } else {
+                  resolve()
+                }
+              }
+              req.onerror = (e) => {
+                reject()
+                console.error(`Error in "modifyStars" at "folder_idx.openCursor" with method "remove"\n${e}`)
+              }
+            })
+          } else {
+            resolve()
+          }
+        }
+          break
+        case `getFolders`: {
+          const folder_idx = stars.index(`folder_idx`)
+          const req = folder_idx.openKeyCursor()
+          let keys = []
+          req.onsuccess = () => {
+            const cursor = req.result
+            if (cursor) {
+              keys.push(cursor.key)
+              cursor.continue()
+            } else {
+              resolve(Array.from(new Set(keys)))
+            }
+          }
+          req.onerror = (e) => {
+            console.error(`Error in "modifyStars" at "folder_idx.openKeyCursor" with method "getAll"\n${e}`)
+          }
+        }
+          break
+        case `refreshFolders`: {
+          const folder_idx = stars.index(`folder_idx`)
+          const req = folder_idx.openCursor()
+          let keys = []
+          const pathsInDB = []
+          req.onsuccess = () => {
+            const cursor = req.result
+            if (cursor) {
+              //先删除失效歌曲
+              keys.push(cursor.key)
+              const result = fs.existsSync(cursor.value.path)
+              if (result) {
+                pathsInDB.push(cursor.value.path)
+              } else {
+                cursor.delete()
+              }
+              cursor.continue()
+            } else {
+              //再添加新增歌曲
+              const paths = []
+              const folders = Array.from(new Set(keys))
+              folders.forEach(folder => {
+                paths.push(...searchFolder(folder))
+              })
+              Promise.all(paths.elsNotIn(pathsInDB).map(p => getSongMeta(p)))
+                .then(songs => {
+                  //这里拿到所有要添加的歌曲的信息, 加入数据库
+                  Promise.all(songs.map(song => new Promise((res, rej) => {
+                    const tx = db.transaction(`stars`, `readwrite`)
+                    const stars = tx.objectStore(`stars`)
+                    const req = stars.add(song)
+                    req.onsuccess = () => {
+                      res()
+                    }
+                    req.onerror = e => {
+                      rej(e)
+                    }
+                  })))
+                    .then(() => { resolve() }) //全部添加完毕
+                    .catch(e => reject(e))
+                })
+                .catch(e => reject(e))
+            }
+          }
+          req.onerror = (e) => {
+            console.error(`Error in "modifyStars" at "folder_idx.openKeyCursor" with method "getAll"\n${e}`)
+          }
+        }
+          break
+        case `getSongs`: {
+          const req = stars.getAll()
+          req.onsuccess = () => {
+            resolve(req.result)
+          }
+          req.onerror = (e) => {
+            console.error(`Error in "modifyStars" at "stars.getAll" with method "getSongs"\n${e}`)
+          }
+        }
+          break
       }
     }
-  }
+
+    dbOpenReq.onerror = e => {
+      console.error(`Error in "modifyStars"\n${e}`)
+    }
+
+    dbOpenReq.onupgradeneeded = e => {
+      const db = dbOpenReq.result
+
+      db.onversionchange = () => {
+        db.close()
+      }
+
+      if (e.oldVersion < 1) {
+        const stars = db.createObjectStore(`stars`, { keyPath: `path` })
+        stars.createIndex(`folder_idx`, `folder`, { unique: false })
+
+        db.createObjectStore(`playLists`, { keyPath: `name` })
+      }
+    }
+
+    dbOpenReq.onblocked = e => {
+
+    }
+  })
 }
 
-module.exports = { loadSongs }
+async function refreshSongs() {
+  await modifyStars(`refreshFolders`)
+  modifyStars(`getSongs`)
+    .then(songs => {
+      listSList.changeSource(songs)
+
+      /***********************初始化***********************/
+      shared.keyItemBuf = {}
+      shared.pathItemBuf = {}
+      if (listSList.list.length !== 0) {
+        listSList.list.forEach((item, i) => {
+          shared.keyItemBuf[item[1]] = i
+          shared.pathItemBuf[item[0].path] = i
+        })
+        playList.changeSource(Object.keys(shared.keyItemBuf))
+        //检查当前的歌曲指针是否越界
+        if (storeStates.states.keyOfSrcBuf >= playList.list.length) {
+          storeStates.states.keyOfSrcBuf = playList.list.length - 1
+        } else if (storeStates.states.keyOfSrcBuf < 0) {
+          storeStates.states.keyOfSrcBuf = 0
+        }
+      } else {
+        playList.changeSource([])
+        storeStates.states.keyOfSrcBuf = -1
+      }
+
+      shared.playListBuf = playList.list.map(item => item[0])
+      /***********************初始化***********************/
+
+      //初始化完成信号
+      storeStates.states.sListLoaded = true
+      ebus.emit(`Updated listSList and listSPath`)
+    })
+}
+
+refreshSongs()
+
+function modifyPlayLists(method, ...args) {
+  return new Promise((resolve, reject) => {
+    const dbOpenReq = window.indexedDB.open(`myMusic`)
+
+    dbOpenReq.onsuccess = e => {
+      const db = dbOpenReq.result
+      const tx = db.transaction(`playLists`, `readwrite`)
+      const playLists = tx.objectStore(`playLists`)
+
+      switch (method) {
+        case `addToList`: {
+          const paths = args[0]
+          const playList = args[1]
+          const override = args[2]
+
+          const req = playLists.get(playList)
+          req.onsuccess = () => {
+            const tx = db.transaction(`playLists`, `readwrite`)
+            const playLists = tx.objectStore(`playLists`)
+            const result = req.result
+            if (result) {
+              if (override) {
+                result.paths = playList
+              } else {
+                result.paths.push(...paths)
+                result.paths = Array.from(new Set(result.paths))
+              }
+              const req = playLists.put(result)
+              req.onsuccess = () => {
+                resolve()
+              }
+              req.onerror = e => {
+                reject(e)
+              }
+            } else {
+              const req = playLists.add({
+                name: playList,
+                paths: paths
+              })
+              req.onsuccess = () => {
+                resolve()
+              }
+              req.onerror = e => {
+                reject(e)
+              }
+            }
+          }
+        }
+          break
+        case `removeFromList`: {
+          const paths = args[0]
+          const playList = args[1]
+
+          const req = playLists.get(playList)
+          req.onsuccess = () => {
+            const result = req.result
+            if (result) {
+              paths.forEach(p => {
+                const i = result.paths.indexOf(p)
+                if (i > 0) {
+                  result.paths.splice(i, 1)
+                }
+              })
+              const req = playLists.put(result)
+              req.onsuccess = () => {
+                resolve()
+              }
+              req.onerror = e => {
+                reject(e)
+              }
+            }
+          }
+          req.onerror = e => {
+            reject(e)
+          }
+        }
+          break
+        case `removeList`: {
+          const listsToRemove = args[0]
+
+          const req = playLists.openCursor()
+          req.onsuccess = () => {
+            const cursor = req.result
+            if (cursor) {
+              if (listsToRemove.includes(cursor.key)) {
+                cursor.delete()
+              }
+            } else {
+              resolve()
+            }
+          }
+          req.onerror = e => {
+            reject(e)
+          }
+        }
+          break
+        case `getPlayList`: {
+          const playList = args[0]
+
+          const req = playLists.get(playList)
+          req.onsuccess = () => {
+            const result = req.result
+            resolve(result)
+          }
+          req.onerror = e => {
+            reject(e)
+          }
+        }
+          break
+      }
+    }
+  })
+}
+
+module.exports = { modifyStars, refreshSongs }

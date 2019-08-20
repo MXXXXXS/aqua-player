@@ -59,22 +59,36 @@ class AQUAMenu extends HTMLElement {
     const shadow = this.attachShadow({mode: `open`})
     const root = this.shadowRoot
     shadow.innerHTML = menu
+    
+    //元素引用
+    const main = root.querySelector(`#main`)
+    const addPlayList = root.querySelector(`#playList .add`)
+    const music = root.querySelector(`.music`)
+    const switcher = root.querySelector(`#switch`)
+    const myMusic = root.querySelector(`.myMusic`)
+    const settings = root.querySelector(`.settings`)
+    const playing = root.querySelector(`.playing`)
+    
+    //自有状态
+    let closed = false
 
     //主题色绑定
     root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
-
-    const main = root.querySelector(`#main`)
-
-    main.querySelector(`.music`).id = `actived`
+    
+    //图标渲染
+    root.querySelectorAll(`.icon`).forEach(el => {
+      el.innerHTML = icons[el.classList[1]]
+    })
+    
+    music.id = `actived`
 
     const style = document.createElement(`style`)
     shadow.appendChild(style)
-    let closed = false
-    shadow.querySelector(`#switch`).addEventListener(`click`, () => {
-      console.log(`clicked`)
+
+    switcher.addEventListener(`click`, () => {
       if (closed) {
         style.innerText = ``
         closed = false
@@ -91,20 +105,20 @@ class AQUAMenu extends HTMLElement {
       }
     })
 
-    root.querySelector(`.myMusic`).addEventListener(`click`, () => {
-      storeStates.states.RMenuItems = `aqua-list`
+    myMusic.addEventListener(`click`, () => {
+      states.RMenuItems = `aqua-list`
     })
 
-    root.querySelector(`.settings`).addEventListener(`click`, () => {
-      storeStates.states.RMenuItems = `aqua-settings`
+    settings.addEventListener(`click`, () => {
+      states.RMenuItems = `aqua-settings`
     })
     
-    root.querySelector(`.playing`).addEventListener(`click`, e => {
-      storeStates.states.RMainCurrentPlaying = `aqua-current-playing`
+    playing.addEventListener(`click`, e => {
+      states.RMainCurrentPlaying = `aqua-current-playing`
     })
 
-    root.querySelectorAll(`.icon`).forEach(el => {
-      el.innerHTML = icons[el.classList[1]]
+    addPlayList.addEventListener(`click`, () => {
+      states.showAddPlayList = true
     })
   }
 }

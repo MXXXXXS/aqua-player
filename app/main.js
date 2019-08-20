@@ -1,15 +1,19 @@
 const path = require(`path`)
 const url = require(`url`)
 
-const {app, BrowserWindow, ipcMain, dialog} = require(`electron`)
+const { app, BrowserWindow, ipcMain, dialog } = require(`electron`)
 
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 2500, height: 900, webPreferences: {
-    nodeIntegration: true
-    // devTools: true
-  }})
+  mainWindow = new BrowserWindow({
+    width: 2500,
+    height: 900,
+    webPreferences: {
+      nodeIntegration: true
+      // devTools: true
+    }
+  })
 
   const mainPage = url.format({
     pathname: path.join(__dirname, `index.html`),
@@ -19,7 +23,7 @@ function createWindow() {
   console.log(mainPage)
 
   mainWindow.loadURL(mainPage)
-  
+
   mainWindow.on(`closed`, function () {
     mainWindow = null
   })

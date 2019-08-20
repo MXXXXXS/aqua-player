@@ -5,6 +5,7 @@ const shared = {
   audioState: 0,
   sortBuf: {},
   keyItemBuf: {},
+  pathItemBuf: {},
   playListBuf: [],
   drawCover: function (coverBuffer, picture, icons, elSelector, scope) {
     URL.revokeObjectURL(coverBuffer.imgUrl)
@@ -51,7 +52,8 @@ const storeStates = new Store({
   RMainCurrentPlaying: `#main`,
   filterSortBy: ``,
   filterType: ``,
-  shuffled: false
+  shuffled: false,
+  showAddPlayList: false
 })
 
 const listSList = new List([])

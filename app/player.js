@@ -40,12 +40,12 @@ async function initialSrcBuf(successCb = () => { }, errorCb = () => { }) {
       shared.audioState = 0.5
       states.duration = song.duration
       const sound = await new Promise((res, rej) => {
-        fs.readFile(song.filePath, (err, data) => {
+        fs.readFile(song.path, (err, data) => {
           if (err)
             rej(err)
           res(data)
         })
-      }).catch(e => { console.err(`fs.readFile ${song.filePath} error: \n`, e) })
+      }).catch(e => { console.error(`fs.readFile ${song.path} error: \n`, e) })
       states.offset = 0
       srcBuf = await audioCtx.decodeAudioData(sound.buffer, () => {
         successCb()

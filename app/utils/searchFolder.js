@@ -3,7 +3,7 @@ const path = require(`path`)
 
 const musicType = [`flac`, `mp3`, `wav`, `mp4`, `ogg`, `aac`]
 
-let collectFiles = (dir, deep = true) => {
+let collectFiles = (dir, deep = false) => {
   let filesCollection = []
   recursion(dir, deep)
 
