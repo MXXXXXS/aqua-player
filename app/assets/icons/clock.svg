@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="20.9017" height="20.9017" viewBox="0 0 20.9017 20.9017">
+<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21">
   <title>clock</title>
   <g id="图层_2" data-name="图层 2">
     <g id="图层_1-2" data-name="图层 1">
-      <circle cx="10.4509" cy="10.4509" r="9.9509" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <line x1="9.611" y1="4.0884" x2="9.611" y2="11.3671" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <line x1="13.912" y1="10.8072" x2="9.0002" y2="10.8072" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <circle cx="10.5" cy="10.5" r="10" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="9.5" y1="4" x2="9.5" y2="11" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="14" y1="10.5" x2="9" y2="10.5" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
     </g>
   </g>
 </svg>

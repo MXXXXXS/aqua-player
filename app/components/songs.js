@@ -4,7 +4,7 @@ const icons = require(`../assets/icons.js`)
 const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
 
-const { listSList, storeStates, playList } = require(`../states.js`)
+const { listSList, storeStates, playList, shared } = require(`../states.js`)
 const states = storeStates.states
 
 class AQUASongs extends HTMLElement {
@@ -24,7 +24,7 @@ class AQUASongs extends HTMLElement {
         ${song.title}
       </div>
       <div class="icon play" data-key="${key}"></div>
-      <div class="icon add"></div>
+      <div class="icon add" data-key="${key}"></div>
     </div>
     <div class="attribute">
       <div class="artist">${song.artist}</div>
@@ -41,20 +41,32 @@ class AQUASongs extends HTMLElement {
     }
 
     this.run = function () {
+      //列表渲染
       listSList.cast(`.list`, renderString, this.root)
 
+      //图标渲染
       this.root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML = icons[el.classList[1]]
       })
 
+      //元素引用
+      const list = this.root.querySelector(`.list`)
+
       states.total = this.root.querySelectorAll(`.item`).length
 
-      this.root.querySelector(`.list`).addEventListener(`click`, e => {
+      list.addEventListener(`click`, e => {
         const isPlayBtn = e.target.classList.contains(`play`)
+        const isAddBtn = e.target.classList.contains(`add`)
         if (isPlayBtn) {
           const key = e.target.dataset.key
           states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
           ebus.emit(`play this`, states.keyOfSrcBuf)
+        }
+        if (isAddBtn) {
+          const index = shared.keyItemBuf[e.target.dataset.key]
+          const pathOfSong = listSList.list[index][0].path
+          shared.songsToAdd.push(pathOfSong)
+          shared.showAdd(states, e)
         }
       })
     }

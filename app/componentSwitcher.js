@@ -11,7 +11,6 @@ const AQUASongsSortedByAlbums = require(`./components/songsSortedByAlbums.js`)
 const AQUAAlbumsSortedByYears = require(`./components/albumsSortedByYears.js`)
 const AQUAAlbumsSortedBySingers = require(`./components/albumsSortedBySingers.js`)
 const AQUAAlbumsSortedByAZ = require(`./components/albumsSortedByAZ.js`)
-const AQUACurrentPlaying = require(`./components/currentPlaying.js`)
 
 const ebus = require(`./utils/eBus.js`)
 const { RouterEL, Router } = require(`./utils/router.js`)
@@ -28,7 +27,7 @@ storeStates.addCb(`RMainCurrentPlaying`, item => {
 currentPlayingSwitcher.show(`#main`)
 
 const menuItems = new Router(`menuItems`)
-menuItems.add(`aqua-list`, `aqua-settings`)
+menuItems.add(`aqua-list`, `aqua-settings`, `aqua-play-list`)
 storeStates.addCb(`RMenuItems`, item => {
   menuItems.show(item)
 })

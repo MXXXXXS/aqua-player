@@ -25,7 +25,7 @@ class AQUASongsSortedByAZ extends HTMLElement {
         ${song.title}
       </div>
       <div class="icon play" data-key="${key}"></div>
-      <div class="icon add"></div>
+      <div class="icon add" data-key="${key}"></div>
     </div>
     <div class="attribute">
       <div class="artist">${song.artist}</div>
@@ -85,10 +85,17 @@ class AQUASongsSortedByAZ extends HTMLElement {
 
     this.root.querySelector(`#main`).addEventListener(`click`, e => {
       const isPlayBtn = e.target.classList.contains(`play`)
+      const isAddBtn = e.target.classList.contains(`add`)
       if (isPlayBtn) {
         const key = e.target.dataset.key
         states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
         ebus.emit(`play this`, states.keyOfSrcBuf)
+      }
+      if (isAddBtn) {
+        const index = shared.keyItemBuf[e.target.dataset.key]
+        const pathOfSong = listSList.list[index][0].path
+        shared.songsToAdd.push(pathOfSong)
+        shared.showAdd(states, e)
       }
     })
 

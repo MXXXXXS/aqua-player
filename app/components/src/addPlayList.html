@@ -4,7 +4,7 @@
     <div class="item" id="setName">
       <input type="text" placeholder="命名此播放列表">
       <div class="icon cross"></div>
-      <div class="icon search"></div>
+      <div class="icon pen"></div>
     </div>
     <div class="yourCreated">
       您创建的
@@ -28,6 +28,10 @@
     width: 100vw;
     height: 100vh;
   }
+
+.creation>* {
+  cursor: default;
+}
 
   .mask {
     z-index: -1;
@@ -118,6 +122,8 @@
     height: 56px;
     width: 280px;
     background-color: transparent;
+    padding-left: 20px;
+    box-sizing: border-box;
   }
 
   .playList svg {

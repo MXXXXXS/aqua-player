@@ -1,5 +1,5 @@
-const {menu} = require(`../assets/components.js`)
-const {storeStates} = require(`../states.js`)
+const { menu } = require(`../assets/components.js`)
+const { storeStates, listNames } = require(`../states.js`)
 const states = storeStates.states
 const icons = require(`../assets/icons.js`)
 
@@ -56,10 +56,10 @@ const foldingStyle = `
 class AQUAMenu extends HTMLElement {
   constructor() {
     super()
-    const shadow = this.attachShadow({mode: `open`})
+    const shadow = this.attachShadow({ mode: `open` })
     const root = this.shadowRoot
     shadow.innerHTML = menu
-    
+
     //元素引用
     const main = root.querySelector(`#main`)
     const addPlayList = root.querySelector(`#playList .add`)
@@ -68,7 +68,8 @@ class AQUAMenu extends HTMLElement {
     const myMusic = root.querySelector(`.myMusic`)
     const settings = root.querySelector(`.settings`)
     const playing = root.querySelector(`.playing`)
-    
+    const albums = root.querySelector(`.albums`)
+
     //自有状态
     let closed = false
 
@@ -77,12 +78,12 @@ class AQUAMenu extends HTMLElement {
     storeStates.addCb(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
-    
+
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
-    
+
     music.id = `actived`
 
     const style = document.createElement(`style`)
@@ -112,13 +113,37 @@ class AQUAMenu extends HTMLElement {
     settings.addEventListener(`click`, () => {
       states.RMenuItems = `aqua-settings`
     })
-    
+
     playing.addEventListener(`click`, e => {
       states.RMainCurrentPlaying = `aqua-current-playing`
     })
 
     addPlayList.addEventListener(`click`, () => {
       states.showAddPlayList = true
+    })
+
+    listNames.cast(`.albums`, renderString, root)
+
+    function renderString(key, i, val) {
+      return `
+      <div class="item" data-msg="album" data-key="${key}">
+      <div class="icon album">${icons.album}</div>
+      <div class="text">${val}</div>
+      </div>
+      `
+    }
+
+    albums.addEventListener(`click`, (e) => {
+      const isAlbumBtn = e.target.dataset.msg
+      if (isAlbumBtn) {
+        for (let i = 0; i < listNames.list.length; i++) {
+          if (listNames.list[i][1] === parseInt(e.target.dataset.key)) {
+            states.playList = listNames.list[i][0]
+            states.RMenuItems = `aqua-play-list`
+            break
+          }
+        }
+      }
     })
   }
 }

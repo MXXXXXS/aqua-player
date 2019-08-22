@@ -9,7 +9,6 @@ async function getSongMeta(songPath) {
   songPath = path.normalize(songPath)
   const meta = await getMetadata(songPath)
   return {
-    playList: [],
     folder: path.dirname(songPath),
     path: songPath,
     picture: meta.common.picture ? meta.common.picture[0] : undefined,
@@ -345,9 +344,20 @@ function modifyPlayLists(method, ...args) {
           }
         }
           break
+        case `getNames`: {
+          const req = playLists.getAllKeys()
+          req.onsuccess = () => {
+            const result = req.result
+            resolve(result)
+          }
+          req.onerror = e => {
+            reject(e)
+          }
+        }
+          break
       }
     }
   })
 }
 
-module.exports = { modifyStars, refreshSongs }
+module.exports = { modifyStars, modifyPlayLists, refreshSongs }

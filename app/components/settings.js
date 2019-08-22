@@ -13,12 +13,14 @@ class AQUASettings extends HTMLElement {
     shadow.innerHTML = settings
     const root = this.shadowRoot
 
+    //元素引用
     const add = root.querySelector(`.add`)
     const pannel = root.querySelector(`.addPannel`)
     const okBtn = root.querySelector(`.ok`)
     const addFolder = root.querySelector(`.addTile`)
     const tilesContainer = root.querySelector(`.tilesContainer`)
 
+    //自有状态
     let oldList
 
     //主题色绑定

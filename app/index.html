@@ -40,6 +40,10 @@
       z-index: 2;
     }
 
+    aqua-play-list {
+      flex: 1;
+    }
+
     #main {
       height: 100vh;
       display: flex;
@@ -86,11 +90,13 @@
         <div id="router-songsItems">
         </div>
       </aqua-list>
+      <aqua-play-list></aqua-play-list>
       <aqua-settings></aqua-settings>
     </aqua-menu-info>
     <aqua-controller class="aqua"></aqua-controller>
   </div>
   <aqua-current-playing></aqua-current-playing>
+  <aqua-add></aqua-add>
   <aqua-add-play-list></aqua-add-play-list>
   <script src="index.js"></script>
 </body>

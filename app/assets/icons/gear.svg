@@ -42,7 +42,7 @@
       <line x1="18.9785" y1="12.4566" x2="18.281" y2="14.28" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
       <line x1="12.655" y1="18.9622" x2="14.2799" y2="18.2879" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
       <line x1="5.1626" y1="18.1622" x2="6.9351" y2="19.0053" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <circle cx="9.8391" cy="9.6766" r="3.6462" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <circle cx="9.9208" cy="9.5997" r="3.5" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
     </g>
   </g>
 </svg>

@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="17.8961" height="17.5795" viewBox="0 0 17.8961 17.5795">
+<svg xmlns="http://www.w3.org/2000/svg" width="17.8961" height="17.7686" viewBox="0 0 17.8961 17.7686">
   <title>refresh</title>
   <g id="图层_2" data-name="图层 2">
     <g id="图层_1-2" data-name="图层 1">
-      <path d="M5.6427.7576A8.8172,8.8172,0,0,0,.5006,8.691a8.604,8.604,0,0,0,7.9335,8.3743,8.6881,8.6881,0,0,0,8.962-8.5212A8.9272,8.9272,0,0,0,11.96.6106" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <polyline points="2.502 0.5 6.322 0.5 6.322 4.026" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <path d="M5.6427.9468A8.8172,8.8172,0,0,0,.5006,8.88a8.6041,8.6041,0,0,0,7.9335,8.3743,8.6881,8.6881,0,0,0,8.962-8.5212A8.9271,8.9271,0,0,0,11.96.8" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <polyline points="3.048 0.5 6.548 0.5 6.548 4" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
     </g>
   </g>
 </svg>

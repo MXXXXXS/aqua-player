@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="15.5686" height="18.0862" viewBox="0 0 15.5686 18.0862">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18.646" viewBox="0 0 16 18.646">
   <title>music</title>
   <g id="图层_2" data-name="图层 2">
     <g id="图层_1-2" data-name="图层 1">
-      <ellipse cx="2.9221" cy="15.8077" rx="2.4221" ry="1.7785" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <ellipse cx="12.6465" cy="13.3393" rx="2.4221" ry="1.7785" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <line x1="5.3443" y1="16.5296" x2="5.3443" y2="3.5884" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <line x1="15.0686" y1="14.0101" x2="15.0686" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
-      <line x1="5.2106" y1="4.1538" x2="14.8809" y2="0.5897" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <ellipse cx="3" cy="16.146" rx="2.5" ry="2" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <ellipse cx="13" cy="14.146" rx="2.5" ry="2" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="5.5" y1="16.646" x2="5.5" y2="3.646" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="15.5" y1="14.646" x2="15.5" y2="0.646" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="5.6585" y1="4.0333" x2="15.3289" y2="0.4691" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
     </g>
   </g>
 </svg>

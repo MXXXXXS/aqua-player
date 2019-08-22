@@ -11,20 +11,20 @@
         <div class="description"><span>15</span>首歌曲•1小时17分钟</div>
       </div>
       <div class="controller">
-        <div class="button">
+        <div class="button playAll">
           <div class="icon play"></div>
           <div>全部播放</div>
         </div>
-        <div class="button">
+        <div class="button addTo">
           <div class="icon add"></div>
           <div>添加到</div>
         </div>
-        <div class="button">
-          <div class="icon"></div>
+        <div class="button rename">
+          <div class="icon pen"></div>
           <div>重命名</div>
         </div>
-        <div class="button">
-          <div class="icon"></div>
+        <div class="button remove">
+          <div class="icon garbage"></div>
           <div>删除</div>
         </div>
       </div>
@@ -52,7 +52,7 @@
 </div>
 <style>
   .head {
-    background-color: lightskyblue;
+    background-color: var(--themeColor, rgb(113, 204, 192));
   }
 
   .info {
@@ -85,7 +85,7 @@
 
   .button:hover {
     border-radius: 50px;
-    background-color: gray;
+    background-color: rgba(128, 128, 128, 0.5);
   }
 
   .button {

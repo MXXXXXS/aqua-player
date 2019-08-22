@@ -1,10 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="13.4079" height="2" viewBox="0 0 13.4079 2">
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="1" viewBox="0 0 12 1">
   <title>more</title>
   <g id="图层_2" data-name="图层 2">
     <g id="图层_1-2" data-name="图层 1">
-      <line x1="6.1079" y1="1" x2="7.3" y2="1" fill="inherit" stroke="inherit" stroke-miterlimit="10" stroke-width="2"/>
-      <line x1="12.2159" y1="1" x2="13.4079" y2="1" fill="inherit" stroke="inherit" stroke-miterlimit="10" stroke-width="2"/>
-      <line y1="1" x2="1.192" y2="1" fill="inherit" stroke="inherit" stroke-miterlimit="10" stroke-width="2"/>
+      <line x1="5" y1="0.5" x2="6" y2="0.5" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="11" y1="0.5" x2="12" y2="0.5" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="5" y1="0.5" x2="7" y2="0.5" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line x1="10" y1="0.5" x2="11" y2="0.5" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
+      <line y1="0.5" x2="2" y2="0.5" fill="inherit" stroke="inherit" stroke-miterlimit="10"/>
     </g>
   </g>
 </svg>

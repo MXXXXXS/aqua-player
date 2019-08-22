@@ -7,6 +7,7 @@ const shared = {
   keyItemBuf: {},
   pathItemBuf: {},
   playListBuf: [],
+  songsToAdd: [],
   drawCover: function (coverBuffer, picture, icons, elSelector, scope) {
     URL.revokeObjectURL(coverBuffer.imgUrl)
     const el = scope.querySelector(elSelector)
@@ -24,6 +25,11 @@ const shared = {
       el.style.display = `flex`
       el.querySelector(`svg`).style.margin = `auto`
     }
+  },
+  showAdd: function (states, e) {
+    states.menuX = e.clientX + 20 + `px`
+    states.menuY = e.clientY - 10 + `px`
+    states.showAdd = true
   }
 }
 
@@ -53,7 +59,11 @@ const storeStates = new Store({
   filterSortBy: ``,
   filterType: ``,
   shuffled: false,
-  showAddPlayList: false
+  showAddPlayList: false,
+  showAdd: false,
+  menuX: 0,
+  menuY: 0,
+  playList: ``
 })
 
 const listSList = new List([])
@@ -64,4 +74,6 @@ const sortType = new List([])
 
 const playList = new List([])
 
-module.exports = { storeStates, listSList, listSPath, shared, sortType, playList }
+const listNames = new List([])
+
+module.exports = { storeStates, listSList, listSPath, shared, sortType, playList, listNames }
