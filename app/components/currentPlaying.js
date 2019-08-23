@@ -1,8 +1,9 @@
 const { currentPlaying } = require(`../assets/components.js`)
 const {
-  changeSongAndPlay,
   playBack,
-  stopAudioSrc
+  stopAudioSrc,
+  playNextSong,
+  playPreviousSong
 } = require(`../player.js`)
 const second2time = require(`../utils/second2time.js`)
 const { storeStates, shared, playList, listSList } = require(`../states.js`)
@@ -41,7 +42,7 @@ class AQUACurrentPlaying extends HTMLElement {
     let hidden = false
     
     //专辑封面显示
-    storeStates.addCb(`coverSrc`, src => {
+    storeStates.watch(`coverSrc`, src => {
       coverContainers.forEach(el => {
         el.innerHTML = ``
         if (src !== `svg`) {
@@ -59,21 +60,21 @@ class AQUACurrentPlaying extends HTMLElement {
     })
 
     //歌曲信息绑定
-    storeStates.add(`name`, title, `innerText`)
-    storeStates.add(`artist`, singerAndAlbum, `innerText`)
+    storeStates.sync(`name`, title, `innerText`)
+    storeStates.sync(`artist`, singerAndAlbum, `innerText`)
 
     //已消逝时长文字绑定
-    storeStates.addCb(`timePassedText`, text => {
+    storeStates.watch(`timePassedText`, text => {
       timePassed.innerText = text
     })
 
     //时间线值绑定
-    storeStates.addCb(`offset`, offset => {
+    storeStates.watch(`offset`, offset => {
       timeLine.value = (offset / states.duration) * 1000
     })
 
     //总时长文字绑定
-    storeStates.addCb(`formatedDuration`, text => {
+    storeStates.watch(`formatedDuration`, text => {
       totalTime.innerText = text
     })
 
@@ -122,8 +123,7 @@ class AQUACurrentPlaying extends HTMLElement {
         playList.changeSource(shared.playListBuf)
       } else {
         states.shuffled = true
-        const keys = playList.list.map(item => item[0])
-        playList.changeSource(keys.shuffle())
+        playList.changeSource(playList.getValues().shuffle())
       }
       
       //更新图标
@@ -132,12 +132,7 @@ class AQUACurrentPlaying extends HTMLElement {
       })
     })
 
-    lastSong.addEventListener(`click`, (e) => {
-      if (states.keyOfSrcBuf - 1 >= 0) {
-        states.keyOfSrcBuf -= 1
-        changeSongAndPlay()
-      }
-    })
+    lastSong.addEventListener(`click`, playPreviousSong)
 
     play.addEventListener(`click`, () => {
       if (states.playing) {
@@ -147,12 +142,7 @@ class AQUACurrentPlaying extends HTMLElement {
       }
     })
 
-    nextSong.addEventListener(`click`, async (e) => {
-      if (states.keyOfSrcBuf + 1 < playList.list.length) {
-        states.keyOfSrcBuf += 1
-        changeSongAndPlay()
-      }
-    })
+    nextSong.addEventListener(`click`, playNextSong)
 
     timeLine.addEventListener(`mousedown`, (e) => {
       clearInterval(shared.timer)
@@ -178,8 +168,7 @@ class AQUACurrentPlaying extends HTMLElement {
 
     //列表渲染
     function renderString(key, i, songKey) {
-      const index = shared.keyItemBuf[songKey]
-      const song = listSList.list[index][0]
+      const song = listSList.kGet(songKey)[0]
       return `
       <div class="item" data-key="${songKey}">
         <div class="checkBox"></div>
@@ -187,8 +176,8 @@ class AQUACurrentPlaying extends HTMLElement {
       <div class="text">
         ${song.title}
       </div>
-      <div class="icon play" data-key="${songKey}"></div>
-      <div class="icon add"></div>
+      <div class="icon play" data-key="${songKey}">${icons.play}</div>
+      <div class="icon add" data-key="${songKey}">${icons.add}</div>
     </div>
     <div class="attribute">
       <div class="artist">${song.artist}</div>
@@ -211,10 +200,16 @@ class AQUACurrentPlaying extends HTMLElement {
 
       this.root.querySelector(`.list`).addEventListener(`click`, e => {
         const isPlayBtn = e.target.classList.contains(`play`)
+        const isAddBtn = e.target.classList.contains(`add`)
         if (isPlayBtn) {
-          const key = e.target.dataset.key
-          states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
-          ebus.emit(`play this`, states.keyOfSrcBuf)
+          const key = parseInt(e.target.dataset.key)
+          states.playListPointer = playList.getValues().indexOf(key)
+          ebus.emit(`play this`, states.playListPointer)
+        }
+        if (isAddBtn) {
+          const pathOfSong = listSList.kGet(e.target.dataset.key)[0].path
+          shared.songsToAdd.push(pathOfSong)
+          shared.showAdd(states, e)
         }
       })
     }
@@ -226,7 +221,7 @@ class AQUACurrentPlaying extends HTMLElement {
 
     //主题色同步
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
@@ -240,7 +235,7 @@ class AQUACurrentPlaying extends HTMLElement {
     this.cb = this.run.bind(this)
     console.log(`connected songs`)
     ebus.on(`Updated listSList and listSPath`, this.cb)
-    if (storeStates.states.sListLoaded) {
+    if (states.sListLoaded) {
       this.run()
     }
   }

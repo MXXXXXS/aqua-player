@@ -36,7 +36,7 @@ class AQUAAdd extends HTMLElement {
 
     //显示隐藏切换
     main.style.display = `none`
-    storeStates.addCb(`showAdd`, async visible => {
+    storeStates.watch(`showAdd`, async visible => {
       if (visible) {
         const names = await modifyPlayLists(`getNames`)
         listNames.changeSource(names)
@@ -56,12 +56,10 @@ class AQUAAdd extends HTMLElement {
       if (isItemBtn) {
         states.showAdd = false
         if (e.target.dataset.key) {
-          for (let i = 0; i < listNames.list.length; i++) {
-            if (listNames.list[i][1] === parseInt(e.target.dataset.key)) {
-              await modifyPlayLists(`addToList`, shared.songsToAdd, listNames.list[i][0])
-              ebus.emit(`refresh playList`)
-              break
-            }
+          const index = listNames.indexOfKey(e.target.dataset.key)
+          if (index >= 0) {
+            await modifyPlayLists(`addToList`, shared.songsToAdd, listNames.list[index][0])
+            ebus.emit(`refresh playList`)
           }
         }
         shared.songsToAdd = []
@@ -69,8 +67,8 @@ class AQUAAdd extends HTMLElement {
     })
 
     //状态绑定
-    storeStates.add(`menuX`, menu.style, `left`)
-    storeStates.add(`menuY`, menu.style, `top`)
+    storeStates.sync(`menuX`, menu.style, `left`)
+    storeStates.sync(`menuY`, menu.style, `top`)
   }
 
   connectedCallback() {

@@ -1,5 +1,5 @@
 const { settings } = require(`../assets/components.js`)
-const { listSPath, storeStates, listSList } = require(`../states.js`)
+const { listSPath, storeStates } = require(`../states.js`)
 const states = storeStates.states
 const { ipcRenderer } = require(`electron`)
 const path = require(`path`)
@@ -25,20 +25,20 @@ class AQUASettings extends HTMLElement {
 
     //主题色绑定
     root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
     //点击"选择查找音乐位置"
     add.addEventListener(`click`, () => {
-      oldList = listSPath.list.map(item => item[0])
+      oldList = listSPath.getValues()
       pannel.style.display = `unset`
     })
 
     //点击"完成"
     okBtn.addEventListener(`click`, async () => {
       pannel.style.display = `none`
-      const newList = listSPath.list.map(item => item[0])
+      const newList = listSPath.getValues()
       const foldersToRemove = oldList.elsNotIn(newList)
       const foldersToAdd = newList.elsNotIn(oldList)
       Promise.all([
@@ -52,7 +52,7 @@ class AQUASettings extends HTMLElement {
 
     //添加tile
     ipcRenderer.on(`add these`, (e, paths) => {
-      paths = paths.elsNotIn(listSPath.list.map(item => item[0]))
+      paths = paths.elsNotIn(listSPath.getValues())
       listSPath.push(...paths)
     })
 
@@ -63,13 +63,9 @@ class AQUASettings extends HTMLElement {
     //删除tile
     tilesContainer.addEventListener(`click`, (e) => {
       if (e.target.className === `tile`) {
-        const targetKey = e.target.dataset.key
-        for (let i = 0; i < listSPath.list.length; i++) {
-          const key = listSPath.list[i][1]
-          if (parseInt(targetKey) === key) {
-            listSPath.splice(i, 1)
-          }
-        }
+        const index = listSPath.indexOfKey(e.target.dataset.key)
+        if (index >= 0)
+          listSPath.splice(index, 1)
       }
     })
 

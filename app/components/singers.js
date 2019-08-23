@@ -41,7 +41,7 @@ class AQUASingers extends HTMLElement {
     main.innerHTML = ``
     shared.sortBuf.sortedInitialSingers = shared.sortBuf.sortedInitialSingers ?
       shared.sortBuf.sortedInitialSingers :
-      storeStates.states.sortFn.sortedInitialSingers()
+      states.sortFn.sortedInitialSingers()
     const { en: uen, zh: uzh } = shared.sortBuf.sortedInitialSingers
     function addGroups(sorted) {
       sorted.forEach(group => {
@@ -63,7 +63,7 @@ class AQUASingers extends HTMLElement {
 
     //主题色同步
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
   }
@@ -77,7 +77,7 @@ class AQUASingers extends HTMLElement {
     ebus.on(`Sorting ready`, this.cb)
     console.log(`singers connected`)
 
-    if (storeStates.states.sortReady) {
+    if (states.sortReady) {
       this.run()
     }
   }

@@ -75,7 +75,7 @@ class AQUAMenu extends HTMLElement {
 
     //主题色绑定
     root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
@@ -136,12 +136,10 @@ class AQUAMenu extends HTMLElement {
     albums.addEventListener(`click`, (e) => {
       const isAlbumBtn = e.target.dataset.msg
       if (isAlbumBtn) {
-        for (let i = 0; i < listNames.list.length; i++) {
-          if (listNames.list[i][1] === parseInt(e.target.dataset.key)) {
-            states.playList = listNames.list[i][0]
-            states.RMenuItems = `aqua-play-list`
-            break
-          }
+        const list = listNames.valueOfKey(e.target.dataset.key)
+        if (list) {
+          states.playList = list
+          states.RMenuItems = `aqua-play-list`
         }
       }
     })

@@ -1,7 +1,6 @@
 const { albums } = require(`../assets/components.js`)
 const icons = require(`../assets/icons.js`)
 const ebus = require(`../utils/eBus.js`)
-const { sortUniqueIdWords } = require(`../utils/sortWords.js`)
 const { storeStates, listSList, shared } = require(`../states.js`)
 const states = storeStates.states
 class AQUAAlbums extends HTMLElement {
@@ -64,7 +63,7 @@ class AQUAAlbums extends HTMLElement {
 
     allItems.forEach((item, i) => {
       const key = item.dataset.key
-      const song = listSList.list[shared.keyItemBuf[key]][0]
+      const song = listSList.kGet(key)[0]
       this.coverBuffers.push({})
       shared.drawCover(this.coverBuffers[i], song.picture, icons, `.item[data-key="${key}"] .coverContainer`, root)
     })
@@ -79,7 +78,7 @@ class AQUAAlbums extends HTMLElement {
     ebus.on(`Sorting ready`, this.cb)
     console.log(`albums connected`)
 
-    if (storeStates.states.sortReady) {
+    if (states.sortReady) {
       this.run()
     }
   }

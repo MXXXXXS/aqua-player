@@ -33,7 +33,7 @@ class Store {
     }
   }
 
-  add(state, obj, ...keysToBind) {
+  sync(state, obj, ...keysToBind) {
     const subscribers = this.binded[state].subscribers
     if (subscribers.length === 0) {
       subscribers.push([obj, [...keysToBind]])
@@ -53,11 +53,7 @@ class Store {
     }
   }
 
-  addCb(state, cb) {
-    this.binded[state].callbacks.push(cb)
-  }
-
-  remove(state, obj, ...keysToRemove) {
+  desync(state, obj, ...keysToRemove) {
     const subscribers = this.binded[state].subscribers
     for (let i = 0; i < subscribers.length; i++) {
       const item = subscribers[i]
@@ -76,6 +72,17 @@ class Store {
       }
     }
   }
+
+  watch(state, cb) {
+    this.binded[state].callbacks.push(cb)
+  }
+
+  unwatch(state, cb) {
+    const index = this.binded[state].callbacks.indexOf(cb)
+    if (index >= 0) {
+      this.binded[state].splice(index, 1)
+    }
+  }
 }
 
 class List {
@@ -83,55 +90,142 @@ class List {
     if (Array.isArray(arr)) {
       const _this = this
       this.key = 0
+      arr = arr.map(val => [val, this.key++])
       this.callbacks = []
-      arr = arr.map(val => [val, _this.key++])
+      this.onModifiedCbs = []
+      this.casted = []
       this.list = new Proxy(arr, {
         set(target, p, value, receiver) {
-          if (receiver[p] !== value) {
-            _this.callbacks.forEach(cb => {
-              cb(p, value[0], receiver[p][0])
-            })
+          const condition = (receiver[p] && receiver[p][0] !== value[0]) || !receiver[p]
+          if (condition) {
+            const result = Reflect.set(target, p, value, receiver)
+            if (result) {
+              _this.callbacks.forEach(cb => {
+                cb(p, value[0], receiver[p] ? receiver[p][0] : undefined)
+              })
+            }
+            return result
           }
-          return Reflect.set(target, p, value, receiver)
+          return true
         }
       })
 
-      this.set = function (index, value) {
-        const val = [value, _this.key++]
-        this.updateCasted(`set`, index, val)
-        this.list[index] = val
-      }
-
-      this.splice = function (start, deleteCount, ...items) {
-        items = items.map(item => [item, _this.key++])
-        this.updateCasted(`splice`, start, deleteCount, ...items)
-        Array.prototype.splice.call(this.list, start, deleteCount, ...items)
-      }
-
-      this.push = function (...items) {
-        items = items.map(item => [item, _this.key++])
-        this.updateCasted(`push`, ...items)
-        Array.prototype.push.call(this.list, ...items)
-      }
-
-      this.casted = []
     }
   }
-  addCb(cb) {
+
+  indexOfKey(key) {
+    for (let i = 0; i < this.list.length; i++) {
+      const el = this.list[i]
+      if (el[1] === parseInt(key)) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  valueOfKey(key) {
+    const i = this.indexOfKey(key)
+    if (i >= 0) {
+      return this.list[i][0]
+    }
+  }
+
+  getIndexes() {
+    return this.list.map((item, i) => i)
+  }
+
+  getValues() {
+    return this.list.map(item => item[0])
+  }
+
+  getKeys() {
+    return this.list.map(item => item[1])
+  }
+
+  set(index, value) {
+    const val = [value, this.key++]
+    updateCasted.call(this, `set`, index, val)
+    this.list[index] = val
+  }
+
+  splice(start, deleteCount, ...items) {
+    items = items.map(item => [item, this.key++])
+    updateCasted.call(this, `splice`, start, deleteCount, ...items)
+    this.list.splice(this.list, start, deleteCount, ...items)
+  }
+
+  push(...items) {
+    items = items.map(item => [item, this.key++])
+    updateCasted.call(this, `push`, ...items)
+    this.list.push(this.list, ...items)
+  }
+
+  kGet(key) {
+    const index = this.list.map(item => item[1]).indexOf(parseInt(key))
+    if (index >= 0) {
+      return this.list[index]
+    }
+  }
+
+  kSet(key, value) {
+    const index = this.list.map(item => item[1]).indexOf(parseInt(key))
+    if (index >= 0) {
+      this.set(index, value)
+    }
+  }
+
+  kSplice(key, deleteCount, ...items) {
+    const index = this.list.map(item => item[1]).indexOf(parseInt(key))
+    if (index >= 0) {
+      this.set(key, deleteCount, ...items)
+    }
+  }
+
+  onChange(cb) {
     this.callbacks.push(cb)
   }
+
+  removeOnChange(cb) {
+    for (let i = 0; i < this.callbacks.length; i++) {
+      const el = this.callbacks[i]
+      if (el === cb) {
+        this.callbacks.splice(i, 1)
+        break
+      }
+    }
+  }
+
+  onModified(cb) {
+    this.onModifiedCbs.push(cb)
+  }
+
+  removeOnModified(cb) {
+    for (let i = 0; i < this.onModifiedCbs.length; i++) {
+      const el = this.onModifiedCbs[i]
+      if (el === cb) {
+        this.onModifiedCbs.splice(i, 1)
+        break
+      }
+    }
+  }
+
   changeSource(newArr) {
     const _this = this
     this.key = 0
     newArr = newArr.map(val => [val, this.key++])
     this.list = new Proxy(newArr, {
       set(target, p, value, receiver) {
-        if (receiver[p] !== value) {
-          _this.callbacks.forEach(cb => {
-            cb(p, value[0], receiver[p][0])
-          })
+        const condition = (receiver[p] && receiver[p][0] !== value[0]) || !receiver[p]
+        if (condition) {
+          const result = Reflect.set(target, p, value, receiver)
+          if (result) {
+            _this.callbacks.forEach(cb => {
+              cb(p, value[0], receiver[p] ? receiver[p][0] : undefined)
+            })
+          }
+          return result
         }
-        return Reflect.set(target, p, value, receiver)
+        return true
       }
     })
     newArr.forEach((value, i) => {
@@ -152,14 +246,16 @@ class List {
       }
     }
   }
-  cast(elSelector, cb, scope = document) {
-    this.casted.push([elSelector, cb, scope])
+
+  cast(elSelector, renderString, scope = document) {
+    this.casted.push([elSelector, renderString, scope])
     const el = scope.querySelector(elSelector)
     el.innerHTML = ``
     this.list.forEach((item, i) => {
-      el.innerHTML += cb(item[1], i, item[0])
+      el.innerHTML += renderString(item[1], i, item[0])
     })
   }
+
   removeCasted(elSelector, scope) {
     for (let i = 0; i < this.casted.length; i++) {
       const el = this.casted[i]
@@ -168,68 +264,70 @@ class List {
       }
     }
   }
-  updateCasted(...args) {
-    const changeType = args[0]
-    switch (changeType) {
-      case `set`:
-        this.casted.forEach(item => {
-          const elSelector = item[0]
-          const cb = item[1]
-          const scope = item[2]
-          const el = scope.querySelector(elSelector)
 
-          const key = this.list[p][1]
-          const index = args[1]
-          const newVal = args[2]
+}
 
-          const beforeStartEl = el.querySelector(`[data-key="${key}"]`).previousElementSibling
-          el.removeChild(el.querySelector(`[data-key="${key}"]`))
-          beforeStartEl.insertAdjacentHTML(`afterend`, cb(key, index, newVal))
+function updateCasted(...args) {
+  const changeType = args[0]
+  switch (changeType) {
+    case `set`:
+      this.casted.forEach(item => {
+        const elSelector = item[0]
+        const cb = item[1]
+        const scope = item[2]
+        const el = scope.querySelector(elSelector)
+
+        const key = this.list[p][1]
+        const index = args[1]
+        const newVal = args[2]
+
+        const beforeStartEl = el.querySelector(`[data-key="${key}"]`).previousElementSibling
+        el.removeChild(el.querySelector(`[data-key="${key}"]`))
+        beforeStartEl.insertAdjacentHTML(`afterend`, cb(key, index, newVal))
+      })
+      break
+    case `push`:
+      this.casted.forEach(item => {
+        const elSelector = item[0]
+        const cb = item[1]
+        const scope = item[2]
+        const el = scope.querySelector(elSelector)
+
+        const start = this.list.length
+        const items = args.slice(1, args.length)
+
+        items.forEach((item, i) => {
+          el.innerHTML += cb(item[1], start + i, item[0])
         })
-        break
-      case `push`:
-        this.casted.forEach(item => {
-          const elSelector = item[0]
-          const cb = item[1]
-          const scope = item[2]
-          const el = scope.querySelector(elSelector)
+      })
+      break
+    case `splice`:
+      this.casted.forEach(item => {
+        const elSelector = item[0]
+        const cb = item[1]
+        const scope = item[2]
+        const el = scope.querySelector(elSelector)
 
-          const start = this.list.length
-          const items = args.slice(1, args.length)
+        const start = args[1]
+        const deleteCount = args[2]
+        const items = args.slice(3, args.length)
 
-          items.forEach((item, i) => {
-            el.innerHTML += cb(item[1], start + i, item[0])
-          })
+        const elKey = this.list[start][1]
+
+        //先删除对应元素
+        const startEl = el.querySelector(`[data-key="${elKey}"]`)
+
+        for (let i = 0; i < deleteCount - 1; i++) {
+          el.removeChild(startEl.nextElementSibling)
+        }
+        el.removeChild(startEl)
+        //再添加对应元素
+
+        items.forEach((item, i) => {
+          beforeStartEl.insertAdjacentHTML(`afterend`, cb(item[1], start + i, item[0]))
         })
-        break
-      case `splice`:
-        this.casted.forEach(item => {
-          const elSelector = item[0]
-          const cb = item[1]
-          const scope = item[2]
-          const el = scope.querySelector(elSelector)
-
-          const start = args[1]
-          const deleteCount = args[2]
-          const items = args.slice(3, args.length)
-
-          const elKey = this.list[start][1]
-
-          //先删除对应元素
-          const startEl = el.querySelector(`[data-key="${elKey}"]`)
-
-          for (let i = 0; i < deleteCount - 1; i++) {
-            el.removeChild(startEl.nextElementSibling)
-          }
-          el.removeChild(startEl)
-          //再添加对应元素
-
-          items.forEach((item, i) => {
-            beforeStartEl.insertAdjacentHTML(`afterend`, cb(item[1], start + i, item[0]))
-          })
-        })
-        break
-    }
+      })
+      break
   }
 }
 

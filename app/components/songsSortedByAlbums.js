@@ -1,7 +1,7 @@
 const ebus = require(`../utils/eBus.js`)
 const icons = require(`../assets/icons.js`)
 const { songsSortedByAZ } = require(`../assets/components.js`)
-const { listSList, storeStates, shared } = require(`../states.js`)
+const { listSList, storeStates, shared, playList } = require(`../states.js`)
 const second2time = require(`../utils/second2time.js`)
 const states = storeStates.states
 
@@ -44,7 +44,7 @@ class AQUASongsSortedByAlbums extends HTMLElement {
     const groupTemplate = function (group) {
       const itemsString = group[0].map(k => {
         let strBuf = ``
-        const song = listSList.list[shared.keyItemBuf[k]][0]
+        const song = listSList.kGet(k)[0]
         strBuf += itemTemplate(k, song)
         return strBuf
       }).join(``)
@@ -64,7 +64,7 @@ class AQUASongsSortedByAlbums extends HTMLElement {
     main.innerHTML = ``
     shared.sortBuf.sortedAlbums = shared.sortBuf.sortedAlbums ?
       shared.sortBuf.sortedAlbums :
-      storeStates.states.sortFn.sortedAlbums()
+      states.sortFn.sortedAlbums()
     const { en: uen, zh: uzh } = shared.sortBuf.sortedAlbums
 
     function addGroups(sorted) {
@@ -81,13 +81,12 @@ class AQUASongsSortedByAlbums extends HTMLElement {
       const isPlayBtn = e.target.classList.contains(`play`)
       const isAddBtn = e.target.classList.contains(`add`)
       if (isPlayBtn) {
-        const key = e.target.dataset.key
-        states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
-        ebus.emit(`play this`, states.keyOfSrcBuf)
+        const key = parseInt(e.target.dataset.key)
+        states.playListPointer = playList.getValues().indexOf(key)
+        ebus.emit(`play this`, states.playListPointer)
       }
       if (isAddBtn) {
-        const index = shared.keyItemBuf[e.target.dataset.key]
-        const pathOfSong = listSList.list[index][0].path
+        const pathOfSong = listSList.kGet(e.target.dataset.key)[0].path
         shared.songsToAdd.push(pathOfSong)
         shared.showAdd(states, e)
       }
@@ -101,7 +100,7 @@ class AQUASongsSortedByAlbums extends HTMLElement {
 
     //主题色同步
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
   }
@@ -114,7 +113,7 @@ class AQUASongsSortedByAlbums extends HTMLElement {
     ebus.on(`Sorting ready`, this.cb)
     console.log(`AQUASongsSortedByAlbums connected`)
 
-    if (storeStates.states.sortReady) {
+    if (states.sortReady) {
       this.run()
     }
   }

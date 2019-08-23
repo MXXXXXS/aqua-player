@@ -1,7 +1,7 @@
 const ebus = require(`../utils/eBus.js`)
 const icons = require(`../assets/icons.js`)
 const { songsSortedByAZ } = require(`../assets/components.js`)
-const { listSList, storeStates, shared } = require(`../states.js`)
+const { listSList, storeStates, shared, playList } = require(`../states.js`)
 const second2time = require(`../utils/second2time.js`)
 const states = storeStates.states
 
@@ -46,7 +46,7 @@ class AQUASongsSortedByAZ extends HTMLElement {
         let strBuf = ``
         const key = item[0]
         key.forEach(k => {
-          const song = listSList.list[shared.keyItemBuf[k]][0]
+          const song = listSList.kGet(k)[0]
           strBuf += itemTemplate(k, song)
         })
         return strBuf
@@ -68,7 +68,7 @@ class AQUASongsSortedByAZ extends HTMLElement {
     main.innerHTML = ``
     shared.sortBuf.sortedInitialSongs = shared.sortBuf.sortedInitialSongs ?
       shared.sortBuf.sortedInitialSongs :
-      storeStates.states.sortFn.sortedInitialSongs()
+      states.sortFn.sortedInitialSongs()
     const { en: uen, zh: uzh } = shared.sortBuf.sortedInitialSongs
 
     function addGroups(sorted) {
@@ -87,13 +87,12 @@ class AQUASongsSortedByAZ extends HTMLElement {
       const isPlayBtn = e.target.classList.contains(`play`)
       const isAddBtn = e.target.classList.contains(`add`)
       if (isPlayBtn) {
-        const key = e.target.dataset.key
-        states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
-        ebus.emit(`play this`, states.keyOfSrcBuf)
+        const key = parseInt(e.target.dataset.key)
+        states.playListPointer = playList.getValues().indexOf(key)
+        ebus.emit(`play this`, states.playListPointer)
       }
       if (isAddBtn) {
-        const index = shared.keyItemBuf[e.target.dataset.key]
-        const pathOfSong = listSList.list[index][0].path
+        const pathOfSong = listSList.kGet(e.target.dataset.key)[0].path
         shared.songsToAdd.push(pathOfSong)
         shared.showAdd(states, e)
       }
@@ -107,7 +106,7 @@ class AQUASongsSortedByAZ extends HTMLElement {
 
     //主题色同步
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
   }
@@ -120,7 +119,7 @@ class AQUASongsSortedByAZ extends HTMLElement {
     ebus.on(`Sorting ready`, this.cb)
     console.log(`AQUASongsSortedByAZ connected`)
 
-    if (storeStates.states.sortReady) {
+    if (states.sortReady) {
       this.run()
     }
   }

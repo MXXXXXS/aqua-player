@@ -1,10 +1,6 @@
-const AQUAController = require(`./components/controller.js`)
 const AQUASongs = require(`./components/songs.js`)
 const AQUASingers = require(`./components/singers.js`)
-const AQUAMenu = require(`./components/menu.js`)
-const AQUAMyMusic = require(`./components/myMusic.js`)
 const AQUAAlbums = require(`./components/albums.js`)
-const AQUASettings = require(`./components/settings.js`)
 const AQUASongsSortedByAZ = require(`./components/songsSortedByAZ.js`)
 const AQUASongsSortedBySingers = require(`./components/songsSortedBySingers.js`)
 const AQUASongsSortedByAlbums = require(`./components/songsSortedByAlbums.js`)
@@ -20,7 +16,7 @@ const states = storeStates.states
 //条件显示
 const currentPlayingSwitcher = new Router(`currentPlayingSwitcher`)
 currentPlayingSwitcher.add(`#main`, `aqua-current-playing`)
-storeStates.addCb(`RMainCurrentPlaying`, item => {
+storeStates.watch(`RMainCurrentPlaying`, item => {
   currentPlayingSwitcher.show(item)
 })
 
@@ -28,7 +24,7 @@ currentPlayingSwitcher.show(`#main`)
 
 const menuItems = new Router(`menuItems`)
 menuItems.add(`aqua-list`, `aqua-settings`, `aqua-play-list`)
-storeStates.addCb(`RMenuItems`, item => {
+storeStates.watch(`RMenuItems`, item => {
   menuItems.show(item)
 })
 
@@ -77,10 +73,10 @@ function switcher(RSongsItems, filterSortBy, filterType) {
   }
 }
 
-if (storeStates.states.sortReady) {
+if (states.sortReady) {
   run()
 } else {
-  storeStates.addCb(`sortReady`, (ready) => {
+  storeStates.watch(`sortReady`, (ready) => {
     if (ready)
       run()
   })

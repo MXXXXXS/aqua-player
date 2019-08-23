@@ -1,8 +1,9 @@
 const { controller } = require(`../assets/components.js`)
 const {
-  changeSongAndPlay,
   playBack,
-  stopAudioSrc
+  stopAudioSrc,
+  playNextSong,
+  playPreviousSong
 } = require(`../player.js`)
 const second2time = require(`../utils/second2time.js`)
 const { storeStates, shared, playList } = require(`../states.js`)
@@ -36,7 +37,7 @@ class AQUAController extends HTMLElement {
     const mask = root.querySelector(`.mask`)
 
     //专辑封面显示
-    storeStates.addCb(`coverSrc`, src => {
+    storeStates.watch(`coverSrc`, src => {
       const el = coverContainer
       el.innerHTML = ``
       if (src !== `svg`) {
@@ -53,21 +54,21 @@ class AQUAController extends HTMLElement {
     })
 
     //歌曲信息绑定
-    storeStates.add(`name`, name, `innerText`)
-    storeStates.add(`artist`, artist, `innerText`)
+    storeStates.sync(`name`, name, `innerText`)
+    storeStates.sync(`artist`, artist, `innerText`)
 
     //已消逝时长文字绑定
-    storeStates.addCb(`timePassedText`, text => {
+    storeStates.watch(`timePassedText`, text => {
       timePassed.innerText = text
     })
 
     //时间线值绑定
-    storeStates.addCb(`offset`, offset => {
+    storeStates.watch(`offset`, offset => {
       timeLine.value = (offset / states.duration) * 1000
     })
 
     //总时长文字绑定
-    storeStates.addCb(`formatedDuration`, text => {
+    storeStates.watch(`formatedDuration`, text => {
       duration.innerText = text
     })
 
@@ -75,7 +76,7 @@ class AQUAController extends HTMLElement {
     more.addEventListener(`click`, () => {
       padMore.style.display = `block`
     })
-    
+
     mask.addEventListener(`click`, () => {
       padMore.style.display = `none`
     })
@@ -86,17 +87,11 @@ class AQUAController extends HTMLElement {
         playList.changeSource(shared.playListBuf)
       } else {
         states.shuffled = true
-        const keys = playList.list.map(item => item[0])
-        playList.changeSource(keys.shuffle())
+        playList.changeSource(playList.getValues().shuffle())
       }
     })
 
-    lastSong.addEventListener(`click`, (e) => {
-      if (states.keyOfSrcBuf - 1 >= 0) {
-        states.keyOfSrcBuf -= 1
-        changeSongAndPlay()
-      }
-    })
+    lastSong.addEventListener(`click`, playPreviousSong)
 
     play.addEventListener(`click`, () => {
       if (states.playing) {
@@ -106,12 +101,7 @@ class AQUAController extends HTMLElement {
       }
     })
 
-    nextSong.addEventListener(`click`, async (e) => {
-      if (states.keyOfSrcBuf + 1 < playList.list.length) {
-        states.keyOfSrcBuf += 1
-        changeSongAndPlay()
-      }
-    })
+    nextSong.addEventListener(`click`, playNextSong)
 
     timeLine.addEventListener(`mousedown`, (e) => {
       clearInterval(shared.timer)
@@ -142,7 +132,7 @@ class AQUAController extends HTMLElement {
 
     //主题色同步
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
   }

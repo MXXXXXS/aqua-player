@@ -19,7 +19,7 @@ class AQUAAddPlayList extends HTMLElement {
 
     //主题色绑定
     root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
@@ -30,7 +30,7 @@ class AQUAAddPlayList extends HTMLElement {
 
     //显示隐藏切换
     main.style.display = `none`
-    storeStates.addCb(`showAddPlayList`, visible => {
+    storeStates.watch(`showAddPlayList`, visible => {
       if (visible) {
         main.style.display = `flex`
       } else {

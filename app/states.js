@@ -4,8 +4,7 @@ const shared = {
   timer: ``,
   audioState: 0,
   sortBuf: {},
-  keyItemBuf: {},
-  pathItemBuf: {},
+  pathItemBuf: {}, //方便从歌曲路径获得index(用于从listSList获取歌曲)
   playListBuf: [],
   songsToAdd: [],
   drawCover: function (coverBuffer, picture, icons, elSelector, scope) {
@@ -48,7 +47,7 @@ const storeStates = new Store({
   formatedDuration: ``,
   timePassedText: ``,
   coverSrc: ``,
-  keyOfSrcBuf: 0,
+  playListPointer: 0,
   name: ``,
   artist: ``,
   total: 0,
@@ -72,6 +71,7 @@ const listSPath = new List([])
 
 const sortType = new List([])
 
+//存放当前播放的歌曲的index(用于从listSList获取歌曲)
 const playList = new List([])
 
 const listNames = new List([])

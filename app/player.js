@@ -13,16 +13,16 @@ const interval = 100
 const coverBuffer = {}
 
 //状态绑定
-storeStates.add(`gainVal`, gainNode.gain, `value`)
-storeStates.addCb(`keyOfSrcBuf`, (val) => {
-  localStorage.setItem(`keyOfSrcBuf`, val)
+storeStates.sync(`gainVal`, gainNode.gain, `value`)
+storeStates.watch(`playListPointer`, (val) => {
+  localStorage.setItem(`playListPointer`, val)
 })
-storeStates.addCb(`themeColor`, (val) => {
+storeStates.watch(`themeColor`, (val) => {
   localStorage.setItem(`themeColor`, val)
 })
 
 //全局状态初始化
-states.keyOfSrcBuf = parseInt(localStorage.getItem(`keyOfSrcBuf`)) || 0
+states.playListPointer = parseInt(localStorage.getItem(`playListPointer`)) || 0
 states.themeColor = localStorage.getItem(`themeColor`)
 
 //状态变量
@@ -34,8 +34,8 @@ let img
 
 async function initialSrcBuf(successCb = () => { }, errorCb = () => { }) {
   try {
-    const key = playList.list[states.keyOfSrcBuf][0]
-    let song = listSList.list[shared.keyItemBuf[key]][0]
+    const index = playList.list[states.playListPointer][0]
+    let song = listSList.list[index][0]
     if (shared.audioState === 0) {
       shared.audioState = 0.5
       states.duration = song.duration
@@ -204,10 +204,10 @@ async function drawCover(picture) {
 
 async function loadSong() {
   //当listSList.list为空时, states.keyOfSrcBuf为 -1
-  if (states.keyOfSrcBuf >= 0) {
+  if (states.playListPointer >= 0) {
     //从当前播放列表索引歌曲
-    const key = playList.list[states.keyOfSrcBuf][0]
-    let song = listSList.list[shared.keyItemBuf[key]][0]
+    const index = playList.list[states.playListPointer][0]
+    let song = listSList.list[index][0]
     //加载图片
     drawCover(song.picture)
     //同步名称, 歌手, 时长, 总时长
@@ -234,7 +234,7 @@ async function loadSong() {
 if (storeStates.states.sListLoaded && listSList.list.length !== 0) {
   changeSong()
 } else {
-  storeStates.addCb(`sListLoaded`, (ready) => {
+  storeStates.watch(`sListLoaded`, (ready) => {
     if (ready && states.currentSongFinished)
       changeSong()
   })
@@ -246,14 +246,14 @@ ebus.on(`play this`, () => {
 })
 
 //进度条同步与播放完自动切歌
-storeStates.addCb(`offset`, offset => {
+storeStates.watch(`offset`, offset => {
   if (offset > states.duration) {
     states.currentSongFinished = true
     stopAudioSrc()
     states.offset = states.duration
     states.timePassedText = second2time(states.duration, states.fillFlag)
-    if (states.keyOfSrcBuf + 1 < states.total) {
-      states.keyOfSrcBuf += 1
+    if (states.playListPointer + 1 < states.total) {
+      states.playListPointer += 1
       changeSongAndPlay()
     }
   } else {
@@ -261,8 +261,28 @@ storeStates.addCb(`offset`, offset => {
   }
 })
 
+function playNextSong() {
+  if (states.playListPointer + 1 < playList.list.length) {
+    if (shared.audioState !== 0.5) {
+      states.playListPointer += 1
+      changeSongAndPlay()
+    }
+  }
+}
+
+function playPreviousSong() {
+  if (states.playListPointer - 1 >= 0) {
+    if (shared.audioState !== 0.5) {
+      states.playListPointer -= 1
+      changeSongAndPlay()
+    }
+  }
+}
+
 module.exports = {
   changeSongAndPlay,
   playBack,
-  stopAudioSrc
+  stopAudioSrc,
+  playNextSong,
+  playPreviousSong
 }

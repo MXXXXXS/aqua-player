@@ -2,8 +2,9 @@ const { myMusic } = require(`../assets/components.js`)
 const { List } = require(`../utils/store.js`)
 const icons = require(`../assets/icons.js`)
 const { storeStates, sortType } = require(`../states.js`)
-const ebus = require(`../utils/eBus.js`)
 const states = storeStates.states
+const ebus = require(`../utils/eBus.js`)
+
 class AQUAMyMusic extends HTMLElement {
   constructor() {
     super()
@@ -19,8 +20,8 @@ class AQUAMyMusic extends HTMLElement {
     const sortBy = root.querySelector(`#sortBy`)
     const type = root.querySelector(`#type`)
 
-    storeStates.add(`filterSortBy`, sortBy, `innerText`)
-    storeStates.add(`filterType`, type, `innerText`)
+    storeStates.sync(`filterSortBy`, sortBy, `innerText`)
+    storeStates.sync(`filterType`, type, `innerText`)
 
     this.sortBy = new List([`无`, `A到Z`, `无`])
     this.type = new List([`所有流派`, ``, `所有流派`])
@@ -37,26 +38,26 @@ class AQUAMyMusic extends HTMLElement {
     }
 
     //同步显示的项目数
-    storeStates.add(`total`, root.querySelector(`#total`), `innerText`)
+    storeStates.sync(`total`, root.querySelector(`#total`), `innerText`)
 
     //初始化当前下标
     root.querySelector(`.songs`).setAttribute(`id`, `acticeTag`)
 
     //三个选项卡切换
     root.querySelector(`.songs`).addEventListener(`click`, () => {
-      storeStates.states.RSongsItems = `AQUASongs`
+      states.RSongsItems = `AQUASongs`
       root.querySelector(`#acticeTag`).removeAttribute(`id`)
       root.querySelector(`.songs`).setAttribute(`id`, `acticeTag`)
       ebus.emit(`component switch`, `AQUASongs`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
     root.querySelector(`.singers`).addEventListener(`click`, () => {
-      storeStates.states.RSongsItems = `AQUASingers`
+      states.RSongsItems = `AQUASingers`
       root.querySelector(`#acticeTag`).removeAttribute(`id`)
       root.querySelector(`.singers`).setAttribute(`id`, `acticeTag`)
       ebus.emit(`component switch`, `AQUASingers`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
     })
     root.querySelector(`.albums`).addEventListener(`click`, () => {
-      storeStates.states.RSongsItems = `AQUAAlbums`
+      states.RSongsItems = `AQUAAlbums`
       root.querySelector(`#acticeTag`).removeAttribute(`id`)
       root.querySelector(`.albums`).setAttribute(`id`, `acticeTag`)
       ebus.emit(`component switch`, `AQUAAlbums`, this.sortBy.list[curTag.index][0], this.type.list[curTag.index][0])
@@ -68,14 +69,14 @@ class AQUAMyMusic extends HTMLElement {
     })
     //主题色绑定
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
     //同步"排序依据", 同步"类型"
-    this.sortBy.addCb((p, val, oldVal) => {
+    this.sortBy.onChange((p, val, oldVal) => {
       states.filterSortBy = val
     })
-    this.type.addCb((p, val, oldVal) => {
+    this.type.onChange((p, val, oldVal) => {
       states.filterType = val
     })
 
@@ -127,7 +128,7 @@ class AQUAMyMusic extends HTMLElement {
     }
 
     //监听当前选项卡, 切换"排序依据"的内容
-    storeStates.addCb(`RSongsItems`, (RSongsItems) => {
+    storeStates.watch(`RSongsItems`, (RSongsItems) => {
       switch (RSongsItems) {
         case `AQUASongs`:
           curTag.index = 0
@@ -203,7 +204,7 @@ class AQUAMyMusic extends HTMLElement {
   run() {
     shared.sortBuf.sortedGenres = shared.sortBuf.sortedGenres ?
       shared.sortBuf.sortedGenres :
-      storeStates.states.sortFn.sortedGenres()
+      states.sortFn.sortedGenres()
     const { en: uen, zh: uzh } = shared.sortBuf.sortedGenres
 
     this.sortBy.changeSource([`无`, `A到Z`, `无`])
@@ -233,7 +234,7 @@ class AQUAMyMusic extends HTMLElement {
 
     ebus.on(`Sorting ready`, this.cb)
 
-    if (storeStates.states.sListLoaded) {
+    if (states.sListLoaded) {
       this.run()
     }
   }

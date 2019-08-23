@@ -39,7 +39,7 @@ class AQUAAlbumsSortedByAZ extends HTMLElement {
       const keys = items.map(item => item[0][0])
 
       const itemsString = keys.map(k => {
-        const song = listSList.list[shared.keyItemBuf[k]][0]
+        const song = listSList.kGet(k)[0]
         return itemTemplate(k, song)
       }).join(``)
 
@@ -59,7 +59,7 @@ class AQUAAlbumsSortedByAZ extends HTMLElement {
     main.innerHTML = ``
     shared.sortBuf.sortedInitialAlbums = shared.sortBuf.sortedInitialAlbums ?
       shared.sortBuf.sortedInitialAlbums :
-      storeStates.states.sortFn.sortedInitialAlbums()
+      states.sortFn.sortedInitialAlbums()
     const { en: uen, zh: uzh } = shared.sortBuf.sortedInitialAlbums
     function addGroups(sorted) {
       sorted.forEach(group => {
@@ -82,14 +82,14 @@ class AQUAAlbumsSortedByAZ extends HTMLElement {
 
     allItems.forEach((item, i) => {
       const key = item.dataset.key
-      const song = listSList.list[shared.keyItemBuf[key]][0]
+      const song = listSList.kGet(key)[0]
       this.coverBuffers.push({})
       shared.drawCover(this.coverBuffers[i], song.picture, icons, `.item[data-key="${key}"] .coverContainer`, this.root)
     })
 
     //主题色同步
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
   }
@@ -103,7 +103,7 @@ class AQUAAlbumsSortedByAZ extends HTMLElement {
     ebus.on(`Sorting ready`, this.cb)
     console.log(`AQUAAlbumsSortedByAZ connected`)
 
-    if (storeStates.states.sortReady) {
+    if (states.sortReady) {
       this.run()
     }
   }

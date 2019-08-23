@@ -58,13 +58,12 @@ class AQUASongs extends HTMLElement {
         const isPlayBtn = e.target.classList.contains(`play`)
         const isAddBtn = e.target.classList.contains(`add`)
         if (isPlayBtn) {
-          const key = e.target.dataset.key
-          states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
-          ebus.emit(`play this`, states.keyOfSrcBuf)
+          const key = parseInt(e.target.dataset.key)
+          states.playListPointer = playList.getValues().indexOf(key)
+          ebus.emit(`play this`, states.playListPointer)
         }
         if (isAddBtn) {
-          const index = shared.keyItemBuf[e.target.dataset.key]
-          const pathOfSong = listSList.list[index][0].path
+          const pathOfSong = listSList.kGet(e.target.dataset.key)[0].path
           shared.songsToAdd.push(pathOfSong)
           shared.showAdd(states, e)
         }
@@ -76,7 +75,7 @@ class AQUASongs extends HTMLElement {
     this.cb = this.run.bind(this)
     console.log(`connected songs`)
     ebus.on(`Updated listSList and listSPath`, this.cb)
-    if (storeStates.states.sListLoaded) {
+    if (states.sListLoaded) {
       this.run()
     }
   }

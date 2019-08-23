@@ -1,6 +1,6 @@
 const icons = require(`../assets/icons.js`)
 const { albumsSortedByYears } = require(`../assets/components.js`)
-const { storeStates, shared } = require(`../states.js`)
+const { storeStates, shared, listSList } = require(`../states.js`)
 const states = storeStates.states
 const ebus = require(`../utils/eBus.js`)
 
@@ -39,7 +39,7 @@ class AQUAAlbumsSortedByYears extends HTMLElement {
       const keys = []
       const albums = []
       group[0].forEach(key => {
-        const album = listSList.list[shared.keyItemBuf[key]][0].album
+        const album = listSList.kGet(key)[0].album
         if (!albums.includes(album)) {
           albums.push(album)
           keys.push(key)
@@ -48,7 +48,7 @@ class AQUAAlbumsSortedByYears extends HTMLElement {
 
       const itemsString = keys.map(k => {
         let strBuf = ``
-        const song = listSList.list[shared.keyItemBuf[k]][0]
+        const song = listSList.kGet(k)[0]
         strBuf += itemTemplate(k, song)
         return strBuf
       }).join(``)
@@ -69,7 +69,7 @@ class AQUAAlbumsSortedByYears extends HTMLElement {
     main.innerHTML = ``
     shared.sortBuf.sortedYears = shared.sortBuf.sortedYears ?
       shared.sortBuf.sortedYears :
-      storeStates.states.sortFn.sortedYears()
+      states.sortFn.sortedYears()
     const { en: uen, zh: uzh } = shared.sortBuf.sortedYears
     function addGroups(sorted) {
       sorted.forEach(group => {
@@ -90,14 +90,14 @@ class AQUAAlbumsSortedByYears extends HTMLElement {
 
     allItems.forEach((item, i) => {
       const key = item.dataset.key
-      const song = listSList.list[shared.keyItemBuf[key]][0]
+      const song = listSList.kGet(key)[0]
       this.coverBuffers.push({})
       shared.drawCover(this.coverBuffers[i], song.picture, icons, `.item[data-key="${key}"] .coverContainer`, this.root)
     })
 
     //主题色同步
     this.root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       this.root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
   }
@@ -111,7 +111,7 @@ class AQUAAlbumsSortedByYears extends HTMLElement {
     ebus.on(`Sorting ready`, this.cb)
     console.log(`AQUAAlbumsSortedByYears connected`)
 
-    if (storeStates.states.sortReady) {
+    if (states.sortReady) {
       this.run()
     }
   }

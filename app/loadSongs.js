@@ -1,7 +1,8 @@
 const path = require(`path`)
 const fs = require(`fs`)
 const ebus = require(`./utils/eBus.js`)
-const { listSList, storeStates, listSPath, shared, playList } = require(`./states.js`)
+const { listSList, storeStates, shared, playList } = require(`./states.js`)
+const states = storeStates.states
 const { getMetadata } = require(`./audio.js`)
 const searchFolder = require(`./utils/searchFolder.js`)
 
@@ -205,30 +206,28 @@ async function refreshSongs() {
       listSList.changeSource(songs)
 
       /***********************初始化***********************/
-      shared.keyItemBuf = {}
       shared.pathItemBuf = {}
       if (listSList.list.length !== 0) {
         listSList.list.forEach((item, i) => {
-          shared.keyItemBuf[item[1]] = i
           shared.pathItemBuf[item[0].path] = i
         })
-        playList.changeSource(Object.keys(shared.keyItemBuf))
+        playList.changeSource(listSList.getIndexes())
         //检查当前的歌曲指针是否越界
-        if (storeStates.states.keyOfSrcBuf >= playList.list.length) {
-          storeStates.states.keyOfSrcBuf = playList.list.length - 1
-        } else if (storeStates.states.keyOfSrcBuf < 0) {
-          storeStates.states.keyOfSrcBuf = 0
+        if (states.playListPointer >= playList.list.length) {
+          states.playListPointer = playList.list.length - 1
+        } else if (states.playListPointer < 0) {
+          states.playListPointer = 0
         }
       } else {
         playList.changeSource([])
-        storeStates.states.keyOfSrcBuf = -1
+        states.playListPointer = -1
       }
 
-      shared.playListBuf = playList.list.map(item => item[0])
+      shared.playListBuf = playList.getValues()
       /***********************初始化***********************/
 
       //初始化完成信号
-      storeStates.states.sListLoaded = true
+      states.sListLoaded = true
       ebus.emit(`Updated listSList and listSPath`)
     })
 }

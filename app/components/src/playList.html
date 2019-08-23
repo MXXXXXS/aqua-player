@@ -77,6 +77,8 @@
   .controller {
     display: flex;
     margin-bottom: 36px;
+    justify-content: space-between;
+    max-width: 500px;
   }
 
   .button>* {
@@ -96,7 +98,6 @@
     padding-left: 5px;
     line-height: 36px;
     display: flex;
-    margin-right: 50px;
   }
 
   .infoAndController {
@@ -117,6 +118,7 @@
 
   .head {
     display: flex;
+    color: white;
   }
 
   .coverContainer {
@@ -160,7 +162,7 @@
     display: flex;
     align-items: center;
     height: inherit;
-    width: 20vw;
+    width: 15vw;
   }
 
   .checkBox {
@@ -169,6 +171,10 @@
     height: 20px;
     margin: 12px;
     outline: 1px solid black;
+  }
+
+  .list {
+    margin: 40px 20px 0 20px;
   }
 
   .list>div:hover .checkBox {
@@ -222,7 +228,7 @@
   }
 
   .artist {
-    width: 20vw;
+    width: 15vw;
   }
 
   .album {
@@ -250,13 +256,13 @@
     flex: 1;
   }
 
-  @media (max-width: 1200px) {
+  /* @media (max-width: 1200px) {
     .album {
       display: none;
     }
 
     .name {
-      width: 25vw;
+      width: 15vw;
     }
   }
 
@@ -270,6 +276,6 @@
     .style {
       display: none;
     }
-  }
+  } */
 </style>
 <script type="module" src="../../assets/devIcon.js"></script>

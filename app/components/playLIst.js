@@ -3,11 +3,10 @@ const { List } = require(`../utils/store.js`)
 const icons = require(`../assets/icons.js`)
 const { listSList, storeStates, shared, playList } = require(`../states.js`)
 const states = storeStates.states
-const { ipcRenderer } = require(`electron`)
-const path = require(`path`)
 const ebus = require(`../utils/eBus.js`)
 const { modifyStars, modifyPlayLists } = require(`../loadSongs.js`)
 const second2time = require(`../utils/second2time.js`)
+const {changeSongAndPlay} = require(`../player.js`)
 
 class AQUAPlayList extends HTMLElement {
   constructor() {
@@ -29,7 +28,7 @@ class AQUAPlayList extends HTMLElement {
 
     //主题色绑定
     root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.addCb(`themeColor`, themeColor => {
+    storeStates.watch(`themeColor`, themeColor => {
       root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
     })
 
@@ -51,7 +50,7 @@ class AQUAPlayList extends HTMLElement {
       }
     }
 
-    storeStates.addCb(`playList`, refresh)
+    storeStates.watch(`playList`, refresh)
 
     ebus.on(`refresh playList`, () => {
       refresh(states.playList)
@@ -70,7 +69,7 @@ class AQUAPlayList extends HTMLElement {
         ${song.title}
       </div>
       <div class="icon play" data-key="${key}">${icons.play}</div>
-      <div class="icon add" data-key="${key}">${icons.add}</div>
+      <div class="icon remove" data-key="${key}">${icons.remove}</div>
     </div>
     <div class="attribute">
       <div class="artist">${song.artist}</div>
@@ -89,23 +88,22 @@ class AQUAPlayList extends HTMLElement {
     //按键功能绑定
     list.addEventListener(`click`, e => {
       const isPlayBtn = e.target.classList.contains(`play`)
-      const isAddBtn = e.target.classList.contains(`add`)
+      const isRemoveBtn = e.target.classList.contains(`remove`)
       if (isPlayBtn) {
-        const key = e.target.dataset.key
-        states.keyOfSrcBuf = playList.list.map(item => item[0]).indexOf(key)
-        ebus.emit(`play this`, states.keyOfSrcBuf)
+        const key = parseInt(e.target.dataset.key)
+        states.playListPointer = playList.getKeys().indexOf(key)
+        ebus.emit(`play this`, states.playListPointer)
       }
-      if (isAddBtn) {
-        const index = shared.keyItemBuf[e.target.dataset.key]
-        const pathOfSong = listSList.list[index][0].path
-        shared.songsToAdd.push(pathOfSong)
-        shared.showAdd(states, e)
+      if (isRemoveBtn) {
+
       }
     })
 
     playAll.addEventListener(`click`, e => {
-      const keys = renderList.list.map(item => shared.pathItemBuf[item[0].path])
-      playList.changeSource(keys)
+      const indexes = renderList.list.map(item => shared.pathItemBuf[item[0].path])
+      states.playListPointer = 0
+      playList.changeSource(indexes)
+      changeSongAndPlay()
     })
 
   }

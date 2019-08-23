@@ -7,8 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch store.js",
-      "program": "${workspaceFolder}/app/utils/store.js",
+      "name": "Test store.js",
+      "program": "${workspaceFolder}/app/utils/test/testStore.js",
     },
     {
       "type": "node",
