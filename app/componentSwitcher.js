@@ -34,7 +34,7 @@ menuItems.show(`aqua-list`)
 const songsItems = new RouterEL(`songsItems`, document, AQUAAlbumsSortedBySingers, AQUAAlbumsSortedByAZ, AQUAAlbumsSortedByYears, AQUASongs, AQUASongsSortedByAZ, AQUASongsSortedBySingers, AQUASongsSortedByAlbums, AQUASingers, AQUAAlbums)
 
 //初始打开时默认显示
-songsItems.to(`AQUASongs`)
+// songsItems.to(`AQUASongs`)
 
 ebus.on(`component switch`, switcher)
 

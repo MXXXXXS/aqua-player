@@ -21,6 +21,7 @@ const {storeStates, listSPath, listSList, shared, sortType, playList} = require(
 const ebus = require(`./utils/eBus.js`)
 require(`./sort.js`)
 require(`./componentSwitcher.js`)
+const {refreshSongs} = require(`./loadSongs.js`)
 
 const AQUAController = require(`./components/controller.js`)
 const AQUAMenu = require(`./components/menu.js`)
@@ -39,3 +40,5 @@ customElements.define(`aqua-current-playing`, AQUACurrentPlaying)
 customElements.define(`aqua-add-play-list`, AQUAAddPlayList)
 customElements.define(`aqua-add`, AQUAAdd)
 customElements.define(`aqua-play-list`, AQUAPlayList)
+
+refreshSongs()

@@ -90,9 +90,18 @@ class List {
     if (Array.isArray(arr)) {
       const _this = this
       this.key = 0
-      arr = arr.map(val => [val, this.key++])
+      this.indexOfKeyBuf = {}
+      this.values = arr.map(val => val)
+      arr = arr.map((val, i) => {
+        const key = this.key++
+        this.indexOfKeyBuf[i] = key
+        return [val, key]
+      })
       this.callbacks = []
       this.onModifiedCbs = []
+      this.onModifiedCbs.push(() => {
+        this.values = this.list.map(item => item[0])
+      })
       this.casted = []
       this.list = new Proxy(arr, {
         set(target, p, value, receiver) {
@@ -104,6 +113,7 @@ class List {
                 cb(p, value[0], receiver[p] ? receiver[p][0] : undefined)
               })
             }
+            _this.indexOfKeyBuf[value[1]] = p
             return result
           }
           return true
@@ -114,13 +124,12 @@ class List {
   }
 
   indexOfKey(key) {
-    for (let i = 0; i < this.list.length; i++) {
-      const el = this.list[i]
-      if (el[1] === parseInt(key)) {
-        return i
-      }
+    const result = this.indexOfKeyBuf[parseInt(key)]
+    if (result !== undefined) {
+      return result
+    } else {
+      return -1
     }
-    return -1
   }
 
   valueOfKey(key) {
@@ -146,18 +155,24 @@ class List {
     const val = [value, this.key++]
     updateCasted.call(this, `set`, index, val)
     this.list[index] = val
+
+    this.onModifiedCbs.forEach(cb => cb())
   }
 
   splice(start, deleteCount, ...items) {
     items = items.map(item => [item, this.key++])
     updateCasted.call(this, `splice`, start, deleteCount, ...items)
-    this.list.splice(this.list, start, deleteCount, ...items)
+    this.list.splice(start, deleteCount, ...items)
+
+    this.onModifiedCbs.forEach(cb => cb())
   }
 
   push(...items) {
     items = items.map(item => [item, this.key++])
     updateCasted.call(this, `push`, ...items)
-    this.list.push(this.list, ...items)
+    this.list.push(...items)
+
+    this.onModifiedCbs.forEach(cb => cb())
   }
 
   kGet(key) {
@@ -211,40 +226,60 @@ class List {
 
   changeSource(newArr) {
     const _this = this
-    this.key = 0
-    newArr = newArr.map(val => [val, this.key++])
-    this.list = new Proxy(newArr, {
-      set(target, p, value, receiver) {
-        const condition = (receiver[p] && receiver[p][0] !== value[0]) || !receiver[p]
-        if (condition) {
-          const result = Reflect.set(target, p, value, receiver)
-          if (result) {
-            _this.callbacks.forEach(cb => {
-              cb(p, value[0], receiver[p] ? receiver[p][0] : undefined)
-            })
-          }
-          return result
-        }
-        return true
-      }
-    })
-    newArr.forEach((value, i) => {
-      this.callbacks.forEach(cb => {
-        cb(i, value[0])
-      })
-    })
-
-    for (const sel in this.casted) {
-      if (this.casted.hasOwnProperty(sel)) {
-        const member = this.casted[sel]
-        const el = member[2].querySelector(member[0])
-        const cb = member[1]
-        el.innerHTML = ``
-        this.list.forEach((item, i) => {
-          el.innerHTML += cb(item[1], i, item[0])
-        })
+    let isDifferent = false
+    // let isDifferent = true
+    for (let i = 0; i < newArr.length; i++) {
+      const el = newArr[i]
+      if (!Array.isArray(this.list[i]) || el !== this.list[i][0]) {
+        isDifferent = true
+        break
       }
     }
+    if (isDifferent) {
+      this.key = 0
+      this.indexOfKeyBuf = {}
+      this.values = newArr.map(val => val)
+      newArr = newArr.map((val, i) => {
+        const key = this.key++
+        this.indexOfKeyBuf[i] = key
+        return [val, key]
+      })
+      this.list = new Proxy(newArr, {
+        set(target, p, value, receiver) {
+          const condition = (receiver[p] && receiver[p][0] !== value[0]) || !receiver[p]
+          if (condition) {
+            const result = Reflect.set(target, p, value, receiver)
+            if (result) {
+              _this.callbacks.forEach(cb => {
+                cb(p, value[0], receiver[p] ? receiver[p][0] : undefined)
+              })
+            }
+            _this.indexOfKeyBuf[value[1]] = p
+            return result
+          }
+          return true
+        }
+      })
+      newArr.forEach((value, i) => {
+        this.callbacks.forEach(cb => {
+          cb(i, value[0])
+        })
+      })
+
+      for (const sel in this.casted) {
+        if (this.casted.hasOwnProperty(sel)) {
+          const member = this.casted[sel]
+          const el = member[2].querySelector(member[0])
+          const cb = member[1]
+          el.innerHTML = ``
+          this.list.forEach((item, i) => {
+            el.innerHTML += cb(item[1], i, item[0])
+          })
+        }
+      }
+    }
+
+    this.onModifiedCbs.forEach(cb => cb())
   }
 
   cast(elSelector, renderString, scope = document) {

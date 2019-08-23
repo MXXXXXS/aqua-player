@@ -90,6 +90,9 @@ class AQUAPlayList extends HTMLElement {
       const isPlayBtn = e.target.classList.contains(`play`)
       const isRemoveBtn = e.target.classList.contains(`remove`)
       if (isPlayBtn) {
+        const songsPaths = Array.from(root.querySelectorAll(`.item`))
+          .map(el => renderList.kGet(el.dataset.key)[0].path)
+        playList.changeSource(songsPaths.map(p => shared.pathItemBuf[p]))
         const key = parseInt(e.target.dataset.key)
         states.playListPointer = playList.getKeys().indexOf(key)
         ebus.emit(`play this`, states.playListPointer)

@@ -87,6 +87,9 @@ class AQUASongsSortedByAZ extends HTMLElement {
       const isPlayBtn = e.target.classList.contains(`play`)
       const isAddBtn = e.target.classList.contains(`add`)
       if (isPlayBtn) {
+        const currentList = Array.from(this.root.querySelectorAll(`.item`))
+          .map(el => listSList.indexOfKey(el.dataset.key))
+        playList.changeSource(currentList)
         const key = parseInt(e.target.dataset.key)
         states.playListPointer = playList.getValues().indexOf(key)
         ebus.emit(`play this`, states.playListPointer)

@@ -138,11 +138,11 @@ class AQUAController extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log(`Controller connected`)
+    console.log(`connected controller`)
   }
 
   disconnectedCallback() {
-    console.log(`Controller disconnected`)
+    console.log(`disconnected controller`)
   }
 }
 module.exports = AQUAController

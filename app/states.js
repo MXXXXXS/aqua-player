@@ -56,7 +56,7 @@ const storeStates = new Store({
   RMenuItems: `aqua-my-music`, //aqua-my-music, aqua-settings
   RMainCurrentPlaying: `#main`,
   filterSortBy: ``,
-  filterType: ``,
+  filterType: `所有流派`,
   shuffled: false,
   showAddPlayList: false,
   showAdd: false,

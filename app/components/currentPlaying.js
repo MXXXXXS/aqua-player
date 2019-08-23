@@ -40,7 +40,7 @@ class AQUACurrentPlaying extends HTMLElement {
 
     //一些自有状态
     let hidden = false
-    
+
     //专辑封面显示
     storeStates.watch(`coverSrc`, src => {
       coverContainers.forEach(el => {
@@ -233,7 +233,7 @@ class AQUACurrentPlaying extends HTMLElement {
 
   connectedCallback() {
     this.cb = this.run.bind(this)
-    console.log(`connected songs`)
+    console.log(`connected currentPlaying`)
     ebus.on(`Updated listSList and listSPath`, this.cb)
     if (states.sListLoaded) {
       this.run()
@@ -241,7 +241,7 @@ class AQUACurrentPlaying extends HTMLElement {
   }
 
   disconnectedCallback() {
-    console.log(`disconnected songs`)
+    console.log(`disconnected currentPlaying`)
     listSList.removeCasted(`.list`, this.root)
     ebus.removeListener(`Updated listSList and listSPath`, this.cb)
   }

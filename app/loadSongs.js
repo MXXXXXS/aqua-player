@@ -33,7 +33,7 @@ function modifyStars(method, arg) {
       const stars = tx.objectStore(`stars`)
 
       tx.oncomplete = () => {
-        console.log(`stars modified`)
+        // console.log(`stars modified`)
       }
 
       switch (method) {
@@ -222,17 +222,14 @@ async function refreshSongs() {
         playList.changeSource([])
         states.playListPointer = -1
       }
-
-      shared.playListBuf = playList.getValues()
       /***********************初始化***********************/
 
       //初始化完成信号
       states.sListLoaded = true
       ebus.emit(`Updated listSList and listSPath`)
+      console.log(`refreshed`)
     })
 }
-
-refreshSongs()
 
 function modifyPlayLists(method, ...args) {
   return new Promise((resolve, reject) => {

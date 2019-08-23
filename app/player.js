@@ -14,11 +14,19 @@ const coverBuffer = {}
 
 //状态绑定
 storeStates.sync(`gainVal`, gainNode.gain, `value`)
+
 storeStates.watch(`playListPointer`, (val) => {
   localStorage.setItem(`playListPointer`, val)
 })
+
 storeStates.watch(`themeColor`, (val) => {
   localStorage.setItem(`themeColor`, val)
+})
+
+storeStates.watch(`shuffled`, (val) => {
+  if (val === true) {
+    shared.playListBuf = playList.getValues()
+  }
 })
 
 //全局状态初始化
