@@ -124,7 +124,8 @@ BUG修复
 - [x] pinyin模块排序会把所有字符转为小写, 而genre=R&B包含大写字母, 所以统一把genre转为大写字母
 - [x] storeStates.add() 某个属性注册多个同步值, 只有第一个同步值生效
   - 修复方法: 代码有疏漏, 已经修改
-
+- [ ] 歌曲信息若带有 html 符号会被渲染, 导致 UI 错误
+  - 修复方法: 转义 html
 预览
 
 ![Alt preview](assets/sample0.jpg)

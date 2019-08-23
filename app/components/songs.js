@@ -17,23 +17,21 @@ class AQUASongs extends HTMLElement {
     function renderString(key, i, song) {
       if (states.filterType === song.genre || states.filterType === `所有流派`) {
         return `
-      <div class="item" data-key="${key}">
-        <div class="checkBox"></div>
-        <div class="name">
-      <div class="text">
-        ${song.title}
-      </div>
-      <div class="icon play" data-key="${key}"></div>
-      <div class="icon add" data-key="${key}"></div>
-    </div>
-    <div class="attribute">
-      <div class="artist">${song.artist}</div>
-      <div class="album">${song.album}</div>
-      <div class="date">${song.year}</div>
-      <div class="style">${song.genre}</div>
-    </div>
-    <div class="duration">${second2time(Math.round(song.duration))}</div>
+<div class="item" data-key="${key}">
+  <div class="checkBox"></div>
+  <div class="name">
+    <div class="text">${song.title}</div>
+    <div class="icon play" data-key="${key}"></div>
+    <div class="icon add" data-key="${key}"></div>
   </div>
+  <div class="attribute">
+    <div class="artist">${song.artist}</div>
+    <div class="album">${song.album}</div>
+    <div class="date">${song.year}</div>
+    <div class="style">${song.genre}</div>
+  </div>
+  <div class="duration">${second2time(Math.round(song.duration))}</div>
+</div>
       `
       } else {
         return ``

@@ -9,15 +9,24 @@ const searchFolder = require(`./utils/searchFolder.js`)
 async function getSongMeta(songPath) {
   songPath = path.normalize(songPath)
   const meta = await getMetadata(songPath)
+  function escape(s) {
+    let lookup = {
+      '&': `&amp;`,
+      '"': `&quot;`,
+      '<': `&lt;`,
+      '>': `&gt;`
+    }
+    return s.replace(/[&"<>]/g, (c) => lookup[c])
+  }
   return {
     folder: path.dirname(songPath),
     path: songPath,
     picture: meta.common.picture ? meta.common.picture[0] : undefined,
-    title: meta.common.title ? meta.common.title : path.basename(songPath),
-    artist: meta.common.artist ? meta.common.artist : `未知艺术家`,
-    album: meta.common.album ? meta.common.album : `未知专辑`,
+    title: meta.common.title ? escape(meta.common.title) : escape(path.basename(songPath)),
+    artist: meta.common.artist ? escape(meta.common.artist) : `未知艺术家`,
+    album: meta.common.album ? escape(meta.common.album) : `未知专辑`,
     year: meta.common.year ? meta.common.year : `未知年份`,
-    genre: meta.common.genre ? meta.common.genre[0].toUpperCase() : `未知流派`,
+    genre: meta.common.genre ? escape(meta.common.genre[0].toUpperCase()) : `未知流派`,
     duration: meta.format.duration,
     type: meta.format.codec
   }
