@@ -105,7 +105,7 @@ class List {
       this.casted = []
       this.list = new Proxy(arr, {
         set(target, p, value, receiver) {
-          const condition = (receiver[p] && receiver[p][0] !== value[0]) || !receiver[p]
+          const condition = !Array.isArray(receiver[p]) || receiver[p][0] !== value[0]
           if (condition) {
             const result = Reflect.set(target, p, value, receiver)
             if (result) {
@@ -192,7 +192,7 @@ class List {
   kSplice(key, deleteCount, ...items) {
     const index = this.list.map(item => item[1]).indexOf(parseInt(key))
     if (index >= 0) {
-      this.set(key, deleteCount, ...items)
+      this.splice(index, deleteCount, ...items)
     }
   }
 
@@ -246,7 +246,7 @@ class List {
       })
       this.list = new Proxy(newArr, {
         set(target, p, value, receiver) {
-          const condition = (receiver[p] && receiver[p][0] !== value[0]) || !receiver[p]
+          const condition = !Array.isArray(receiver[p]) || receiver[p][0] !== value[0]
           if (condition) {
             const result = Reflect.set(target, p, value, receiver)
             if (result) {

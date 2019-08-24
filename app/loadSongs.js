@@ -262,7 +262,7 @@ function modifyPlayLists(method, ...args) {
             const result = req.result
             if (result) {
               if (override) {
-                result.paths = playList
+                result.paths = paths
               } else {
                 result.paths.push(...paths)
                 result.paths = Array.from(new Set(result.paths))

@@ -154,7 +154,7 @@
     height: 220px;
   }
 
-  .play>* {
+  .icon>* {
     pointer-events: none;
   }
 
@@ -261,6 +261,15 @@
   .style {
     overflow: hidden;
     flex: 1;
+  }
+
+  .item.sortable-ghost {
+    opacity: 0;
+  }
+
+  .item.item.sortable-drag {
+    transform: scaleX(1);
+    opacity: 1;
   }
 
   /* @media (max-width: 1200px) {

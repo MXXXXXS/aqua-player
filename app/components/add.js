@@ -49,6 +49,7 @@ class AQUAAdd extends HTMLElement {
     //按钮功能绑定
     mask.addEventListener(`click`, () => {
       states.showAdd = false
+      shared.songsToAdd = []
     })
 
     menu.addEventListener(`click`, async e => {

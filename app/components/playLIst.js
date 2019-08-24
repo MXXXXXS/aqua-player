@@ -7,6 +7,7 @@ const ebus = require(`../utils/eBus.js`)
 const { modifyStars, modifyPlayLists } = require(`../loadSongs.js`)
 const second2time = require(`../utils/second2time.js`)
 const {changeSongAndPlay} = require(`../player.js`)
+const Stortable = require(`sortablejs`)
 
 class AQUAPlayList extends HTMLElement {
   constructor() {
@@ -90,6 +91,7 @@ class AQUAPlayList extends HTMLElement {
       const isPlayBtn = e.target.classList.contains(`play`)
       const isRemoveBtn = e.target.classList.contains(`remove`)
       if (isPlayBtn) {
+        e.stopPropagation()
         const songsPaths = Array.from(root.querySelectorAll(`.item`))
           .map(el => renderList.kGet(el.dataset.key)[0].path)
         playList.changeSource(songsPaths.map(p => shared.pathItemBuf[p]))
@@ -98,7 +100,8 @@ class AQUAPlayList extends HTMLElement {
         ebus.emit(`play this`, states.playListPointer)
       }
       if (isRemoveBtn) {
-
+        e.stopPropagation()
+        renderList.kSplice(e.target.dataset.key, 1)
       }
     })
 
@@ -109,6 +112,41 @@ class AQUAPlayList extends HTMLElement {
       changeSongAndPlay()
     })
 
+    //监视renderList变动
+    renderList.onModified(() => {
+      modifyPlayLists(`addToList`, renderList.getValues().map(item => item.path), states.playList, true)
+    })
+
+    //拖拽排序功能
+    const styleEl = document.createElement(`style`)
+    styleEl.innerHTML = `
+    .list>div {
+      transform: scaleX(0.95);
+      opacity: 0.8;
+    }
+    .list .icon {
+      visibility: hidden;
+    }
+    `
+
+    const sortable = new Stortable(list, {
+      animation: 200,
+      dragClass: `sortable-drag`,
+      ghostClass: `sortable-ghost`,
+      onUpdate: function () {
+        const sortedSongs = Array.from(list.querySelectorAll(`.item`)).map(el => renderList.kGet(el.dataset.key)[0])
+        renderList.changeSource(sortedSongs)
+      },
+      onStart: function () {
+        console.log(`start`)
+        
+        root.appendChild(styleEl)
+      },
+      onEnd: function () {
+        console.log(`end`)
+        root.removeChild(styleEl)
+      }
+    })
   }
 }
 
