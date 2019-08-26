@@ -324,8 +324,11 @@ function modifyPlayLists(method, ...args) {
           req.onsuccess = () => {
             const cursor = req.result
             if (cursor) {
-              if (listsToRemove.includes(cursor.key)) {
+              if (listsToRemove === cursor.key) {
                 cursor.delete()
+                resolve()
+              } else {
+                cursor.continue()
               }
             } else {
               resolve()

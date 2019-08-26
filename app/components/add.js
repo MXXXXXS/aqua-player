@@ -60,7 +60,7 @@ class AQUAAdd extends HTMLElement {
           const index = listNames.indexOfKey(e.target.dataset.key)
           if (index >= 0) {
             await modifyPlayLists(`addToList`, shared.songsToAdd, listNames.list[index][0])
-            ebus.emit(`refresh playList`)
+            ebus.emit(`refresh playList`)  //指向 playList.js
           }
         }
         shared.songsToAdd = []

@@ -44,6 +44,7 @@ class AQUAAddPlayList extends HTMLElement {
       const playListName = input.value
       modifyPlayLists(`addToList`, [], playListName)
       listNames.push(playListName)
+      states.playList = playListName
     })
 
     cancel.addEventListener(`click`, () => {

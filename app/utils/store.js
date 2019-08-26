@@ -228,11 +228,15 @@ class List {
     const _this = this
     let isDifferent = false
     // let isDifferent = true
-    for (let i = 0; i < newArr.length; i++) {
-      const el = newArr[i]
-      if (!Array.isArray(this.list[i]) || el !== this.list[i][0]) {
-        isDifferent = true
-        break
+    if (newArr.length === 0) {
+      isDifferent = true
+    } else {
+      for (let i = 0; i < newArr.length; i++) {
+        const el = newArr[i]
+        if (!Array.isArray(this.list[i]) || el !== this.list[i][0]) {
+          isDifferent = true
+          break
+        }
       }
     }
     if (isDifferent) {

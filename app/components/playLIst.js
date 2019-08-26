@@ -1,7 +1,9 @@
+const Vibrant = require(`node-vibrant`)
+
 const { playList: playListComp } = require(`../assets/components.js`)
 const { List } = require(`../utils/store.js`)
 const icons = require(`../assets/icons.js`)
-const { listSList, storeStates, shared, playList } = require(`../states.js`)
+const { listSList, storeStates, shared, playList, listNames } = require(`../states.js`)
 const states = storeStates.states
 const ebus = require(`../utils/eBus.js`)
 const { modifyStars, modifyPlayLists } = require(`../loadSongs.js`)
@@ -20,19 +22,17 @@ class AQUAPlayList extends HTMLElement {
     const list = root.querySelector(`.list`)
     const playAll = root.querySelector(`.playAll`)
     const cover = root.querySelector(`.cover`)
-    const rename = root.querySelector(`.rename`)
+    const main = root.querySelector(`#main`)
     const remove = root.querySelector(`.remove`)
+    const dialogPad = root.querySelector(`.dialogPad`)
+    const ok = root.querySelector(`.ok`)
+    const cancel = root.querySelector(`.cancel`)
 
     //自有状态
     const renderList = new List([])
     let blob
     let coverURL
-
-    //主题色绑定
-    root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
-    storeStates.watch(`themeColor`, themeColor => {
-      root.querySelector(`#main`).style.setProperty(`--themeColor`, themeColor)
-    })
+    let showRemovePlayListDialog = false
 
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
@@ -40,23 +40,34 @@ class AQUAPlayList extends HTMLElement {
     })
 
     //状态监听
+    storeStates.watch(`playList`, refresh)
+
+    ebus.on(`refresh playList`, () => {  //来自 add.js
+      refresh(states.playList)
+    })
+
     async function refresh(currentList) {
       const list = await modifyPlayLists(`getPlayList`, currentList).catch(e => console.error(e))
       if (list) {
         const orderedPaths = list.paths
-        let gotCover = false
-        const songs = orderedPaths.map((p, i) => {
-          const index = shared.pathItemBuf[p]
-          const song = listSList.list[index][0]
-          if (!gotCover && song.picture) {
-            gotCover = true
-            applyCover(song.picture, cover)
-          } else if (!gotCover && i === orderedPaths.length - 1) {
-            applyCover(`svg`, cover)
-          }
-          return song
-        })
-        renderList.changeSource(songs)
+        if (orderedPaths.length !== 0) {
+          let gotCover = false
+          const songs = orderedPaths.map((p, i) => {
+            const index = shared.pathItemBuf[p]
+            const song = listSList.list[index][0]
+            if (!gotCover && song.picture) {
+              gotCover = true
+              getThemeColor(song.picture)
+              applyCover(song.picture, cover)
+            } else if (!gotCover && i === orderedPaths.length - 1) {
+              applyCover(`svg`, cover)
+            }
+            return song
+          })
+          renderList.changeSource(songs)
+        } else {
+          renderList.changeSource([])
+        }
       }
     }
 
@@ -65,7 +76,7 @@ class AQUAPlayList extends HTMLElement {
       const el = container
       el.innerHTML = ``
       if (src !== `svg`) {
-        blob =  new Blob([src.data], { type: src.format })
+        blob = new Blob([src.data], { type: src.format })
         coverURL = window.URL.createObjectURL(blob)
         const img = document.createElement(`img`)
         img.src = coverURL
@@ -79,11 +90,17 @@ class AQUAPlayList extends HTMLElement {
       }
     }
 
-    storeStates.watch(`playList`, refresh)
-
-    ebus.on(`refresh playList`, () => {
-      refresh(states.playList)
-    })
+    //提取并应用主题色
+    async function getThemeColor(picture) {
+      const result = await Vibrant.from(Buffer.from(picture.data), {
+        colorCount: 3,
+        quality: 10
+      }).getPalette().catch(e => console.error(e))
+      if (result) {
+        const color = result.Muted.rgb
+        main.style.setProperty(`--themeColor`, `rgb(${color[0]}, ${color[1]}, ${color[2]})`)
+      }
+    }
 
     //列表渲染
     renderList.cast(`.list`, renderString, root)
@@ -140,22 +157,57 @@ class AQUAPlayList extends HTMLElement {
       changeSongAndPlay()
     })
 
-    //监视renderList变动
+    remove.addEventListener(`click`, e => {
+      showRemovePlayListDialog = true
+      dialogPad.style.visibility = `visible`
+    })
+
+    ok.addEventListener(`click`, () => {
+      const index = listNames.list.map(item => item[0]).indexOf(states.playList)
+      let updatedIndex
+      if (index >= 0) {
+        if (index > 0) {
+          updatedIndex = index - 1
+        } else if (listNames.list.length > 1) {
+          updatedIndex = 0
+        }
+        modifyPlayLists(`removeList`, states.playList)
+          .then(() => {
+            listNames.splice(index, 1)
+            showRemovePlayListDialog = false
+            dialogPad.style.visibility = `hidden`
+            if (updatedIndex) {
+              states.playList = listNames.list[updatedIndex][0]
+            } else {
+              renderList.changeSource([])
+            }
+          })
+      }
+    })
+
+    cancel.addEventListener(`click`, () => {
+      showRemovePlayListDialog = false
+      dialogPad.style.visibility = `hidden`
+    })
+
+    //监视renderList变动以同步数据库
     renderList.onModified(() => {
-      modifyPlayLists(`addToList`, renderList.getValues().map(item => item.path), states.playList, true)
+      if (renderList.list.length === 0) {
+        //为空时有一些特殊样式
+        main.style.setProperty(`--themeColor`, `black`)
+        applyCover(`svg`, cover)
+      } else {
+        modifyPlayLists(`addToList`, renderList.getValues().map(item => item.path), states.playList, true)
+      }
     })
 
     //拖拽排序功能
     const styleEl = document.createElement(`style`)
     styleEl.innerHTML = `
-    .list>div {
-      transform: scaleX(0.95);
-      opacity: 0.8;
-    }
-    .list .icon {
-      visibility: hidden;
-    }
-    `
+.list .icon {
+  visibility: hidden;
+}
+`
 
     const sortable = new Stortable(list, {
       animation: 200,

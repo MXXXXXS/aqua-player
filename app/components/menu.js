@@ -84,7 +84,7 @@ class AQUAMenu extends HTMLElement {
       el.innerHTML = icons[el.classList[1]]
     })
 
-    music.id = `actived`
+    music.classList.add(`actived`)
 
     const style = document.createElement(`style`)
     shadow.appendChild(style)
@@ -101,8 +101,8 @@ class AQUAMenu extends HTMLElement {
 
     main.addEventListener(`click`, e => {
       if (e.target.classList.contains(`highlight`)) {
-        main.querySelector(`#actived`).removeAttribute(`id`)
-        e.target.setAttribute(`id`, `actived`)
+        main.querySelector(`.actived`).classList.remove(`actived`)
+        e.target.classList.add(`actived`)
       }
     })
 
@@ -126,7 +126,7 @@ class AQUAMenu extends HTMLElement {
 
     function renderString(key, i, val) {
       return `
-      <div class="item" data-msg="album" data-key="${key}">
+      <div class="item highlight" data-msg="album" data-key="${key}">
       <div class="icon album">${icons.album}</div>
       <div class="text">${val}</div>
       </div>

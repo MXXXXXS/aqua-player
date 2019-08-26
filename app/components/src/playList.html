@@ -49,11 +49,37 @@
       <div class="duration">3:07</div>
     </div>
   </div>
+  <div class="dialogPad">
+    <div class="mask"></div>
+    <div class="dialog">
+      <div class="title">是否确定要删除此项?</div>
+      <div class="statement">如果删除<span class="playListName">xxdddxx</span>, 它将不再位于设备上</div>
+      <div class="buttons">
+        <div class="ok">确定</div>
+        <div class="cancel">取消</div>
+      </div>
+    </div>
+  </div>
 </div>
 <style>
   #main {
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
+    animation: scale 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transform-origin: center;
+  }
+
+  @keyframes scale {
+    0% {
+    transform: scale3d(0.8, 0.8, 1);
+      opacity: 0;
+    }
+
+    100% {
+    transform: scale3d(1, 1, 1);
+      opacity: 1;
+    }
   }
 
   .head {
@@ -98,7 +124,7 @@
   }
 
   .button {
-    cursor: pointer;
+    cursor: default;
     width: max-content;
     font-size: 14px;
     padding-right: 15px;
@@ -196,6 +222,19 @@
 
   .list {
     margin: 40px 20px 0 20px;
+    animation: fadeIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .list>div:hover .checkBox {
@@ -277,13 +316,70 @@
     flex: 1;
   }
 
-  .item.sortable-ghost {
-    opacity: 0;
+  .dialogPad {
+    visibility: hidden;
   }
 
-  .item.item.sortable-drag {
-    transform: scaleX(1);
-    opacity: 1;
+  .ok {
+    margin-right: 5px;
+  }
+
+  .ok,
+  .cancel {
+    cursor: default;
+    background-color: rgb(204, 204, 204);
+    text-align: center;
+    line-height: 30px;
+    height: 30px;
+    min-width: 155px;
+    flex: 1;
+  }
+
+  .ok:hover,
+  .cancel:hover {
+    outline: rgb(105, 105, 105) 2px solid;
+  }
+
+  .statement {
+    flex: 1;
+    white-space: nowrap;
+    width: max-content;
+  }
+
+  .title {
+    margin-bottom: 10px;
+  }
+
+  .buttons {
+    display: flex;
+  }
+
+  .dialog {
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+    box-sizing: border-box;
+    padding: 20px;
+    border: 1px solid var(--themeColor, rgb(113, 204, 192));
+    background-color: white;
+    height: 185px;
+    min-width: 360px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: grey 0 10px 20px;
+  }
+
+  .mask {
+    z-index: 3;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(202, 202, 202, 0.199);
   }
 
   /* @media (max-width: 1200px) {
