@@ -1,0 +1,292 @@
+<div id="main">
+  <div class="head">
+    <div class="title">播放列表</div>
+    <div class="bar">
+      <div class="addNewPlayList">
+        <div class="icon add"></div>
+        <div>新的播放列表</div>
+      </div>
+      <div class="sort">
+        <span>排序依据: </span>
+        <span id="sortBy">无</span>
+        <div class="padSortBy">
+          <div class="menu menuSortBy">
+            <div class="item" data-selected="selected">无</div>
+            <div class="item">A到Z</div>
+          </div>
+          <div class="mask"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="items">
+    <div class="item">
+      <div class="coverbg">
+            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="info">
+        <div class="name">Departures～あなたにおくるアイの歌～</div>
+        <div class="artist">未知艺术家</div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="coverbg">
+            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="info">
+        <div class="name">Departures～あなたにおくるアイの歌～</div>
+        <div class="artist">未知艺术家</div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="coverbg">
+            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="info">
+        <div class="name">Departures～あなたにおくるアイの歌～</div>
+        <div class="artist">未知艺术家</div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="coverbg">
+            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="info">
+        <div class="name">Departures～あなたにおくるアイの歌～</div>
+        <div class="artist">未知艺术家</div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="coverbg">
+            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="info">
+        <div class="name">Departures～あなたにおくるアイの歌～</div>
+        <div class="artist">未知艺术家</div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .coverContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .decorationSquare0,
+  .decorationSquare1 {
+    height: 4px;
+    background-color: rgba(105, 105, 105, 0.247)
+  }
+
+  .decorationSquare0 {
+    width: 76px;
+  }
+  
+  .decorationSquare1 {
+    width: 92px;
+  }
+  
+  .cover {
+    width: 108px;
+    height: 108px;
+    background-color: rgb(230, 230, 230);
+  }
+
+  * {
+    cursor: default;
+  }
+
+  .sort {
+    position: relative;
+    margin-left: 20px;
+  }
+  .sort .item:hover {
+    box-shadow: inset 0 0 2px 15px rgba(218, 218, 218, 0.5); 
+   }
+   [data-selected="selected"] {
+    background-color: var(--themeColor, rgb(113, 204, 192));
+   }
+   .sort .item {
+     line-height: 28px;
+    height: 28px;
+    width: 105px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+   }
+  .mask {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    /* background-color: rgba(202, 202, 202, 0.199); */
+  }
+
+  .menu {
+    z-index: 1;
+    box-shadow: rgba(128, 128, 128, 0.49) 0 10px 13px;
+    padding: 1px;
+    background-color: whitesmoke;
+    border: 1px black solid;
+  }
+
+  .menuSortBy {
+    position: absolute;
+    left: 62px;
+    top: -5px;
+    /* 上下移动时以28px为单位(字体行高) */
+   }
+
+   #sortBy {
+    color: var(--themeColor, rgb(113, 204, 192));
+  }
+
+  .title {
+    margin-top: 10px;
+    font-size: 34px;
+    font-weight: lighter;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .bar,
+  .title {
+    padding-left: 10px;
+  }
+
+  .addNewPlayList {
+    align-items: center;
+    display: flex;
+  }
+
+  .icon svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: white;
+  }
+
+  .bar .add svg {
+    stroke: black;
+    margin-right: 10px;
+  }
+
+  .items .coverbg:hover .icon:hover {
+    padding: 0px;
+    transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .items .icon {
+    transform-origin: center;
+    transform: scale(0);
+  }
+
+  .items .coverbg:hover .icon {
+    transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: scale(1);
+    box-sizing: border-box;
+    background-clip: content-box;
+    padding: 4px;
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.199);
+    background-color: currentColor;
+    display: flex;
+    width: 54px;
+    height: 54px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .coverbg:hover .play {
+    left: 38%;
+  }
+
+  .coverbg:hover .add {
+    left: 62%;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .info {
+    width: 180px;
+  }
+
+  .artist {
+    font-size: 12px;
+    margin: 0 10px 10px 10px;
+    color: rgb(140, 140, 140)
+  }
+
+  .name {
+    overflow: hidden;
+    height: 42px;
+    font-size: 14px;
+    margin: 0 10px;
+  }
+
+  .items {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .coverbg:hover {
+    box-shadow: 0 20px 20px rgba(100, 100, 100, 0.452);
+  }
+
+  .coverbg {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    width: 230px;
+    height: 160px;
+  }
+
+  .coverbg>div {
+    position: absolute;
+  }
+
+  .coverContainer {
+    display: flex;
+  }
+
+  .coverContainer img {
+    width: inherit;
+    object-fit: coverbg;
+  }
+
+  .coverContainer svg {
+    fill: none;
+    stroke: white;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+  }
+</style>
+<script type="module" src="../../assets/devIcon.js"></script>

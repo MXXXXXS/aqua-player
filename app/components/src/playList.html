@@ -138,20 +138,34 @@
   .decorationSquare0,
   .decorationSquare1 {
     height: 8px;
-    background-color: rgba(105, 105, 105, 0.247)
   }
 
   .decorationSquare0 {
     width: 188px;
+    background-color: rgba(105, 105, 105, 0.2)
   }
 
   .decorationSquare1 {
     width: 204px;
+    background-color: rgba(105, 105, 105, 0.5)
   }
 
   .cover {
     width: 220px;
     height: 220px;
+    background-color: rgba(105, 105, 105, 0.8)
+  }
+
+  .cover>img {
+    width: inherit;
+    object-fit: cover;
+  }
+
+  .cover>svg {
+    width: 100px;
+    height: 100px;
+    fill: none;
+    stroke: white;
   }
 
   .icon>* {

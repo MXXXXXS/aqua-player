@@ -8,7 +8,8 @@
     "watch": "nodemon -w ./app --exec npm -- run start",
     "updateIcons": "node utils/replace.js && node utils/collectIcons.js",
     "updateComps": "node utils/collectComponents.js",
-    "updateAll": "node utils/replace.js && node utils/collectIcons.js && node utils/collectComponents.js"
+    "updateAll": "node utils/replace.js && node utils/collectIcons.js && node utils/collectComponents.js",
+    "servePages": "http-server ./app -p 80"
   },
   "keywords": [],
   "author": "MXXXXXS",

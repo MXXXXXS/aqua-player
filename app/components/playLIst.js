@@ -6,7 +6,7 @@ const states = storeStates.states
 const ebus = require(`../utils/eBus.js`)
 const { modifyStars, modifyPlayLists } = require(`../loadSongs.js`)
 const second2time = require(`../utils/second2time.js`)
-const {changeSongAndPlay} = require(`../player.js`)
+const { changeSongAndPlay } = require(`../player.js`)
 const Stortable = require(`sortablejs`)
 
 class AQUAPlayList extends HTMLElement {
@@ -19,13 +19,14 @@ class AQUAPlayList extends HTMLElement {
     //元素引用
     const list = root.querySelector(`.list`)
     const playAll = root.querySelector(`.playAll`)
-    const addTo = root.querySelector(`.addTo`)
+    const cover = root.querySelector(`.cover`)
     const rename = root.querySelector(`.rename`)
     const remove = root.querySelector(`.remove`)
 
     //自有状态
     const renderList = new List([])
-    let oldList
+    let blob
+    let coverURL
 
     //主题色绑定
     root.querySelector(`#main`).style.setProperty(`--themeColor`, states.themeColor)
@@ -43,11 +44,38 @@ class AQUAPlayList extends HTMLElement {
       const list = await modifyPlayLists(`getPlayList`, currentList).catch(e => console.error(e))
       if (list) {
         const orderedPaths = list.paths
-        const songs = orderedPaths.map(p => {
+        let gotCover = false
+        const songs = orderedPaths.map((p, i) => {
           const index = shared.pathItemBuf[p]
-          return listSList.list[index][0]
+          const song = listSList.list[index][0]
+          if (!gotCover && song.picture) {
+            gotCover = true
+            applyCover(song.picture, cover)
+          } else if (!gotCover && i === orderedPaths.length - 1) {
+            applyCover(`svg`, cover)
+          }
+          return song
         })
         renderList.changeSource(songs)
+      }
+    }
+
+    //专辑封面显示
+    function applyCover(src, container) {
+      const el = container
+      el.innerHTML = ``
+      if (src !== `svg`) {
+        blob =  new Blob([src.data], { type: src.format })
+        coverURL = window.URL.createObjectURL(blob)
+        const img = document.createElement(`img`)
+        img.src = coverURL
+        img.onload = () => {
+          el.appendChild(img)
+        }
+      } else {
+        el.innerHTML = icons[`cover`]
+        el.style.display = `flex`
+        el.querySelector(`svg`).style.margin = `auto`
       }
     }
 
@@ -139,7 +167,7 @@ class AQUAPlayList extends HTMLElement {
       },
       onStart: function () {
         console.log(`start`)
-        
+
         root.appendChild(styleEl)
       },
       onEnd: function () {
