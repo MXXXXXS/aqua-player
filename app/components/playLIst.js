@@ -27,19 +27,24 @@ class AQUAPlayList extends HTMLElement {
     const dialogPad = root.querySelector(`.dialogPad`)
     const ok = root.querySelector(`.ok`)
     const cancel = root.querySelector(`.cancel`)
+    const rename = root.querySelector(`.rename`)
+    const listName = root.querySelector(`.listName`)
+    const description = root.querySelector(`.description`)
+    const addTo = root.querySelector(`.addTo`)
 
     //自有状态
     const renderList = new List([])
     let blob
     let coverURL
-    let showRemovePlayListDialog = false
-
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
     })
 
-    //状态监听
+    //状态同步
+    storeStates.sync(`playList`, listName, `innerText`)
+
+    //状态监听以从数据库更新列表
     storeStates.watch(`playList`, refresh)
 
     ebus.on(`refresh playList`, () => {  //来自 add.js
@@ -70,6 +75,24 @@ class AQUAPlayList extends HTMLElement {
         }
       }
     }
+
+    //监视renderList变动以同步数据库
+    renderList.onModified(() => {
+      if (renderList.list.length === 0) {
+        //为空时有一些特殊样式
+        description.innerText = `0 首歌曲 • 0分钟`
+        main.style.setProperty(`--themeColor`, `black`)
+        applyCover(`svg`, cover)
+      } else {
+        const totalDuration = renderList.getValues().reduce((acc, cur) => {
+          return acc += cur.duration
+        }, 0)
+        const hours = Math.floor(totalDuration / 3600)
+        const minute = Math.round((totalDuration - hours * 3600) / 60)
+        description.innerText = `${renderList.list.length} 首歌曲 • ${hours > 0 ? hours + ` 小时 ` : ``}${minute} 分钟`
+        modifyPlayLists(`addToList`, renderList.getValues().map(item => item.path), states.playList, true)
+      }
+    })
 
     //专辑封面显示
     function applyCover(src, container) {
@@ -190,15 +213,13 @@ class AQUAPlayList extends HTMLElement {
       dialogPad.style.visibility = `hidden`
     })
 
-    //监视renderList变动以同步数据库
-    renderList.onModified(() => {
-      if (renderList.list.length === 0) {
-        //为空时有一些特殊样式
-        main.style.setProperty(`--themeColor`, `black`)
-        applyCover(`svg`, cover)
-      } else {
-        modifyPlayLists(`addToList`, renderList.getValues().map(item => item.path), states.playList, true)
-      }
+    rename.addEventListener(`click`, () => {
+      states.showAddPlayList = true
+    })
+
+    addTo.addEventListener(`click`, e => {
+      shared.songsToAdd = renderList.getValues().map(song => song.path)
+      shared.showAdd(states, e)
     })
 
     //拖拽排序功能

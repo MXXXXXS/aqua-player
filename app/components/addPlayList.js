@@ -39,12 +39,13 @@ class AQUAAddPlayList extends HTMLElement {
     })
 
     //按钮功能绑定
-    create.addEventListener(`click`, () => {
+    create.addEventListener(`click`, async () => {
       states.showAddPlayList = false
       const playListName = input.value
-      modifyPlayLists(`addToList`, [], playListName)
+      await modifyPlayLists(`addToList`, [], playListName)
       listNames.push(playListName)
       states.playList = playListName
+      states.RMenuItems = `aqua-play-list`
     })
 
     cancel.addEventListener(`click`, () => {

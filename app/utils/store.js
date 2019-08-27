@@ -226,20 +226,17 @@ class List {
 
   changeSource(newArr) {
     const _this = this
-    let isDifferent = false
-    // let isDifferent = true
-    if (newArr.length === 0) {
-      isDifferent = true
-    } else {
+    let isSame = false
+    if (newArr.length === this.list.length) {
       for (let i = 0; i < newArr.length; i++) {
         const el = newArr[i]
-        if (!Array.isArray(this.list[i]) || el !== this.list[i][0]) {
-          isDifferent = true
+        if (Array.isArray(this.list[i]) && el === this.list[i][0]) {
+          isSame = true
           break
         }
       }
     }
-    if (isDifferent) {
+    if (!isSame) {
       this.key = 0
       this.indexOfKeyBuf = {}
       this.values = newArr.map(val => val)

@@ -128,6 +128,8 @@ BUG修复
   - 修复方法: 转义 html
 - [x] List 的 splice 方法没有更新 length 属性
   - 修复方法: 修改了 proxy set handler 的 condition
+- [x] List 的 changeSource 方法对比新旧数组是否相同存在误判, 导致没有更新. 具体表现为: 若新数组为旧数组去掉最后几项所得, 则不会得出两个数组相异的判断
+  - 修复方法: 修改了比较数组元素的逻辑
 预览
 
 ![Alt preview](assets/sample0.jpg)

@@ -16,7 +16,8 @@ const foldingStyle = `
   background-color: rgba(202, 202, 202, 0.199);
  }
 */
-.highlight>div:last-child {
+.highlight>div:last-child,
+.playing .text {
   display: none;
 }
 
@@ -101,7 +102,10 @@ class AQUAMenu extends HTMLElement {
 
     main.addEventListener(`click`, e => {
       if (e.target.classList.contains(`highlight`)) {
-        main.querySelector(`.actived`).classList.remove(`actived`)
+        const activedEl = main.querySelector(`.actived`)
+        if (activedEl) {
+          activedEl.classList.remove(`actived`)
+        }
         e.target.classList.add(`actived`)
       }
     })
