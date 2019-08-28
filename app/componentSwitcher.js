@@ -23,7 +23,13 @@ storeStates.watch(`RMainCurrentPlaying`, item => {
 currentPlayingSwitcher.show(`#main`)
 
 const menuItems = new Router(`menuItems`)
-menuItems.add(`aqua-list`, `aqua-settings`, `aqua-play-list`)
+menuItems.add(
+  `aqua-list`,
+  `aqua-settings`,
+  `aqua-play-list`,
+  `aqua-recent-played`,
+  `aqua-play-lists`
+)
 storeStates.watch(`RMenuItems`, item => {
   menuItems.show(item)
 })
@@ -31,7 +37,17 @@ storeStates.watch(`RMenuItems`, item => {
 menuItems.show(`aqua-list`)
 
 //条件渲染
-const songsItems = new RouterEL(`songsItems`, document, AQUAAlbumsSortedBySingers, AQUAAlbumsSortedByAZ, AQUAAlbumsSortedByYears, AQUASongs, AQUASongsSortedByAZ, AQUASongsSortedBySingers, AQUASongsSortedByAlbums, AQUASingers, AQUAAlbums)
+const songsItems = new RouterEL(`songsItems`, document,
+  AQUASongs,
+  AQUASongsSortedByAZ,
+  AQUASongsSortedBySingers,
+  AQUASongsSortedByAlbums,
+  AQUASingers,
+  AQUAAlbums,
+  AQUAAlbumsSortedByAZ,
+  AQUAAlbumsSortedBySingers,
+  AQUAAlbumsSortedByYears,
+)
 
 //初始打开时默认显示
 // songsItems.to(`AQUASongs`)
@@ -83,5 +99,5 @@ if (states.sortReady) {
 }
 
 function run() {
-  
+
 }

@@ -7,6 +7,9 @@ const shared = {
   pathItemBuf: {}, //方便从歌曲路径获得index(用于从listSList获取歌曲)
   playListBuf: [],
   songsToAdd: [],
+  songsOfSingers: {},
+  songsOfAlbums: {},
+  recentPlayed: [],
   drawCover: function (coverBuffer, picture, icons, elSelector, scope) {
     URL.revokeObjectURL(coverBuffer.imgUrl)
     const el = scope.querySelector(elSelector)
@@ -16,9 +19,7 @@ const shared = {
       coverBuffer.imgUrl = window.URL.createObjectURL(coverBuffer.imgBlob)
       const img = document.createElement(`img`)
       img.src = coverBuffer.imgUrl
-      img.onload = () => {
-        el.appendChild(img)
-      }
+      el.appendChild(img)
     } else {
       el.innerHTML = icons[`cover`]
       el.style.display = `flex`
@@ -53,7 +54,7 @@ const storeStates = new Store({
   total: 0,
   playMode: `unset`, //unset, singleCycle, listCycle, random
   RSongsItems: `AQUASongs`, //AQUASongs, AQUASingers, AQUAAlbums
-  RMenuItems: `aqua-my-music`, //aqua-my-music, aqua-settings
+  RMenuItems: `aqua-list`, //`aqua-list`, `aqua-settings`, `aqua-play-list`, `aqua-recent-played`
   RMainCurrentPlaying: `#main`,
   filterSortBy: ``,
   filterType: `所有流派`,

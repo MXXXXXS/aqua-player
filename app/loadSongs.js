@@ -10,7 +10,7 @@ async function getSongMeta(songPath) {
   songPath = path.normalize(songPath)
   const meta = await getMetadata(songPath)
   function escape(s) {
-    let lookup = {
+    const lookup = {
       '&': `&amp;`,
       '"': `&quot;`,
       '<': `&lt;`,
@@ -216,6 +216,8 @@ async function refreshSongs() {
 
       /***********************初始化***********************/
       shared.pathItemBuf = {}
+      shared.songsOfSingers = {}
+      shared.songsOfAlbums = {}
       if (listSList.list.length !== 0) {
         listSList.list.forEach((item, i) => {
           shared.pathItemBuf[item[0].path] = i
@@ -354,6 +356,17 @@ function modifyPlayLists(method, ...args) {
           break
         case `getNames`: {
           const req = playLists.getAllKeys()
+          req.onsuccess = () => {
+            const result = req.result
+            resolve(result)
+          }
+          req.onerror = e => {
+            reject(e)
+          }
+        }
+          break
+        case `getAll`: {
+          const req = playLists.getAll()
           req.onsuccess = () => {
             const result = req.result
             resolve(result)

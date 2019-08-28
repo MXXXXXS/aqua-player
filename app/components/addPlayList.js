@@ -41,7 +41,7 @@ class AQUAAddPlayList extends HTMLElement {
     //按钮功能绑定
     create.addEventListener(`click`, async () => {
       states.showAddPlayList = false
-      const playListName = input.value
+      const playListName = input.value.slice(0, 15)
       await modifyPlayLists(`addToList`, [], playListName)
       listNames.push(playListName)
       states.playList = playListName

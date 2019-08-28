@@ -1,6 +1,6 @@
 const { flatSortUniqueIdWords, sortUniqueIdWords } = require(`./utils/sortWords.js`)
 const ebus = require(`./utils/eBus.js`)
-const { listSList, storeStates } = require(`./states.js`)
+const { listSList, storeStates, shared } = require(`./states.js`)
 
 let keySingers,
   keyYears,
@@ -32,6 +32,12 @@ function run() {
     keyAlbums.push([key, song.album])
     keySongs.push([key, song.title])
     keyGenres.push([key, song.genre])
+    if (!shared.songsOfSingers[song.artist])
+      shared.songsOfSingers[song.artist] = []
+    shared.songsOfSingers[song.artist].push(key)
+    if (!shared.songsOfAlbums[song.artist])
+      shared.songsOfAlbums[song.artist] = []
+    shared.songsOfAlbums[song.artist].push(key)
   })
 
   sortedYears = () => flatSortUniqueIdWords(keyYears)

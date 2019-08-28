@@ -36,6 +36,8 @@ class AQUAPlayList extends HTMLElement {
     const renderList = new List([])
     let blob
     let coverURL
+    let showRemovePlayListDialog
+    
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
@@ -193,15 +195,18 @@ class AQUAPlayList extends HTMLElement {
           updatedIndex = index - 1
         } else if (listNames.list.length > 1) {
           updatedIndex = 0
+        } else {
+          updatedIndex = -1
         }
         modifyPlayLists(`removeList`, states.playList)
           .then(() => {
             listNames.splice(index, 1)
             showRemovePlayListDialog = false
             dialogPad.style.visibility = `hidden`
-            if (updatedIndex) {
+            if (updatedIndex >= 0) {
               states.playList = listNames.list[updatedIndex][0]
             } else {
+              states.RMenuItems = `aqua-list`
               renderList.changeSource([])
             }
           })

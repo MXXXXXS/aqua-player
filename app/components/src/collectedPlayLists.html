@@ -10,11 +10,11 @@
         <span>排序依据: </span>
         <span id="sortBy">无</span>
         <div class="padSortBy">
+          <div class="mask"></div>
           <div class="menu menuSortBy">
-            <div class="item" data-selected="selected">无</div>
+            <div class="item selected">无</div>
             <div class="item">A到Z</div>
           </div>
-          <div class="mask"></div>
         </div>
       </div>
     </div>
@@ -22,51 +22,11 @@
   <div class="items">
     <div class="item">
       <div class="coverbg">
-            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
-        <div class="icon play"></div>
-        <div class="icon add"></div>
-      </div>
-      <div class="info">
-        <div class="name">Departures～あなたにおくるアイの歌～</div>
-        <div class="artist">未知艺术家</div>
-      </div>
-    </div>
-    <div class="item">
-      <div class="coverbg">
-            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
-        <div class="icon play"></div>
-        <div class="icon add"></div>
-      </div>
-      <div class="info">
-        <div class="name">Departures～あなたにおくるアイの歌～</div>
-        <div class="artist">未知艺术家</div>
-      </div>
-    </div>
-    <div class="item">
-      <div class="coverbg">
-            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
-        <div class="icon play"></div>
-        <div class="icon add"></div>
-      </div>
-      <div class="info">
-        <div class="name">Departures～あなたにおくるアイの歌～</div>
-        <div class="artist">未知艺术家</div>
-      </div>
-    </div>
-    <div class="item">
-      <div class="coverbg">
-            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
-        <div class="icon play"></div>
-        <div class="icon add"></div>
-      </div>
-      <div class="info">
-        <div class="name">Departures～あなたにおくるアイの歌～</div>
-        <div class="artist">未知艺术家</div>
-      </div>
-    </div>
-    <div class="item">
-      <div class="coverbg">
-            <div class="coverContainer">       <div class="decorationSquare0"></div>       <div class="decorationSquare1"></div>       <div class="cover"></div>     </div>
+        <div class="coverContainer">
+          <div class="decorationSquare0"></div>
+          <div class="decorationSquare1"></div>
+          <div class="cover"></div>
+        </div>
         <div class="icon play"></div>
         <div class="icon add"></div>
       </div>
@@ -78,7 +38,29 @@
   </div>
 </div>
 <style>
-  .coverContainer {
+  #main {
+    animation: fadeIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .padSortBy {
+    display: none;
+    z-index: 3;
+    position: fixed;
+  }
+
+  .coverbg>.coverContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -93,12 +75,12 @@
   .decorationSquare0 {
     width: 76px;
   }
-  
+
   .decorationSquare1 {
     width: 92px;
   }
-  
-  .cover {
+
+  .coverbg .cover {
     width: 108px;
     height: 108px;
     background-color: rgb(230, 230, 230);
@@ -112,33 +94,35 @@
     position: relative;
     margin-left: 20px;
   }
+
   .sort .item:hover {
-    box-shadow: inset 0 0 2px 15px rgba(218, 218, 218, 0.5); 
-   }
-   [data-selected="selected"] {
+    box-shadow: inset 0 0 2px 15px rgba(218, 218, 218, 0.5);
+  }
+
+  .selected {
     background-color: var(--themeColor, rgb(113, 204, 192));
-   }
-   .sort .item {
-     line-height: 28px;
+  }
+
+  .sort .item {
+    line-height: 28px;
     height: 28px;
     width: 105px;
     padding: 0 10px;
     box-sizing: border-box;
     overflow: hidden;
-   }
+  }
+
   .mask {
-    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100vw;
     height: 100vh;
-    /* background-color: rgba(202, 202, 202, 0.199); */
+    /* background-color: rgba(255, 34, 34, 0.199); */
   }
 
   .menu {
-    z-index: 1;
     box-shadow: rgba(128, 128, 128, 0.49) 0 10px 13px;
     padding: 1px;
     background-color: whitesmoke;
@@ -148,11 +132,11 @@
   .menuSortBy {
     position: absolute;
     left: 62px;
-    top: -5px;
+    top: -25px;
     /* 上下移动时以28px为单位(字体行高) */
-   }
+  }
 
-   #sortBy {
+  #sortBy {
     color: var(--themeColor, rgb(113, 204, 192));
   }
 
@@ -187,22 +171,26 @@
     stroke: white;
   }
 
+  .bar .add {
+    height: 14px;
+  }
+
   .bar .add svg {
     stroke: black;
     margin-right: 10px;
   }
 
-  .items .coverbg:hover .icon:hover {
+  .coverbg:hover .icon:hover {
     padding: 0px;
     transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
   }
 
-  .items .icon {
+  .coverbg .icon {
     transform-origin: center;
     transform: scale(0);
   }
 
-  .items .coverbg:hover .icon {
+  .coverbg:hover .icon {
     transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
     transform: scale(1);
     box-sizing: border-box;
@@ -237,13 +225,13 @@
 
   .artist {
     font-size: 12px;
-    margin: 0 10px 10px 10px;
+    margin: 10px;
     color: rgb(140, 140, 140)
   }
 
   .name {
     overflow: hidden;
-    height: 42px;
+    font-weight: bold;
     font-size: 14px;
     margin: 0 10px;
   }
@@ -272,16 +260,16 @@
     position: absolute;
   }
 
-  .coverContainer {
+  .coverbg>.coverContainer {
     display: flex;
   }
 
-  .coverContainer img {
+  .coverbg>.coverContainer img {
     width: inherit;
-    object-fit: coverbg;
+    object-fit: cover;
   }
 
-  .coverContainer svg {
+  .coverbg>.coverContainer svg {
     fill: none;
     stroke: white;
     margin: auto;

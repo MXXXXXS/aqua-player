@@ -7,17 +7,6 @@
     </div>
   </div>
   <div class="items">
-    <!-- <div class="item">
-      <div class="cover">
-        <div class="coverContainer"></div>
-        <div class="icon play"></div>
-        <div class="icon add"></div>
-      </div>
-      <div class="info">
-        <div class="name">Departures～あなたにおくるアイの歌～</div>
-        <div class="artist">未知艺术家</div>
-      </div>
-    </div>
     <div class="item">
       <div class="cover">
         <div class="coverContainer"></div>
@@ -61,51 +50,58 @@
         <div class="name">Departures～あなたにおくるアイの歌～</div>
         <div class="artist">未知艺术家</div>
       </div>
-    </div> -->
+    </div>
+    <div class="item">
+      <div class="cover">
+        <div class="coverContainer"></div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="info">
+        <div class="name">Departures～あなたにおくるアイの歌～</div>
+        <div class="artist">未知艺术家</div>
+      </div>
+    </div>
   </div>
 </div>
 <style>
-  .title {
-    margin-top: 10px;
-    font-size: 34px;
-    font-weight: lighter;
-  }
 
-  .bar {
+.coverbg>.coverContainer {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    height: 30px;
-    font-size: 14px;
   }
 
-  .bar, .title {
-    padding-left: 10px;
+  .decorationSquare0,
+  .decorationSquare1 {
+    height: 4px;
+    background-color: rgba(105, 105, 105, 0.247)
   }
 
-  .icon svg {
-    margin: auto;
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke: white;
+  .decorationSquare0 {
+    width: 76px;
   }
 
-  .icon.random svg {
-    stroke: black;
-    margin-right: 10px;
+  .decorationSquare1 {
+    width: 92px;
+  }
+.coverbg .cover {
+    width: 108px;
+    height: 108px;
+    background-color: rgb(230, 230, 230);
   }
 
-  .items .cover:hover .icon:hover {
+.coverbg:hover .icon:hover {
     padding: 0px;
     transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
   }
 
-  .items .icon {
+  .coverbg .icon {
     transform-origin: center;
     transform: scale(0);
   }
 
-  .items .cover:hover .icon {
+  .coverbg:hover .icon {
     transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
     transform: scale(1);
     box-sizing: border-box;
@@ -122,11 +118,131 @@
     transform: translate(-50%, -50%);
   }
 
-  .cover:hover .play {
+  .coverbg:hover .play {
     left: 32%;
   }
 
-  .cover:hover .add {
+  .coverbg:hover .add {
+    left: 68%;
+  }
+
+.coverbg:hover {
+    box-shadow: 0 20px 20px rgba(100, 100, 100, 0.452);
+  }
+
+  .coverbg {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    width: 160px;
+    height: 160px;
+  }
+
+  .coverbg>div {
+    position: absolute;
+  }
+
+  .coverbg>.coverContainer {
+    display: flex;
+  }
+
+  .coverbg>.coverContainer img {
+    width: inherit;
+    object-fit: cover;
+  }
+
+  .coverbg>.coverContainer svg {
+    fill: none;
+    stroke: white;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+  }
+
+  #main {
+    animation: fadeIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .title {
+    margin-top: 10px;
+    font-size: 34px;
+    font-weight: lighter;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .head {
+    margin-left: 10px;
+  }
+
+  .icon svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: white;
+  }
+
+  .icon.random {
+    height: 14px;
+  }
+
+  .icon.random svg {
+    stroke: black;
+    margin-right: 10px;
+  }
+
+  .item>.cover:hover .icon:hover {
+    padding: 0px;
+    transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .items .icon {
+    transform-origin: center;
+    transform: scale(0);
+  }
+
+  .item>.cover:hover .icon {
+    transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: scale(1);
+    box-sizing: border-box;
+    background-clip: content-box;
+    padding: 4px;
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.199);
+    background-color: currentColor;
+    display: flex;
+    width: 54px;
+    height: 54px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .item>.cover:hover .play {
+    left: 32%;
+  }
+
+  .item>.cover:hover .add {
     left: 68%;
   }
 
@@ -140,13 +256,13 @@
 
   .artist {
     font-size: 12px;
-    margin: 0 10px 10px 10px;
+    margin: 10px;
     color: rgb(140, 140, 140)
   }
 
   .name {
     overflow: hidden;
-    height: 42px;
+    font-weight: bold;
     font-size: 14px;
     margin: 0 10px;
   }
@@ -157,34 +273,34 @@
     flex-wrap: wrap;
   }
 
-  .cover:hover {
+  .item>.cover:hover {
     box-shadow: 0 20px 20px rgba(100, 100, 100, 0.452);
   }
 
-  .cover {
+  .item>.cover {
     position: relative;
     margin: 10px;
     width: 160px;
     height: 160px;
   }
 
-  .cover>div {
+  .item>.cover>div {
     position: absolute;
   }
 
-  .coverContainer {
+  .item>.cover>.coverContainer {
     display: flex;
     width: inherit;
     height: inherit;
     background-color: rgb(230, 230, 230);
   }
 
-  .coverContainer img {
+  .item>.cover>.coverContainer img {
     width: inherit;
     object-fit: cover;
   }
 
-  .coverContainer svg {
+  .item>.cover>.coverContainer svg {
     fill: none;
     stroke: white;
     margin: auto;

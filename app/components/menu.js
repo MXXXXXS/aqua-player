@@ -70,6 +70,8 @@ class AQUAMenu extends HTMLElement {
     const settings = root.querySelector(`.settings`)
     const playing = root.querySelector(`.playing`)
     const albums = root.querySelector(`.albums`)
+    const recentPlayed = root.querySelector(`.recentPlayed`)
+    const collectedPlayLists = root.querySelector(`#playList .highlight`)
 
     //自有状态
     let closed = false
@@ -85,8 +87,10 @@ class AQUAMenu extends HTMLElement {
       el.innerHTML = icons[el.classList[1]]
     })
 
+    //初始左侧小方块显示
     music.classList.add(`actived`)
 
+    //侧栏显示切换
     const style = document.createElement(`style`)
     shadow.appendChild(style)
 
@@ -100,6 +104,7 @@ class AQUAMenu extends HTMLElement {
       }
     })
 
+    //按钮功能绑定
     main.addEventListener(`click`, e => {
       if (e.target.classList.contains(`highlight`)) {
         const activedEl = main.querySelector(`.actived`)
@@ -118,7 +123,7 @@ class AQUAMenu extends HTMLElement {
       states.RMenuItems = `aqua-settings`
     })
 
-    playing.addEventListener(`click`, e => {
+    playing.addEventListener(`click`, () => {
       states.RMainCurrentPlaying = `aqua-current-playing`
     })
 
@@ -126,6 +131,15 @@ class AQUAMenu extends HTMLElement {
       states.showAddPlayList = true
     })
 
+    recentPlayed.addEventListener(`click`, () => {
+      states.RMenuItems = `aqua-recent-played`
+    })
+
+    collectedPlayLists.addEventListener(`click`, () => {
+      states.RMenuItems = `aqua-play-lists`
+    })
+
+    //专辑列表渲染
     listNames.cast(`.albums`, renderString, root)
 
     function renderString(key, i, val) {
@@ -137,6 +151,7 @@ class AQUAMenu extends HTMLElement {
       `
     }
 
+    //专辑选择
     albums.addEventListener(`click`, (e) => {
       const isAlbumBtn = e.target.dataset.msg
       if (isAlbumBtn) {

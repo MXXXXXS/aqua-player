@@ -43,7 +43,7 @@ let img
 async function initialSrcBuf(successCb = () => { }, errorCb = () => { }) {
   try {
     const index = playList.list[states.playListPointer][0]
-    let song = listSList.list[index][0]
+    const song = listSList.list[index][0]
     if (shared.audioState === 0) {
       shared.audioState = 0.5
       states.duration = song.duration
@@ -95,6 +95,43 @@ function triggerAudioSrc() {
     shared.timer = setInterval(() => states.offset = audioCtx.currentTime - lastStartTime + lastOffset, interval)
     states.playing = true
     shared.audioState = 3
+
+    //记录"最近播放的内容"
+    const index = playList.list[states.playListPointer][0]
+    const song = listSList.list[index][0]
+    const names = shared.recentPlayed.map(item => item.name)
+    if (states.RMenuItems === `aqua-play-list` && states.playList !== ``) {
+      if (!names.includes(states.playList)) {
+        shared.recentPlayed.unshift({
+          cover: song.picture,
+          name: states.playList,
+          type: `playList`
+        })
+      }
+    } else if (states.RMenuItems === `aqua-list`) {
+      switch (states.RSongsItems) {
+        case `AQUASingers`: {
+          const artist = song.artist
+          if (!names.includes(artist))
+            shared.recentPlayed.unshift({
+              name: song.artist,
+              type: `singer`
+            })
+        }
+          break
+        default: {
+          const album = song.album
+          if (!names.includes(album))
+            shared.recentPlayed.unshift({
+              cover: song.picture,
+              name: song.album,
+              artist: song.artist,
+              type: `album`
+            })
+        }
+          break
+      }
+    }
   } else {
     console.error(`Can't run "triggerAudioSrc", now state: `, shared.audioState)
   }
@@ -260,7 +297,7 @@ storeStates.watch(`offset`, offset => {
     stopAudioSrc()
     states.offset = states.duration
     states.timePassedText = second2time(states.duration, states.fillFlag)
-    if (states.playListPointer + 1 < states.total) {
+    if (states.playListPointer + 1 < playList.list.length) {
       states.playListPointer += 1
       changeSongAndPlay()
     }
