@@ -1,6 +1,5 @@
 const path = require(`path`)
 const ebus = require(`../utils/eBus.js`)
-const icons = require(`../assets/icons.js`)
 const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
 
@@ -14,45 +13,33 @@ class AQUASongs extends HTMLElement {
     this.root = this.shadowRoot
     shadow.innerHTML = songs
 
-    function renderString(key, i, song) {
+    function listEl(key, i, song) {
       if (states.filterType === song.genre || states.filterType === `所有流派`) {
-        return `
-<div class="item" data-key="${key}">
-  <div class="checkBox"></div>
-  <div class="name">
-    <div class="text">${song.title}</div>
-    <div class="icon play" data-key="${key}"></div>
-    <div class="icon add" data-key="${key}"></div>
-  </div>
-  <div class="attribute">
-    <div class="artist">${song.artist}</div>
-    <div class="album">${song.album}</div>
-    <div class="date">${song.year}</div>
-    <div class="style">${song.genre}</div>
-  </div>
-  <div class="duration">${second2time(Math.round(song.duration))}</div>
-</div>
-      `
-      } else {
-        return ``
+        const singleSongList = document.createElement(`aqua-single-song-list`)
+        singleSongList.classList.add(`item`)
+        singleSongList.states = {
+          key: key,
+          name: song.title,
+          artist: song.artist,
+          album: song.album,
+          date: song.year,
+          genre: song.genre,
+          duration: second2time(Math.round(song.duration))
+        }
+        return singleSongList
       }
     }
 
     this.run = function () {
       //列表渲染
-      listSList.cast(`.list`, renderString, this.root)
-
-      //图标渲染
-      this.root.querySelectorAll(`.icon`).forEach(el => {
-        el.innerHTML = icons[el.classList[1]]
-      })
+      listSList.cast(`#main`, listEl, this.root)
 
       //元素引用
-      const list = this.root.querySelector(`.list`)
+      const main = this.root.querySelector(`#main`)
 
       states.total = this.root.querySelectorAll(`.item`).length
 
-      list.addEventListener(`click`, e => {
+      main.addEventListener(`click`, e => {
         const isPlayBtn = e.target.classList.contains(`play`)
         const isAddBtn = e.target.classList.contains(`add`)
         if (isPlayBtn) {
@@ -69,6 +56,24 @@ class AQUASongs extends HTMLElement {
           shared.showAdd(states, e)
         }
       })
+
+      this.addEventListener(`play`, e => {
+        const currentList = Array.from(this.root.querySelectorAll(`.item`))
+          .map(el => listSList.indexOfKey(el.states.key))
+        playList.changeSource(currentList)
+        const listIndex = listSList.indexOfKey(e.detail)
+        states.playListPointer = playList.getValues().indexOf(listIndex)
+        ebus.emit(`play this`, states.playListPointer)
+      })
+      
+      this.addEventListener(`add`, e => {
+        const pathOfSong = listSList.kGet(e.detail.key)[0].path
+        shared.songsToAdd.push(pathOfSong)
+        states.menuX = e.detail.coordinate[0] + 20 + `px`
+        states.menuY = e.detail.coordinate[1] - 10 + `px`
+        states.showAdd = true
+      })
+
     }
   }
 

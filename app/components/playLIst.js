@@ -37,7 +37,7 @@ class AQUAPlayList extends HTMLElement {
     let blob
     let coverURL
     let showRemovePlayListDialog
-    
+
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
       el.innerHTML = icons[el.classList[1]]
@@ -47,6 +47,8 @@ class AQUAPlayList extends HTMLElement {
     storeStates.sync(`playList`, listName, `innerText`)
 
     //状态监听以从数据库更新列表
+    listSList.onModified(() => { refresh(states.playList) })
+
     storeStates.watch(`playList`, refresh)
 
     ebus.on(`refresh playList`, () => {  //来自 add.js
@@ -61,17 +63,20 @@ class AQUAPlayList extends HTMLElement {
           let gotCover = false
           const songs = orderedPaths.map((p, i) => {
             const index = shared.pathItemBuf[p]
-            const song = listSList.list[index][0]
-            if (!gotCover && song.picture) {
-              gotCover = true
-              getThemeColor(song.picture)
-              applyCover(song.picture, cover)
-            } else if (!gotCover && i === orderedPaths.length - 1) {
-              applyCover(`svg`, cover)
+            //歌曲失效检查
+            if (index) {
+              const song = listSList.list[index][0]
+              if (!gotCover && song.picture) {
+                gotCover = true
+                getThemeColor(song.picture)
+                applyCover(song.picture, cover)
+              } else if (!gotCover && i === orderedPaths.length - 1) {
+                applyCover(`svg`, cover)
+              }
+              return song
             }
-            return song
           })
-          renderList.changeSource(songs)
+          renderList.changeSource(songs.filter(Boolean))
         } else {
           renderList.changeSource([])
         }
@@ -85,6 +90,7 @@ class AQUAPlayList extends HTMLElement {
         description.innerText = `0 首歌曲 • 0分钟`
         main.style.setProperty(`--themeColor`, `black`)
         applyCover(`svg`, cover)
+        modifyPlayLists(`addToList`, [], states.playList, true)
       } else {
         const totalDuration = renderList.getValues().reduce((acc, cur) => {
           return acc += cur.duration

@@ -25,11 +25,6 @@ const shared = {
       el.style.display = `flex`
       el.querySelector(`svg`).style.margin = `auto`
     }
-  },
-  showAdd: function (states, e) {
-    states.menuX = e.clientX + 20 + `px`
-    states.menuY = e.clientY - 10 + `px`
-    states.showAdd = true
   }
 }
 
@@ -63,7 +58,8 @@ const storeStates = new Store({
   showAdd: false,
   menuX: 0,
   menuY: 0,
-  playList: ``
+  playList: ``,
+  currentPlayingSongKey: ``
 })
 
 const listSList = new List([])

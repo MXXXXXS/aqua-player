@@ -274,7 +274,11 @@ class List {
           const cb = member[1]
           el.innerHTML = ``
           this.list.forEach((item, i) => {
-            el.innerHTML += cb(item[1], i, item[0])
+            const child = cb(item[1], i, item[0])
+            if (child) {
+              child.dataset.key = item[1]
+              el.appendChild(child)
+            }
           })
         }
       }
@@ -283,12 +287,16 @@ class List {
     this.onModifiedCbs.forEach(cb => cb())
   }
 
-  cast(elSelector, renderString, scope = document) {
-    this.casted.push([elSelector, renderString, scope])
+  cast(elSelector, elToAppend, scope = document) {
+    this.casted.push([elSelector, elToAppend, scope])
     const el = scope.querySelector(elSelector)
     el.innerHTML = ``
     this.list.forEach((item, i) => {
-      el.innerHTML += renderString(item[1], i, item[0])
+      const child = elToAppend(item[1], i, item[0])
+      if (child) {
+        child.dataset.key = item[1]
+        el.appendChild(child)
+      }
     })
   }
 

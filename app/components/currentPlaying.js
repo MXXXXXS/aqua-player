@@ -125,7 +125,7 @@ class AQUACurrentPlaying extends HTMLElement {
         states.shuffled = true
         playList.changeSource(playList.getValues().shuffle())
       }
-      
+
       //更新图标
       this.root.querySelectorAll(`.icon`).forEach(el => {
         el.innerHTML = icons[el.classList[1]]
@@ -167,52 +167,45 @@ class AQUACurrentPlaying extends HTMLElement {
     // })
 
     //列表渲染
-    function renderString(key, i, songKey) {
+    function listEl(key, i, songKey) {
       const song = listSList.kGet(songKey)[0]
-      return `
-      <div class="item" data-key="${songKey}">
-        <div class="checkBox"></div>
-        <div class="name">
-      <div class="text">
-        ${song.title}
-      </div>
-      <div class="icon play" data-key="${songKey}">${icons.play}</div>
-      <div class="icon add" data-key="${songKey}">${icons.add}</div>
-    </div>
-    <div class="attribute">
-      <div class="artist">${song.artist}</div>
-      <div class="album">${song.album}</div>
-      <div class="date">${song.year}</div>
-      <div class="style">${song.genre}</div>
-    </div>
-    <div class="duration">${second2time(Math.round(song.duration))}</div>
-  </div>
-      `
+      const singleSongList = document.createElement(`aqua-single-song-list`)
+      singleSongList.classList.add(`item`)
+      singleSongList.states = {
+        key: key,
+        name: song.title,
+        artist: song.artist,
+        album: song.album,
+        date: song.year,
+        genre: song.genre,
+        duration: second2time(Math.round(song.duration)),
+        hoverColor: `white`,
+        hoverBGColor: `#33333366`,
+        hoverIconColor: `#6666`,
+        nameColor: `white`,
+        attributesColor: `#a5a5a5`
+      }
+      return singleSongList
     }
 
-    this.run = function () {
-      playList.cast(`.list`, renderString, this.root)
+    this.addEventListener(`play`, e => {
+      const currentList = Array.from(this.root.querySelectorAll(`.item`))
+        .map(el => listSList.indexOfKey(el.states.key))
+      playList.changeSource(currentList)
+      const listIndex = listSList.indexOfKey(e.detail)
+      states.playListPointer = playList.getValues().indexOf(listIndex)
+      ebus.emit(`play this`, states.playListPointer)
+    })
 
-      //更新图标
-      this.root.querySelectorAll(`.icon`).forEach(el => {
-        el.innerHTML = icons[el.classList[1]]
-      })
+    this.addEventListener(`add`, e => {
+      const pathOfSong = listSList.kGet(e.detail.key)[0].path
+      shared.songsToAdd.push(pathOfSong)
+      states.menuX = e.detail.coordinate[0] + 20 + `px`
+      states.menuY = e.detail.coordinate[1] - 10 + `px`
+      states.showAdd = true
+    })
 
-      this.root.querySelector(`.list`).addEventListener(`click`, e => {
-        const isPlayBtn = e.target.classList.contains(`play`)
-        const isAddBtn = e.target.classList.contains(`add`)
-        if (isPlayBtn) {
-          const key = parseInt(e.target.dataset.key)
-          states.playListPointer = playList.getValues().indexOf(key)
-          ebus.emit(`play this`, states.playListPointer)
-        }
-        if (isAddBtn) {
-          const pathOfSong = listSList.kGet(e.target.dataset.key)[0].path
-          shared.songsToAdd.push(pathOfSong)
-          shared.showAdd(states, e)
-        }
-      })
-    }
+    playList.cast(`.list`, listEl, this.root)
 
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
@@ -229,21 +222,6 @@ class AQUACurrentPlaying extends HTMLElement {
     root.querySelector(`.back`).addEventListener(`click`, e => {
       states.RMainCurrentPlaying = `#main`
     })
-  }
-
-  connectedCallback() {
-    this.cb = this.run.bind(this)
-    console.log(`connected currentPlaying`)
-    ebus.on(`Updated listSList and listSPath`, this.cb)
-    if (states.sListLoaded) {
-      this.run()
-    }
-  }
-
-  disconnectedCallback() {
-    console.log(`disconnected currentPlaying`)
-    listSList.removeCasted(`.list`, this.root)
-    ebus.removeListener(`Updated listSList and listSPath`, this.cb)
   }
 }
 module.exports = AQUACurrentPlaying

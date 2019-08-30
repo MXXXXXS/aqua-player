@@ -1,0 +1,165 @@
+<div id="main">
+  <div class="checkBox"></div>
+  <div class="name">
+    <div class="text">
+      <div class="icon wave"></div>
+      <span>Departures ~あなたにおくるアイの歌~</span>
+    </div>
+    <div class="icon play"></div>
+    <div class="icon add"></div>
+  </div>
+  <div class="artist">未知艺术家</div>
+  <div class="album">GREATESTHITS2011-2017'ALTEREGO'</div>
+  <div class="date">2017年</div>
+  <div class="genre">R&B</div>
+  <div class="duration">3:07</div>
+</div>
+<style>
+  .text .wave {
+    position: relative;
+    display: none;
+    background: transparent;
+  }
+  .text .wave svg {
+    height: 14px;
+    width: 14px;
+  }
+
+  .play>*,
+  .add>* {
+    pointer-events: none;
+  }
+
+  .play {
+    right: 48px;
+  }
+
+  .add {
+    right: 0;
+  }
+
+  .name .text {
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  .name {
+    color: var(--nameColor, black);
+    margin-right: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: inherit;
+    width: 30%;
+  }
+
+  .checkBox {
+    visibility: hidden;
+    width: 20px;
+    height: 20px;
+    margin: 12px;
+    outline: 1px solid var(--nameColor, black);
+  }
+
+  #main:hover .checkBox {
+    visibility: visible;
+  }
+
+  svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--nameColor, black);
+  }
+
+  #main:hover .name>.icon {
+    display: flex;
+  }
+
+  .name>.icon:hover {
+    background-color: var(--hoverIconColor, #bcbcbc);
+  }
+
+  .icon {
+    position: absolute;
+    display: none;
+    flex-shrink: 0;
+    height: 48px;
+    width: 48px;
+  }
+
+  .artist,
+  .album,
+  .genre,
+  .date,
+  .duration {
+    color: var(--attributesColor, black)
+  }
+
+  #main:hover .artist,
+  #main:hover .album,
+  #main:hover .genre,
+  #main:hover .date,
+  #main:hover .duration {
+    color: var(--hoverColor, black);
+  }
+
+
+  .artist,
+  .album {
+    overflow: hidden;
+    margin-right: 20px;
+    width: 20%;
+  }
+
+  .genre {
+    overflow: hidden;
+    margin-right: 20px;
+    flex: 1;
+  }
+
+  .date {
+    width: 50px;
+    margin-right: 20px;
+  }
+
+  .duration {
+    font-size: 12px;
+    margin-right: 10px;
+  }
+
+  #main:hover {
+    background-color: var(--hoverBGColor, #d9d9d9);
+  }
+
+  #main {
+    background-color: var(--background-color, transparent);
+    display: flex;
+    align-items: center;
+    height: 48px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 12px
+  }
+
+  /* @media (max-width: 1200px) {
+    .album {
+      display: none;
+    }
+  }
+
+  @media (max-width: 850px) {
+    .date {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .style {
+      display: none;
+    }
+  } */
+</style>
+<script type="module" src="../../assets/devIcon.js"></script>

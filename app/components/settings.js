@@ -37,17 +37,15 @@ class AQUASettings extends HTMLElement {
 
     //点击"完成"
     okBtn.addEventListener(`click`, async () => {
-      pannel.style.display = `none`
       const newList = listSPath.getValues()
       const foldersToRemove = oldList.elsNotIn(newList)
       const foldersToAdd = newList.elsNotIn(oldList)
-      Promise.all([
+      await Promise.all([
         modifyStars(`add`, foldersToAdd),
         modifyStars(`remove`, foldersToRemove)
-      ]).then(() => {
-        console.log(`promise all`)
-        refreshSongs()
-      })
+      ])
+      await refreshSongs()
+      pannel.style.display = `none`
     })
 
     //添加tile
