@@ -16,6 +16,7 @@ class AQUAAdd extends HTMLElement {
     const main = root.querySelector(`#main`)
     const mask = root.querySelector(`.mask`)
     const menu = root.querySelector(`.menu`)
+    const listRoot = root.querySelector(`.list`)
 
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
@@ -23,15 +24,16 @@ class AQUAAdd extends HTMLElement {
     })
 
     //列表渲染
-    listNames.cast(`.list`, renderString, root)
+    listNames.cast(listRoot, listEl)
 
-    function renderString(key, i, val) {
-      return `
-      <div class="item" data-msg="album" data-key="${key}">
+    function listEl(key, val) {
+      const el = document.createElement(`div`)
+      el.classList.add(`item`, `album`)
+      el.innerHTML = `
       <div class="icon album">${icons.album}</div>
       <div class="text">${val}</div>
-      </div>
       `
+      return el
     }
 
     //显示隐藏切换
@@ -79,5 +81,7 @@ class AQUAAdd extends HTMLElement {
       })
   }
 }
+
+customElements.define(`aqua-add`, AQUAAdd)
 
 module.exports = AQUAAdd

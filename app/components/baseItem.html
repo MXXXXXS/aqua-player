@@ -1,0 +1,28 @@
+<div id="root">
+  <slot>内容渲染到此</slot>
+</div>
+<style>
+  #root:hover {
+    color: var(--hoverFontColor, gray);
+    background-color: var(--hoverBgColor, rgba(0, 0, 0, 0.1));
+  }
+  #root:active {
+    transform: scaleX(var(--scaleRatio, 0.99));
+    transition: transform 0s;
+  }
+  #root {
+    color: var(--fontColor, black);
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    background-color: var(--bgColor, rgb(242, 242, 242));
+    transition: transform 0.2s cubic-bezier(0.85, 0, 0.35, 1.01);
+  }
+  #root > div {
+    pointer-events: none;
+    line-height: 50px;
+  }
+  .highlight {
+    box-shadow: inset 4px 0 var(--color, rgb(113, 204, 192));
+  }
+</style>

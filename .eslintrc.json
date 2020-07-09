@@ -10,7 +10,7 @@
   "rules": {
     "quotes": [
       "warn",
-      "backtick"
+      "single"
     ],
     "semi": [
       "warn",

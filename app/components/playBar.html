@@ -1,0 +1,34 @@
+<div id="root">
+  <div class="cover"></div>
+  <div class="control"></div>
+  <div class="progressBar"></div>
+  <div class="adjust"></div>
+</div>
+<style>
+  #root {
+    width: inherit;
+    height: 90px;
+    display: grid;
+    grid-template-rows: 1fr 32px;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: var(--bgColor, transparent);
+  }
+  .cover {
+    grid-area: 1 / 1 / 3 / 2;
+  }
+  .control {
+    grid-area: 1 / 2 / 2 / 3;
+    align-self: center;
+  }
+  .progressBar {
+    grid-area: 2 / 2 / 3 / 3;
+    align-self: center;
+    width: 100%;
+  }
+  .adjust {
+    align-self: center;
+    width: 100%;
+    grid-area: 1 / 3 / 2 / 4;
+  }
+
+</style>

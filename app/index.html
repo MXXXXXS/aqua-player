@@ -7,105 +7,15 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>AQUA Player</title>
   <style>
-    aqua-settings {
-      margin-left: 20px;
-    }
-
     body {
       margin: 0;
-    }
-
-    aqua-menu-info {
-      display: flex;
-      height: 100%;
-    }
-
-    aqua-menu {
-      height: inherit;
-      z-index: 3;
-    }
-
-    aqua-list {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      padding: 0 20px;
-      overflow-y: auto;
-    }
-
-    aqua-my-music {
-      position: sticky;
-      top: 0;
-      background: white;
-      z-index: 2;
-    }
-
-    aqua-recent-played,
-    aqua-play-lists {
-      padding-left: 10px;
-      overflow-y: auto;
-    }
-
-    aqua-play-list {
-      flex: 1;
-    }
-
-    #main {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    aqua-add-play-list {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 10;
-    }
-
-    /* 侧栏隐藏 */
-    @media (min-width: 769px) and (max-width: 1024px) {
-      aqua-menu {
-        position: relative;
-        width: 50px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      aqua-menu-info {
-        flex-direction: column;
-      }
-
-      aqua-my-music {
-        padding: 0;
-      }
-
-      aqua-menu {
-        position: absolute;
-      }
     }
   </style>
 </head>
 
 <body>
-  <div id="main">
-    <aqua-menu-info>
-      <aqua-menu class="aqua"></aqua-menu>
-      <aqua-list class="aqua">
-        <aqua-my-music class="aqua"></aqua-my-music>
-        <div id="router-songsItems">
-        </div>
-      </aqua-list>
-      <aqua-play-list></aqua-play-list>
-      <aqua-settings></aqua-settings>
-      <aqua-recent-played></aqua-recent-played>
-      <aqua-play-lists></aqua-play-lists>
-    </aqua-menu-info>
-    <aqua-controller class="aqua"></aqua-controller>
+  <div id="root">
   </div>
-  <aqua-current-playing></aqua-current-playing>
-  <aqua-add></aqua-add>
-  <aqua-add-play-list></aqua-add-play-list>
   <script src="index.js"></script>
 </body>
 

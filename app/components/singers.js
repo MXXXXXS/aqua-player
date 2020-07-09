@@ -88,4 +88,6 @@ class AQUASingers extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-singers`, AQUASingers)
+
 module.exports = AQUASingers

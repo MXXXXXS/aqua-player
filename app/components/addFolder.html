@@ -1,0 +1,82 @@
+<div id="root">
+  <div class="title">从本地曲库创建个人"收藏"</div>
+  <div class="statement">现在我们正在查看这些文件夹</div>
+  <div class="container">
+    <div class="addTile">+</div>
+    <div class="tilesContainer"></div>
+  </div>
+  <div class="ok">完成</div>
+</div>
+<style>
+  #root {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 30px;
+    border: 1px solid var(--color, rgb(113, 204, 192));
+    background-color: white;
+    width: 350px;
+    max-height: 756px;
+  }
+
+  .container {
+    overflow-y: auto;
+    height: calc(100% - 100px);
+  }
+  .title {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+  .statement {
+    font-size: 14;
+  }
+  .addTile {
+    margin-top: 8px;
+    font-size: 14px;
+    padding: 15px 10px;
+    box-sizing: border-box;
+    height: 70px;
+    background-color: gainsboro;
+    font-weight: lighter;
+    text-align: center;
+    line-height: 36px;
+    font-size: 50px;
+  }
+
+  .icon {
+    transform: rotate(45deg);
+    line-height: 20px;
+    font-size: 30px;
+    position: absolute;
+    right: 10px;
+  }
+  .basename {
+    font-weight: bold;
+    overflow: hidden;
+    width: 235px;
+    white-space: nowrap;
+  }
+  .path {
+    overflow: hidden;
+    width: 260px;
+    white-space: nowrap;
+  }
+  .addTile,
+  .ok {
+    border: 2px solid transparent;
+  }
+  .addTile:hover,
+  .ok:hover {
+    border: 2px solid rgb(94, 94, 94);
+  }
+
+  .ok {
+    background-color: gainsboro;
+    margin: 20px 0 0 0;
+    align-self: flex-end;
+    text-align: center;
+    line-height: 30px;
+    width: 150px;
+    height: 30px;
+  }
+</style>

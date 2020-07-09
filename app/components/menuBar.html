@@ -1,0 +1,30 @@
+<div id="root">
+  <div id="switcher"></div>
+  <div id="search"></div>
+  <div id="tabs"></div>
+  <div id="showPlaylists"></div>
+  <div id="userPlaylists"></div>
+  <div id="settings"></div>
+</div>
+<style>
+  #root {
+    background-color: var(--bgColor, rgb(242, 242, 242));
+    width: inherit;
+    height: inherit;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(2,50px) 150px 50px calc(100% - 350px) 50px;
+  }
+  #showPlaylists {
+    display: flex;
+    align-items: center;
+  }
+  #userPlaylists {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  #tabs  {
+    display: grid;
+  }
+</style>

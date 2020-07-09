@@ -96,11 +96,11 @@ function triggerAudioSrc() {
     states.playing = true
     shared.audioState = 3
 
-    //当前歌曲
-    states.currentPlayingSongKey = playList.list[states.playListPointer][1]
     //记录"最近播放的内容"
     const index = playList.list[states.playListPointer][0]
     const song = listSList.list[index][0]
+    //当前正在播放的歌曲高亮
+    states.currentPlayingSongPath = song.path
     const names = shared.recentPlayed.map(item => item.name)
     if (states.RMenuItems === `aqua-play-list` && states.playList !== ``) {
       if (!names.includes(states.playList)) {

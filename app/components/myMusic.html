@@ -1,0 +1,36 @@
+<div id="root">
+  <div class="myMusicPanel"></div>
+  <div class="sortTypePanel"></div>
+  <div class="contentSwitcher"></div>
+</div>
+<style>
+  #root {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 110px 50px 1fr;
+    animation: fadeIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .myMusicPanel {
+    margin: 0 25px;
+    grid-row: 1 / 2;
+  }
+  .sortTypePanel {
+    grid-row: 2 / 3;
+  }
+  .contentSwitcher {
+    overflow-y: auto;
+    grid-row: 3 / 4;
+  }
+</style>

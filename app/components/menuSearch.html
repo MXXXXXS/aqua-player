@@ -1,0 +1,49 @@
+<div id="root">
+  <input type="text" placeholder="搜索" />
+  <div class="cross"></div>
+  <div class="search"></div>
+</div>
+<style>
+  #root {
+    display: grid;
+    grid-template-rows: 50px;
+    grid-template-columns: 1fr 35px 55px;
+    justify-items: center;
+    align-items: center;
+    height: 50px;
+  }
+
+  #root:focus input {
+    grid-column: 1 / 2;
+  }
+
+  input {
+    justify-self: end;
+    grid-row: 1;
+    grid-column: 1 / 3;
+    padding: 0 0 0 10px;
+    outline: none;
+    border: none;
+    width: calc(100% - 30px);
+    height: 35px;
+    background-color: white;
+  }
+
+  input:focus ~ .cross {
+    visibility: visible;
+  }
+  .cross:hover {
+    visibility: visible;
+  }
+  .cross {
+    z-index: 0;
+    visibility: hidden;
+    grid-row: 1;
+    grid-column: 2 / 3;
+  }
+  .search {
+    justify-self: start;
+    grid-row: 1;
+    grid-column: 3 / 4;
+  }
+</style>

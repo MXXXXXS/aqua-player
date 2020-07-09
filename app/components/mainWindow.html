@@ -1,0 +1,72 @@
+<div id="root">
+  <div id="back"></div>
+  <div id="menu"></div>
+  <div id="content">
+
+  </div>
+  <div id="play-bar"></div>
+</div>
+
+<style>
+  body {
+    margin: 0;
+  }
+  #root {
+    display: grid;
+  }
+  /* 大 */
+  #root {
+    grid-template-rows: [back-start] 32px [back-end] calc(100vh - 122px) [play-bar-start] 90px [play-bar-end];
+    grid-template-columns: [menu-start] 320px [menu-end content-start] 1fr [content-end];
+  }
+  #back {
+    grid-row: back;
+    grid-column: menu-start / content-end;
+  }
+  #menu {
+    z-index: 1;
+    grid-row: back-end / play-bar-start;
+    grid-column: menu;
+    width: 320px;
+    height: calc(100vh - 122px);
+  }
+  #menu > * {
+    height: inherit;
+  }
+  #content {
+    grid-row: back-end / play-bar-start;
+    grid-column: content;
+    display: inherit;
+    min-height: 0;
+  }
+  #content > * {
+    overflow: hidden;
+  }
+  #play-bar {
+    grid-row: play-bar;
+    grid-column: menu-start / content-end;
+  }
+  /* 中 */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    #root {
+      grid-template-columns: [menu-start] 50px [menu-end content-start] 1fr [content-end];
+    }
+  }
+
+  /* 小 */
+  @media (max-width: 768px) {
+    #root {
+      grid-template-columns: [menu-start] 320px [menu-end content-start] 1fr [content-end];
+    }
+    #menu {
+      grid-row: back-end / play-bar-end;
+      grid-column: menu;
+      width: 320px;
+      height: calc(100vh - 32px);
+    }
+    #content {
+      grid-row: back-end / play-bar-start;
+      grid-column: menu-start / content-end;
+    }
+  }
+</style>

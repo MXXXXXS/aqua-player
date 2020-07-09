@@ -38,6 +38,10 @@
   - 播放会自动停止, 当 buffer 的 audio data 已经被完全播放, 或达到 stop() 所设定的停止时间
   - css 变量若为空, 不应该放任其为 undefined, 会出现未知状况, 应该保持为空: ``
   - 可以通过 css 变量向 shadowdom 传递样式
+  - window.customElements.define(name, constructor, { extends: baseLocalName }) 其中 extends 的 baseLocalName 不能为一个 custom element 或一个未知的元素
+  - 在使用 constructor 构造 custom element 时, 若没有先 window.customElements.define 会报错: Uncaught TypeError: Illegal constructor
+- 对于已挂载到shadow dom的slot元素, 通过改变其name属性来实现组件渲染切换有延迟, 几秒到几十秒不等
+- custom elements 通过设置其css, `display: block; width: inherit; height: inherit;`来适应其容器元素的大小
 
 TODO
 
@@ -155,6 +159,12 @@ BUG修复
   - 修复方法: 修改了 proxy set handler 的 condition
 - [x] List 的 changeSource 方法对比新旧数组是否相同存在误判, 导致没有更新. 具体表现为: 若新数组为旧数组去掉最后几项所得, 则不会得出两个数组相异的判断
   - 修复方法: 修改了比较数组元素的逻辑
+- [ ] 整个应用疯狂泄露内存, 需要逐个修复
+  - [x] Store 的 binded 添加了 unwatch, unwatchAll 用来清空绑定的监视函数
+  - [x] 调用 List 的 removeOnModified 来清空不再用的监听函数
+- [x] 对于已挂载到shadow dom的slot元素, 通过改变其name属性来实现组件渲染切换有延迟, 几秒到几十秒不等
+  - 修复方法: 删除已挂载的slot, 创建新的slot并设置name, 再挂载到dom上可以立即更新, 延迟原因未知, 应该是浏览器内部渲染的机制导致
+
 预览
 
 ![Alt preview](assets/sample0.jpg)

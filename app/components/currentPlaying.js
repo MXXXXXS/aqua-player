@@ -9,6 +9,7 @@ const second2time = require(`../utils/second2time.js`)
 const { storeStates, shared, playList, listSList } = require(`../states.js`)
 const icons = require(`../assets/icons.js`)
 const states = storeStates.states
+const AQUASongs = require(`./songs.js`)
 
 class AQUACurrentPlaying extends HTMLElement {
   constructor() {
@@ -167,45 +168,24 @@ class AQUACurrentPlaying extends HTMLElement {
     // })
 
     //列表渲染
-    function listEl(key, i, songKey) {
-      const song = listSList.kGet(songKey)[0]
-      const singleSongList = document.createElement(`aqua-single-song-list`)
-      singleSongList.classList.add(`item`)
-      singleSongList.states = {
-        key: key,
-        name: song.title,
-        artist: song.artist,
-        album: song.album,
-        date: song.year,
-        genre: song.genre,
-        duration: second2time(Math.round(song.duration)),
+    const songs = new AQUASongs({
+      inStates: {
+        transparentBG: true,
         hoverColor: `white`,
-        hoverBGColor: `#33333366`,
+        hoverBGColor: `#505050`,
         hoverIconColor: `#6666`,
         nameColor: `white`,
-        attributesColor: `#a5a5a5`
-      }
-      return singleSongList
-    }
-
-    this.addEventListener(`play`, e => {
-      const currentList = Array.from(this.root.querySelectorAll(`.item`))
-        .map(el => listSList.indexOfKey(el.states.key))
-      playList.changeSource(currentList)
-      const listIndex = listSList.indexOfKey(e.detail)
-      states.playListPointer = playList.getValues().indexOf(listIndex)
-      ebus.emit(`play this`, states.playListPointer)
+        attributesColor: `#a5a5a5`,
+        replaceAddWithRemove: false
+      },
+      inList: listSList.getValues()
     })
 
-    this.addEventListener(`add`, e => {
-      const pathOfSong = listSList.kGet(e.detail.key)[0].path
-      shared.songsToAdd.push(pathOfSong)
-      states.menuX = e.detail.coordinate[0] + 20 + `px`
-      states.menuY = e.detail.coordinate[1] - 10 + `px`
-      states.showAdd = true
+    playList.onModified(() => {
+      songs.inList.changeSource(playList.getValues().map(i => listSList.list[i][0]))
     })
 
-    playList.cast(`.list`, listEl, this.root)
+    list.appendChild(songs)
 
     //图标渲染
     root.querySelectorAll(`.icon`).forEach(el => {
@@ -224,4 +204,6 @@ class AQUACurrentPlaying extends HTMLElement {
     })
   }
 }
+customElements.define(`aqua-current-playing`, AQUACurrentPlaying)
+
 module.exports = AQUACurrentPlaying

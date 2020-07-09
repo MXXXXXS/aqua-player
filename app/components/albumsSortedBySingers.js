@@ -125,4 +125,6 @@ class AQUAAlbumsSortedBySingers extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-albums-sorted-by-singers`, AQUAAlbumsSortedBySingers)
+
 module.exports = AQUAAlbumsSortedBySingers

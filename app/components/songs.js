@@ -1,96 +1,92 @@
-const path = require(`path`)
 const ebus = require(`../utils/eBus.js`)
 const { songs } = require(`../assets/components.js`)
 const second2time = require(`../utils/second2time.js`)
+const AQUA = require(`../utils/aqua`)
+const AQUASingleSong = require(`./singleSong`)
 
-const { listSList, storeStates, playList, shared } = require(`../states.js`)
+const { storeStates, playList, shared } = require(`../states.js`)
 const states = storeStates.states
 
-class AQUASongs extends HTMLElement {
-  constructor() {
-    super()
-    const shadow = this.attachShadow({ mode: `open` })
-    this.root = this.shadowRoot
-    shadow.innerHTML = songs
+class AQUASongs extends AQUA {
+  constructor(options = {
+    inStates: {
+      transparentBG: false,
+      hoverColor: ``,
+      hoverBGColor: ``,
+      hoverIconColor: ``,
+      nameColor: ``,
+      attributesColor: ``,
+      replaceAddWithRemove: false
+    },
+    inList: []
+  }) {
+    super({
+      template: songs,
+      inStates: options.inStates,
+      inList: options.inList,
+      outStates: {
+        length: 0
+      }
+    })
 
-    function listEl(key, i, song) {
-      if (states.filterType === song.genre || states.filterType === `所有流派`) {
-        const singleSongList = document.createElement(`aqua-single-song-list`)
-        singleSongList.classList.add(`item`)
-        singleSongList.states = {
-          key: key,
+    const listEl = (key, song) => {
+      const singleSong = new AQUASingleSong({
+        inStates: {
+          path: song.path,
           name: song.title,
           artist: song.artist,
           album: song.album,
           date: song.year,
           genre: song.genre,
-          duration: second2time(Math.round(song.duration))
+          duration: second2time(Math.round(song.duration)),
+          hoverColor: this.inStore.states.hoverColor,
+          hoverBGColor: this.inStore.states.hoverBGColor,
+          hoverIconColor: this.inStore.states.hoverIconColor,
+          nameColor: this.inStore.states.nameColor,
+          attributesColor: this.inStore.states.attributesColor,
+          replaceAddWithRemove: false
         }
-        return singleSongList
+      })
+      singleSong.classList.add(`item`)
+      return singleSong
+    }
+
+    this.inList.cast(this.root, listEl)
+
+    this.outStore.states.length = this.inList.list.length
+    this.inList.onModified(() => {
+      this.outStore.states.length = this.inList.list.length
+    })
+
+    const switchBGStyle = (transparentBG) => {
+      if (transparentBG) {
+        this.style.setProperty(`--bgcolor`, `transparent`)
+      } else {
+        this.style.setProperty(`--bgcolor`, `#f2f2f2`)
       }
     }
+    switchBGStyle(this.inStore.states.transparentBG)
+    this.inStore.watch(`transparentBG`, switchBGStyle)
 
-    this.run = function () {
-      //列表渲染
-      listSList.cast(`#main`, listEl, this.root)
+    this.addEventListener(`play`, e => {
+      const els = Array.from(this.root.querySelectorAll(`.item`))
+      const currentListPaths = els.map(el => el.inStore.states.path)
+      const currentList = currentListPaths.map(p => shared.paths.indexOf(p))
+      playList.changeSource(currentList)
+      states.playListPointer = currentListPaths.indexOf(e.detail)
+      ebus.emit(`play this`, states.playListPointer)
+    })
 
-      //元素引用
-      const main = this.root.querySelector(`#main`)
-
-      states.total = this.root.querySelectorAll(`.item`).length
-
-      main.addEventListener(`click`, e => {
-        const isPlayBtn = e.target.classList.contains(`play`)
-        const isAddBtn = e.target.classList.contains(`add`)
-        if (isPlayBtn) {
-          const currentList = Array.from(this.root.querySelectorAll(`.item`))
-            .map(el => listSList.indexOfKey(el.dataset.key))
-          playList.changeSource(currentList)
-          const key = parseInt(e.target.dataset.key)
-          states.playListPointer = playList.getValues().indexOf(key)
-          ebus.emit(`play this`, states.playListPointer)
-        }
-        if (isAddBtn) {
-          const pathOfSong = listSList.kGet(e.target.dataset.key)[0].path
-          shared.songsToAdd.push(pathOfSong)
-          shared.showAdd(states, e)
-        }
-      })
-
-      this.addEventListener(`play`, e => {
-        const currentList = Array.from(this.root.querySelectorAll(`.item`))
-          .map(el => listSList.indexOfKey(el.states.key))
-        playList.changeSource(currentList)
-        const listIndex = listSList.indexOfKey(e.detail)
-        states.playListPointer = playList.getValues().indexOf(listIndex)
-        ebus.emit(`play this`, states.playListPointer)
-      })
-      
-      this.addEventListener(`add`, e => {
-        const pathOfSong = listSList.kGet(e.detail.key)[0].path
-        shared.songsToAdd.push(pathOfSong)
-        states.menuX = e.detail.coordinate[0] + 20 + `px`
-        states.menuY = e.detail.coordinate[1] - 10 + `px`
-        states.showAdd = true
-      })
-
-    }
-  }
-
-  connectedCallback() {
-    this.cb = this.run.bind(this)
-    console.log(`connected songs`)
-    ebus.on(`Updated listSList and listSPath`, this.cb)
-    if (states.sListLoaded) {
-      this.run()
-    }
-  }
-
-  disconnectedCallback() {
-    console.log(`disconnected songs`)
-    listSList.removeCasted(`.list`, this.root)
-    ebus.removeListener(`Updated listSList and listSPath`, this.cb)
+    this.addEventListener(`add`, e => {
+      const pathOfSong = e.detail.path
+      shared.songsToAdd.push(pathOfSong)
+      states.menuX = e.detail.coordinate[0] + 20 + `px`
+      states.menuY = e.detail.coordinate[1] - 10 + `px`
+      states.showAdd = true
+    })
   }
 }
+
+customElements.define(`aqua-songs`, AQUASongs)
 
 module.exports = AQUASongs

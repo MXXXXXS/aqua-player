@@ -1,0 +1,41 @@
+<div id="root">
+  <div class="basename">国国国国国国国国国国国国国国国国国国国</div>
+  <div class="icon">×</div>
+  <div class="path">D:/UW/ClouddddddddddddddddddMusic</div>
+</div>
+<style>
+  #root {
+    border-radius: 3px;
+    padding: 0 5px;
+    height: 70px;
+    display: grid;
+    grid-template-columns: 1fr 20px;
+    grid-template-rows: 1fr 1fr;
+  }
+  .icon {
+    line-height: 1;
+    font-size: 22px;
+    align-self: end;
+    justify-self: center;
+    grid-area: 1 / 2 / 2 / 3;
+    font-weight: bold;
+  }
+  .basename, .path {
+    overflow: hidden;
+    
+    white-space: nowrap;
+  }
+  .basename {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 20px 0 10px;
+    align-self: end;
+    grid-area: 1 / 1 / 2 / 3;
+  }
+  .path {
+    font-size: 12px;
+    margin: 0 10px;
+    align-self: start;
+    grid-area: 2 / 1 / 3 / 3;
+  }
+</style>

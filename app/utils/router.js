@@ -1,66 +1,86 @@
-class Router {
-  constructor(routerName, scope) {
-    this.name = routerName
-    this.increaseNum = 0
-    this.elsDisplay = []
-    this.scope = scope || document
-  }
-  add(...elsToAdd) {
-    elsToAdd.forEach(el => {
-      el = this.scope.querySelector(el)
-      this.elsDisplay.push(el.style.display)
-      el.setAttribute(`data-${this.name}`, this.elsDisplay.length - 1)
-    })
-  }
-  show(...displayEls) {
-    const displayElsNums = displayEls.map(el => {
-      el = this.scope.querySelector(el)
-      return parseInt(el.getAttribute(`data-${this.name}`))
-    })
+const AQUA = require('./aqua')
+const { difference, cloneDeep } = require('lodash')
 
-    for (let i = 0; i < this.elsDisplay.length; i++) {
-      if (this.elsDisplay[i] !== undefined)
-        this.scope.querySelector(`[data-${this.name}="${i}"]`).style.display = `none`
-    }
+const router = new AQUA({
+  data: {
+    routes: {},
+    history: [],
+    position: -1
+  },
+  acts: {
+    add(name, ...newSlots) {
+      const data = router.data
+      const oldSlots = data.routes[name]
+      const isSame = (difference(newSlots, oldSlots).length === 0) &&
+        (difference(oldSlots, newSlots).length === 0)
+      if (!isSame) {
+        const newRoutes = Object.assign({}, data.routes, {
+          [name]: newSlots
+        })
+        // splice丢弃之后的记录, 以此为新开始位置
+        data.history.splice(data.position + 1)
+        data.history.push(cloneDeep(newRoutes))
+        data.position += 1
+        data.routes = data.history[data.position]
+        return cloneDeep(data)
+      }
+    },
+    multAdd(routes = []) {
+      const data = router.data
+      let isSame = true
+      // 比较新旧路由是否有不同
+      for (let index = 0; index < routes.length && isSame; index++) {
+        const route = routes[index]
+        const [name, ...newSlots] = route
+        const oldSlots = data.routes[name]
+        
+        isSame = (difference(oldSlots, newSlots).length === 0) &&
+          (difference(newSlots, oldSlots).length === 0)
+      }
 
-    displayElsNums.forEach(elNum => {
-      this.scope.querySelector(`[data-${this.name}="${elNum}"]`).style.display = this.elsDisplay[elNum]
-    })
+      if (!isSame) {
+        const newRoutes = Object.assign(
+          {},
+          data.routes,
+          routes.reduce((acc, [name, ...slot]) => {
+            acc[name] = slot
+            return acc
+          }, {})
+        )
+        // splice丢弃之后的记录, 以此为新开始位置
+        data.history.splice(data.position + 1)
+        data.history.push(cloneDeep(newRoutes))
+        data.position += 1
+        data.routes = data.history[data.position]
+        return cloneDeep(data)
+      }
+    },
+    next() {
+      const data = cloneDeep(router.data)
+      const historyLen = data.history.length
+      const position = data.position
+      if (position < historyLen - 1 && position >= 0) {
+        data.position += 1
+        data.routes = data.history[data.position]
+      }
+      return cloneDeep(data)
+    },
+    previous() {
+      const data = router.data
+      const historyLen = data.history.length
+      const position = data.position
+      if (position <= historyLen - 1 && position > 0) {
+        data.position -= 1
+        data.routes = data.history[data.position]
+      }
+      return cloneDeep(data)
+    },
+    maxLenCheck: [function (data) {
+      if (data.history.length > 30) {
+        data.history.shift()
+      }
+    }]
   }
-  remove(...elsToRm) {
-    elsToRm.forEach(el => {
-      el = this.scope.querySelector(el)
-      const elNum = parseInt(el.getAttribute(`data-${this.name}`))
-      el.style.display = this.elsDisplay[elNum]
-      this.elsDisplay[elNum] = undefined
-    })
-  }
-}
+})
 
-class RouterEL {
-  constructor(routerName, scope, ...customEls) {
-    this.routerName = routerName
-    this.scope = scope
-    if (!this.scope.querySelector(`#router-${this.routerName}`)) {
-      this.hasRouter = false
-      console.error(`Can't find router element: #router-${this.routerName}`)
-    } else {
-      this.hasRouter = true
-      this.customEls = customEls.map(customEl => customEl.name.toLowerCase())
-      this.root = scope.createElement(`div`)
-      this.root.setAttribute(`id`, `router-${routerName}`)
-      customEls.forEach(customEl => {
-        customElements.define(`${this.routerName.toLowerCase()}-${customEl.name.toLowerCase()}`, customEl)
-      })
-    }
-  }
-
-  to(customEl) {
-    const elName = customEl.toLowerCase()
-    const routerName = this.routerName.toLowerCase()
-    if (this.hasRouter && this.customEls.includes(elName))
-      this.scope.querySelector(`#router-${this.routerName}`).innerHTML = `<${routerName}-${elName}></${routerName}-${elName}>`
-  }
-}
-
-module.exports = {RouterEL, Router}
+module.exports = router

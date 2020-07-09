@@ -1,0 +1,55 @@
+<div id="root">
+  <div class="myMusic">我的音乐</div>
+  <div class="tags">
+    <div class="songs selected">歌曲</div>
+    <div class="singers">歌手</div>
+    <div class="albums">专辑</div>
+  </div>
+  <div class="line"></div>
+</div>
+<style>
+  .myMusic {
+    margin: 10px 0;
+    font-size: 34px;
+    font-weight: lighter;
+  }
+
+  .tags {
+    font-size: 20px;
+    display: flex;
+    width: 200px;
+    justify-content: space-between;
+  }
+
+  .tags > div {
+    margin-top: 10px;
+    padding: 0 0 3px 0;
+    border-bottom-color: transparent;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    color: rgb(100, 100, 100);
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  } 
+
+  .tags > div:hover {
+    color: black;
+  }
+
+  .tags > div:active {
+    transform: scale(0.96);
+  }
+
+  .tags > div.selected {
+    color: black;
+    border-bottom-color: var(--curTagColor, rgb(113, 204, 192));
+  }
+
+  .line {
+    position: relative;
+    z-index: -1;
+    top: -2px;
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px rgb(206, 206, 206) solid;
+  }
+</style>

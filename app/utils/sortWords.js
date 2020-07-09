@@ -1,17 +1,21 @@
 const pinyin = require(`pinyin`)
 
-module.exports = { sortWords, sortIdWords, sortUniqueIdWords, flatSortUniqueIdWords }
+module.exports = {
+  sortByInitial,
+  sortByKeyWord,
+  sortByInitialAndKeyWord
+}
 
 /*
   输入 [ keyWord, keyWord, ]
   输出 {
     en: [ //数字, 英文字母作为一组
-      [inital, keyWord, keyWord, ] ┌ ⇨ 按 keyWord 排序
-      [inital, keyWord, keyWord, ] ⇩ 按 inital 排序
+      [initial, keyWord, keyWord, ] ┌ ⇨ 按 keyWord 排序
+      [initial, keyWord, keyWord, ] ⇩ 按 initial 排序
     ],
     zh: [ //汉字或假名作为一组
-      [inital, keyWord, keyWord, ] ┌ ⇨ 按 keyWord 排序
-      [inital, keyWord, keyWord, ] ⇩ 按 inital 排序
+      [initial, keyWord, keyWord, ] ┌ ⇨ 按 keyWord 排序
+      [initial, keyWord, keyWord, ] ⇩ 按 initial 排序
     ]
   }
 */
@@ -61,12 +65,12 @@ function sortWords(arr) {
   返回
   {
     [ //数字, 英文字母作为一组
-      [inital, [id, keyWords], [id, keyWords],], ┌ ⇨ 按 keyWord 排序
-      [inital, [id, keyWords], [id, keyWords],], ⇩ 按 inital 排序
+      [initial, [id, keyWords], [id, keyWords],], ┌ ⇨ 按 keyWord 排序
+      [initial, [id, keyWords], [id, keyWords],], ⇩ 按 initial 排序
     ],
     [ //汉字或假名作为一组
-      [inital, [id, keyWords], [id, keyWords],], ┌ ⇨ 按 keyWord 排序
-      [inital, [id, keyWords], [id, keyWords],], ⇩ 按 inital 排序
+      [initial, [id, keyWords], [id, keyWords],], ┌ ⇨ 按 keyWord 排序
+      [initial, [id, keyWords], [id, keyWords],], ⇩ 按 initial 排序
     ]
   }
 */
@@ -75,12 +79,12 @@ function sortIdWords(id_keyWords) {
   const { en, zh } = sortWords(id_keyWords.map(id_keyWord => id_keyWord[1] + `_` + id_keyWord[0]))
   function sortGroups(groups) {
     return groups.map(group => {
-      const inital = group[0]
+      const initial = group[0]
       const items = group.slice(1, group.length).map(keyWord_id => {
         const result = keyWord_id.match(/(.*)_(\d+)$/)
         return [result[2], result[1]]
       })
-      return [inital, ...items]
+      return [initial, ...items]
     })
   }
   return { en: sortGroups(en), zh: sortGroups(zh) }
@@ -94,12 +98,12 @@ function sortIdWords(id_keyWords) {
   返回
   {
     [ //数字, 英文字母作为一组
-      [inital, [[id, id,], keyWords], [[id, id,], keyWords],], ┌ ⇨ 按 keyWord 排序 , keyWord 不重复
-      [inital, [[id, id,], keyWords], [[id, id,], keyWords],], ⇩ 按 inital 排序 
+      [initial, [[id, id,], keyWords], [[id, id,], keyWords],], ┌ ⇨ 按 keyWord 排序 , keyWord 不重复
+      [initial, [[id, id,], keyWords], [[id, id,], keyWords],], ⇩ 按 initial 排序 
     ],
     [ //汉字或假名作为一组
-      [inital, [[id, id,], keyWords], [[id, id,], keyWords],], ┌ ⇨ 按 keyWord 排序 , keyWord 不重复
-      [inital, [[id, id,], keyWords], [[id, id,], keyWords],], ⇩ 按 inital 排序
+      [initial, [[id, id,], keyWords], [[id, id,], keyWords],], ┌ ⇨ 按 keyWord 排序 , keyWord 不重复
+      [initial, [[id, id,], keyWords], [[id, id,], keyWords],], ⇩ 按 initial 排序
     ]
   }
 */
@@ -107,7 +111,7 @@ function sortUniqueIdWords(id_keyWords) {
   const { en, zh } = sortIdWords(id_keyWords)
   function distinctGroup(groups) {
     return groups.map(group => {
-      const inital = group[0]
+      const initial = group[0]
       const items = group.slice(1, group.length)
       const buf = []
       buf.push(items.reduce((acc, cur) => {
@@ -120,7 +124,7 @@ function sortUniqueIdWords(id_keyWords) {
         }
       }, [[], ``]))
       buf.shift()
-      return [inital, ...buf]
+      return [initial, ...buf]
     })
   }
   return {en: distinctGroup(en), zh: distinctGroup(zh)}
@@ -141,10 +145,67 @@ function sortUniqueIdWords(id_keyWords) {
     ]
   }
 */
-function flatSortUniqueIdWords(id_keyWords) {
+function sortByKeyWord(id_keyWords) {
   const { en, zh } = sortUniqueIdWords(id_keyWords)
   return {
     en: en.map(group => group.slice(1, group.length)).flat(),
     zh: zh.map(group => group.slice(1, group.length)).flat()
+  }
+}
+
+/*
+  输入 [
+    [id, keyWord],
+    [id, keyWord],
+  ]
+  返回
+  {
+    [ //数字, 英文字母作为一组
+      [[id, id,], initial], [[id, id,], initial], ⇨ 各个 id 按 keyWord 排序 , initial 按 a-z 排序
+    ],
+    [ //汉字或假名作为一组
+      [[id, id,], initial], [[id, id,], initial], ⇨ 各个 id 按 keyWord 排序 , initial 按 a-z 排序
+    ]
+  }
+*/
+function sortByInitial(id_keyWords) {
+  const { en, zh } = sortUniqueIdWords(id_keyWords)
+  return {
+    en: en.map(group => {
+      const initial = group[0]
+      const items = group.slice(1, group.length)
+      const ids = items.map(item => item[0]).flat()
+      return [ids, initial]
+    }),
+    zh: zh.map(group => {
+      const initial = group[0]
+      const items = group.slice(1, group.length)
+      const ids = items.map(item => item[0]).flat()
+      return [ids, initial]
+    })
+  }
+}
+
+function sortByInitialAndKeyWord(id_keyWords) {
+  const { en, zh } = sortUniqueIdWords(id_keyWords)
+  return {
+    byInitial: {
+      en: en.map(group => {
+        const initial = group[0]
+        const items = group.slice(1, group.length)
+        const ids = items.map(item => item[0]).flat()
+        return [ids, initial]
+      }),
+      zh: zh.map(group => {
+        const initial = group[0]
+        const items = group.slice(1, group.length)
+        const ids = items.map(item => item[0]).flat()
+        return [ids, initial]
+      })
+    },
+    byKeyWord: {
+      en: en.map(group => group.slice(1, group.length)).flat(),
+      zh: zh.map(group => group.slice(1, group.length)).flat()
+    }
   }
 }

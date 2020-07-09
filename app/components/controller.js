@@ -145,4 +145,7 @@ class AQUAController extends HTMLElement {
     console.log(`disconnected controller`)
   }
 }
+
+customElements.define(`aqua-controller`, AQUAController)
+
 module.exports = AQUAController

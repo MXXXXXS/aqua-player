@@ -134,51 +134,36 @@ class AQUAPlayList extends HTMLElement {
     }
 
     //列表渲染
-    renderList.cast(`.list`, renderString, root)
+    renderList.cast(list, listEl)
 
-    function renderString(key, i, song) {
-      if (states.filterType === song.genre || states.filterType === `所有流派`) {
-        return `
-      <div class="item" data-key="${key}">
-        <div class="checkBox"></div>
-        <div class="name">
-      <div class="text">
-        ${song.title}
-      </div>
-      <div class="icon play" data-key="${key}">${icons.play}</div>
-      <div class="icon remove" data-key="${key}">${icons.remove}</div>
-    </div>
-    <div class="attribute">
-      <div class="artist">${song.artist}</div>
-      <div class="album">${song.album}</div>
-      <div class="date">${song.year}</div>
-      <div class="style">${song.genre}</div>
-    </div>
-    <div class="duration">${second2time(Math.round(song.duration))}</div>
-  </div>
-      `
-      } else {
-        return ``
+    function listEl(key, i, song) {
+      const singleSongList = document.createElement(`aqua-single-song-list`)
+      singleSongList.classList.add(`item`)
+      singleSongList.states = {
+        renderList: renderList,
+        key: key,
+        name: song.title,
+        artist: song.artist,
+        album: song.album,
+        date: song.year,
+        genre: song.genre,
+        duration: second2time(Math.round(song.duration)),
+        replaceAddWithRemove: true
       }
+      return singleSongList
     }
 
     //按键功能绑定
-    list.addEventListener(`click`, e => {
-      const isPlayBtn = e.target.classList.contains(`play`)
-      const isRemoveBtn = e.target.classList.contains(`remove`)
-      if (isPlayBtn) {
-        e.stopPropagation()
-        const songsPaths = Array.from(root.querySelectorAll(`.item`))
-          .map(el => renderList.kGet(el.dataset.key)[0].path)
-        playList.changeSource(songsPaths.map(p => shared.pathItemBuf[p]))
-        const key = parseInt(e.target.dataset.key)
-        states.playListPointer = playList.getKeys().indexOf(key)
-        ebus.emit(`play this`, states.playListPointer)
-      }
-      if (isRemoveBtn) {
-        e.stopPropagation()
-        renderList.kSplice(e.target.dataset.key, 1)
-      }
+    this.addEventListener(`play`, e => {
+      const currentList = Array.from(root.querySelectorAll(`.item`))
+        .map(el => shared.pathItemBuf[renderList.kGet(el.states.key)[0].path])
+      playList.changeSource(currentList)
+      states.playListPointer = renderList.indexOfKey(e.detail)
+      ebus.emit(`play this`, states.playListPointer)
+    })
+
+    this.addEventListener(`remove`, e => {
+      renderList.kSplice(e.detail, 1)
     })
 
     playAll.addEventListener(`click`, e => {
@@ -261,5 +246,7 @@ class AQUAPlayList extends HTMLElement {
     })
   }
 }
+
+customElements.define(`aqua-play-list`, AQUAPlayList)
 
 module.exports = AQUAPlayList

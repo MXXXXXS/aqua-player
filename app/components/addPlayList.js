@@ -55,4 +55,6 @@ class AQUAAddPlayList extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-add-play-list`, AQUAAddPlayList)
+
 module.exports = AQUAAddPlayList

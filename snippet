@@ -1,0 +1,42 @@
+const { importTemplate, createEl, ReactiveObj } = require('../utils/customElHelper')
+const store = require('../store')
+const { $3 } = store
+
+class BaseItem extends HTMLElement {
+  constructor() {
+    super()
+    this.attachShadow({ mode: 'open' })
+    const template = importTemplate(__filename)
+    this.shadowRoot.appendChild(template.content)
+    // 属性定义
+    this.props = new ReactiveObj({
+      $1: $2,
+    })
+    // 元素引用
+    this.rootEl = this.shadowRoot.querySelector('#root')
+    // UI事件触发store的行为
+    this.addEventListener('', function(e) {
+
+    })
+    // 属性改变, 更新视图
+    this.props.watch('$1', (newVal) => {
+      
+    })
+  }
+  connectedCallback() {
+    // 状态输入
+    $3.hook(this.props._obj, '$4')
+    console.log(this.tagName, '已挂载')
+  }
+  disconnectedCallback() {
+    //状态输入解除
+    Object.values(store).forEach(state => {
+      state.unhook(this.props._obj)
+    })
+    console.log(this.tagName, '已卸载')
+  }
+}
+
+module.exports = function (props= {}) {
+  return createEl(props, BaseItem)
+}

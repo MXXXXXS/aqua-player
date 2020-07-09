@@ -140,15 +140,17 @@ class AQUAMenu extends HTMLElement {
     })
 
     //专辑列表渲染
-    listNames.cast(`.albums`, renderString, root)
+    listNames.cast(albums, listEl)
 
-    function renderString(key, i, val) {
-      return `
-      <div class="item highlight" data-msg="album" data-key="${key}">
+    function listEl(key, val) {
+      const el = document.createElement(`div`)
+      el.classList.add(`item`, `highlight`)
+      el.dataset.msg = `album`
+      el.innerHTML = `
       <div class="icon album">${icons.album}</div>
       <div class="text">${val}</div>
-      </div>
       `
+      return el
     }
 
     //专辑选择
@@ -164,5 +166,7 @@ class AQUAMenu extends HTMLElement {
     })
   }
 }
+
+customElements.define(`aqua-menu`, AQUAMenu)
 
 module.exports = AQUAMenu

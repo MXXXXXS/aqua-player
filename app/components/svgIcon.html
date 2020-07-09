@@ -1,0 +1,38 @@
+<div id="root"></div>
+<style>
+  #root {
+    display: flex;
+    box-sizing: border-box;
+    width: var(--width, 48px);
+    height: var(--height, 48px);
+    border-style: solid;
+    border-width: var(--borderwidth, 0);
+    border-color: var(--borderColor, transparent);
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background-color: var(--bgColor, transparent);
+  }
+  svg {
+    margin: auto;
+    width: var(--svgwidth, 18px);
+    height: var(--svgheight, 18px);
+    fill: none;
+    stroke: var(--color, black);
+  }
+  #root:hover svg {
+    stroke: var(--hoverColor, black);
+  }
+  #root:hover {
+    background-color: var(--hoverBgColor, var(--bgColor, transparent));
+    border-color: var(--hoverBorderColor, transparent);
+    border-width: var(--hoverBorderWidth, 0);
+  }
+  .pressedDown {
+    transform: scale(var(--pressScale, 0.9));
+  }
+  #root.pressedDown:hover {
+    background-color: var(--pressedDownBgColor, transparent);
+  }
+  #root.pressedDown svg {
+    stroke: var(--pressedDownColor, var(--color, black));
+  }
+</style>

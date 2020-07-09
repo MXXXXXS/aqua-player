@@ -117,4 +117,6 @@ class AQUAAlbumsSortedByAZ extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-albums-sorted-by-az`, AQUAAlbumsSortedByAZ)
+
 module.exports = AQUAAlbumsSortedByAZ

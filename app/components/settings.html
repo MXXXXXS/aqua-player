@@ -1,0 +1,60 @@
+<div id="root">
+  <div class="setting">设置</div>
+  <div class="items first-item">此PC上的音乐</div>
+  <div class="add">选择查找音乐的位置</div>
+  <div class="items">播放</div>
+  <div class="adjust">均衡器</div>
+  <div class="items">模式</div>
+  <div class="mode">
+    <div><input type="radio" id="light" />浅色</div>
+    <div><input type="radio" id="dark" />深色</div>
+  </div>
+</div>
+<style>
+  #root {
+    padding: 0 25px;
+    animation: fadeIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .add:hover {
+    color: grey;
+  }
+
+  .add {
+    cursor: pointer;
+    color: var(--color, rgb(113, 204, 192));
+  }
+
+  .setting {
+    position: sticky;
+    top: 0;
+    height: 45px;
+    padding-top: 10px;
+    text-align: bottom;
+    font-size: 34px;
+    font-weight: lighter;
+    background-color: white;
+  }
+
+  .items {
+    font-size: 24px;
+    margin-top: 26px;
+    margin-bottom: 5px;
+  }
+
+  .first-item {
+    margin-top: 15px;
+  }
+</style>

@@ -125,4 +125,6 @@ class AQUAAlbumsSortedByYears extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-albums-sorted-by-years`, AQUAAlbumsSortedByYears)
+
 module.exports = AQUAAlbumsSortedByYears

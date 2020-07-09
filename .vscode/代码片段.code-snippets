@@ -1,0 +1,96 @@
+{
+  // Place your aqua-player 工作区 snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  "New customElement": {
+    "scope": "javascript,typescript",
+    "prefix": "nc",
+    "body": [
+      "const { importTemplate, createEl, ReactiveObj, Base } = require('../utils/customElHelper')",
+      "const store = require('../store')",
+      "const { $3 } = store",
+      "$0",
+      "class $5 extends Base {",
+      "  constructor() {",
+      "    super()",
+      "    this.attachShadow({ mode: 'open' })",
+      "    const template = importTemplate(__filename)",
+      "    this.shadowRoot.appendChild(template.content)",
+      "    /* 属性定义 */",
+      "    this.props = new ReactiveObj({",
+      "      $1: $2",
+      "    })",
+      "    //---------//",
+      "    /* 元素引用 */",
+      "    this.rootEl = this.shadowRoot.querySelector('#root')",
+      "    //---------//",
+      "    /* 视图 => 逻辑 */",
+      "    this.addEventListener('', function(e) {",
+      "      ",
+      "    })",
+      "    //-------------//",
+      "    /* 属性 => 视图 */",
+      "    this.props.watch('$1', (newVal) => {",
+      "      ",
+      "    })",
+      "    //-------------//",
+      "  }",
+      "  connectedCallback() {",
+      "    super.connectedCallback()",
+      "    /* 数据 => 属性 */",
+      "    $3.hook(this.props._obj, '$4')",
+      "    //-------------//",
+      "  }",
+      "}",
+      "",
+      "module.exports = createEl($5)"
+    ],
+    "description": "组件模板"
+  },
+  "setProperty": {
+    "scope": "javascript,typescript",
+    "prefix": "setP",
+    "body": "this.rootEl.style.setProperty('--$1', $0)",
+    "description": "设置css变量"
+  },
+  "transiton": {
+    "scope": "css",
+    "prefix": "tranCubic",
+    "body": "transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);",
+    "description": "缓出过渡"
+  },
+  "appendChild": {
+    "scope": "javascript",
+    "prefix": "appendC",
+    "body": [
+      "    this.$1El = this.root.querySelector('.$1')",
+      "    this.$1 = $2({",
+      "      $0",
+      "    })",
+      "    this.$1El.appendChild(this.$1)"
+    ]
+  },
+  "hook": {
+    "scope": "javascript",
+    "prefix": "ho",
+    "body": "$1.hook(this.props._obj, '$1')"
+  },
+  "watch": {
+    "scope": "javascript",
+    "prefix": "wat",
+    "body": [
+      "    this.props.watch('$1', ($2) => {",
+      "      $3 = $2",
+      "    })"
+    ]
+  },
+  "qel": {
+    "scope": "javascript",
+    "prefix": "qel",
+    "body": "this.$1El = this.rootEl.querySelector('.$1')"
+  }
+}

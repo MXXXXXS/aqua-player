@@ -92,4 +92,6 @@ class AQUAAlbums extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-albums`, AQUAAlbums)
+
 module.exports = AQUAAlbums

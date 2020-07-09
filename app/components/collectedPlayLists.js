@@ -180,4 +180,6 @@ class AQUAPlayLists extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-play-lists`, AQUAPlayLists)
+
 module.exports = AQUAPlayLists

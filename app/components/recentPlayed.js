@@ -136,4 +136,6 @@ class AQUARecentPlayed extends HTMLElement {
   }
 }
 
+customElements.define(`aqua-recent-played`, AQUARecentPlayed)
+
 module.exports = AQUARecentPlayed
