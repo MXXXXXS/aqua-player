@@ -1,0 +1,109 @@
+<div id="main">
+  <div class="cover">
+    <div class="coverContainer"></div>
+    <div class="icon play"></div>
+    <div class="icon add"></div>
+  </div>
+  <div class="info">
+    <div class="name"></div>
+    <div class="description"></div>
+  </div>
+</div>
+<style>
+  .icon {
+    transform-origin: center;
+    transform: scale(0);
+  }
+
+  .icon svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: white;
+  }
+
+  .coverContainer {
+    display: flex;
+    width: inherit;
+    height: inherit;
+    background-color: rgb(230, 230, 230);
+  }
+
+  .coverContainer img {
+    width: inherit;
+    object-fit: cover;
+  }
+
+  .coverContainer svg {
+    fill: none;
+    stroke: white;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+  }
+
+  .cover {
+    position: relative;
+    margin: 10px;
+    width: 160px;
+    height: 160px;
+  }
+
+  .cover > div {
+    position: absolute;
+  }
+
+  .cover:hover {
+    box-shadow: 0 20px 20px rgba(100, 100, 100, 0.452);
+  }
+
+  .cover:hover .icon {
+    transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: scale(1);
+    box-sizing: border-box;
+    background-clip: content-box;
+    padding: 4px;
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.199);
+    background-color: currentColor;
+    display: flex;
+    width: 54px;
+    height: 54px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .cover:hover .icon:hover {
+    padding: 0px;
+    transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .cover:hover .play {
+    left: 32%;
+  }
+
+  .cover:hover .add {
+    left: 68%;
+  }
+
+  .info {
+    width: 180px;
+  }
+
+  .name {
+    overflow: hidden;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0 10px;
+  }
+
+  .description {
+    overflow: hidden;
+    font-size: 12px;
+    margin: 0 10px;
+    color: rgb(140, 140, 140);
+  }
+</style>
+<script type="module" src="../../assets/devIcon.js"></script>

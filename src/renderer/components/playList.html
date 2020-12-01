@@ -1,0 +1,291 @@
+<div id="main">
+  <div class="head">
+    <div class="coverContainer">
+      <div class="decorationSquare0"></div>
+      <div class="decorationSquare1"></div>
+      <div class="cover"></div>
+    </div>
+    <div class="infoAndController">
+      <div class="info">
+        <div class="listName">Hollow knight</div>
+        <div class="description"><span>15</span>首歌曲•1小时17分钟</div>
+      </div>
+      <div class="controller">
+        <div class="button playAll">
+          <div class="icon play"></div>
+          <div>全部播放</div>
+        </div>
+        <div class="button addTo">
+          <div class="icon add"></div>
+          <div>添加到</div>
+        </div>
+        <div class="button rename">
+          <div class="icon pen"></div>
+          <div>重命名</div>
+        </div>
+        <div class="button remove">
+          <div class="icon garbage"></div>
+          <div>删除</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="list">
+    <div>
+      <div class="checkBox"></div>
+      <div class="name">
+        <div class="text">Departures ~あなたにおくるアイの歌~</div>
+        <div class="icon play"></div>
+        <div class="icon add"></div>
+      </div>
+      <div class="attribute">
+        <div class="artist">未知艺术家</div>
+        <div class="album">GREATESTHITS2011-2017'ALTEREGO'</div>
+        <div class="date">2017年</div>
+        <div class="style">R&B</div>
+      </div>
+      <div class="duration">3:07</div>
+    </div>
+  </div>
+  <div class="dialogPad">
+    <div class="mask"></div>
+    <div class="dialog">
+      <div class="title">是否确定要删除此项?</div>
+      <div class="statement">
+        如果删除<span class="playListName">xxdddxx</span>, 它将不再位于设备上
+      </div>
+      <div class="buttons">
+        <div class="ok">确定</div>
+        <div class="cancel">取消</div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  #main {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    animation: scale 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transform-origin: center;
+  }
+
+  @keyframes scale {
+    0% {
+      transform: scale3d(0.8, 0.8, 1);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale3d(1, 1, 1);
+      opacity: 1;
+    }
+  }
+
+  .head {
+    background-color: var(--themeColor, rgb(0, 0, 0));
+  }
+
+  .info {
+    margin-top: 40px;
+  }
+
+  .button .icon {
+    stroke: white;
+    fill: none;
+  }
+
+  svg {
+    margin: auto;
+  }
+
+  .icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+  }
+
+  .controller {
+    display: flex;
+    margin-bottom: 36px;
+    justify-content: space-between;
+    max-width: 500px;
+  }
+
+  .button > * {
+    pointer-events: none;
+  }
+
+  .button:hover {
+    border-radius: 50px;
+    background-color: rgba(180, 180, 180, 0.5);
+  }
+
+  .button {
+    cursor: default;
+    width: max-content;
+    font-size: 14px;
+    padding-right: 15px;
+    padding-left: 5px;
+    line-height: 36px;
+    display: flex;
+  }
+
+  .infoAndController {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .listName {
+    font-size: 32px;
+    margin: 10px 0;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .head {
+    display: flex;
+    color: white;
+  }
+
+  .coverContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 36px;
+  }
+
+  .decorationSquare0,
+  .decorationSquare1 {
+    height: 8px;
+  }
+
+  .decorationSquare0 {
+    width: 188px;
+    background-color: rgba(180, 180, 180, 0.2);
+  }
+
+  .decorationSquare1 {
+    width: 204px;
+    background-color: rgba(180, 180, 180, 0.5);
+  }
+
+  .cover {
+    width: 220px;
+    height: 220px;
+    background-color: rgba(180, 180, 180, 0.8);
+  }
+
+  .cover > img {
+    width: inherit;
+    object-fit: cover;
+  }
+
+  .cover > svg {
+    width: 100px;
+    height: 100px;
+    fill: none;
+    stroke: white;
+  }
+
+  .icon > * {
+    pointer-events: none;
+  }
+
+  .item:nth-child(2n-1) {
+    --background-color: #f2f2f2;
+  }
+
+  .dialogPad {
+    visibility: hidden;
+  }
+
+  .ok {
+    margin-right: 5px;
+  }
+
+  .ok,
+  .cancel {
+    cursor: default;
+    background-color: rgb(204, 204, 204);
+    text-align: center;
+    line-height: 30px;
+    height: 30px;
+    min-width: 155px;
+    flex: 1;
+  }
+
+  .ok:hover,
+  .cancel:hover {
+    outline: rgb(180, 180, 180) 2px solid;
+  }
+
+  .statement {
+    flex: 1;
+    white-space: nowrap;
+    width: max-content;
+  }
+
+  .title {
+    margin-bottom: 10px;
+  }
+
+  .buttons {
+    display: flex;
+  }
+
+  .dialog {
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+    box-sizing: border-box;
+    padding: 20px;
+    border: 1px solid var(--themeColor, rgb(113, 204, 192));
+    background-color: white;
+    height: 185px;
+    min-width: 360px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: grey 0 10px 20px;
+  }
+
+  .mask {
+    z-index: 3;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(202, 202, 202, 0.199);
+  }
+
+  /* @media (max-width: 1200px) {
+    .album {
+      display: none;
+    }
+
+    .name {
+      width: 15vw;
+    }
+  }
+
+  @media (max-width: 850px) {
+    .date {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .style {
+      display: none;
+    }
+  } */
+</style>
+<script type="module" src="../../assets/devIcon.js"></script>

@@ -1,0 +1,21 @@
+<div id="root"></div>
+<style>
+  #root:hover {
+    color: var(--hoverFontColor, gray);
+    background-color: var(--hoverBgColor, rgba(0, 0, 0, 0.1));
+  }
+  #root:active {
+    transform: scaleX(var(--scaleRatio, 0.99));
+    transition: transform 0s;
+  }
+  #root {
+    --scaleRatio: [$scaleRatio];
+    color: var(--fontColor, black);
+    min-height: 50px;
+    display: grid;
+    justify-items: stretch;
+    align-items: center;
+    background-color: var(--bgColor, rgb(242, 242, 242));
+    transition: transform 0.2s cubic-bezier(0.85, 0, 0.35, 1.01);
+  }
+</style>

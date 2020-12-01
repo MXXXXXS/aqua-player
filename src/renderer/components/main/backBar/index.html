@@ -1,0 +1,32 @@
+<div id="root">
+  <div id="back-btn"></div>
+  <div id="title">aqua-player</div>
+  <div id="minimize" class="btn"></div>
+  <div id="maximize"></div>
+  <div id="close"></div>
+</div>
+<style>
+  #root {
+    --color: [#color];
+    height: 100%;
+    display: grid;
+    grid-template-columns: 48px auto repeat(3, 45px);
+    justify-items: center;
+    align-items: center;
+  }
+
+  #title {
+    -webkit-app-region: drag;
+    padding-left: 10px;
+    line-height: 32px;
+    font-size: 14px;
+    color: var(--color, black);
+    justify-self: stretch;
+    align-self: stretch;
+    user-select: none;
+  }
+
+  #back-btn {}
+
+  .btn {}
+</style>

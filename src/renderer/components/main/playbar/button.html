@@ -1,0 +1,48 @@
+<div
+  id="root"
+  :mouseover="mouseover"
+  :mouseout="mouseout"
+  :mousedown="mousedown"
+  :mouseup="mouseup"
+  :click="click"
+  :class="$isActive, $pressedDown"
+></div>
+<style>
+  #root {
+    --width: [width];
+  }
+  #root {
+    display: flex;
+    box-sizing: border-box;
+    width: var(--width, 32px);
+    height: var(--width, 32px);
+    border-width: 2px;
+    border-color: transparent;
+    border-radius: 100%;
+    border-style: solid;
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  svg {
+    margin: auto;
+    width: 80%;
+    height: 80%;
+    fill: none;
+    stroke-width: 4;
+    stroke: whitesmoke;
+  }
+  #root:hover {
+    border-color: gray;
+  }
+  .pressedDown {
+    transform: scale(0.9);
+  }
+  .isActive {
+    background-color: darkgray;
+  }
+  /* #root.pressedDown:hover {
+    background-color: var(--pressedDownBgColor, transparent);
+  } */
+  /* #root.pressedDown svg {
+    stroke: var(--pressedDownColor, var(--color, black));
+  } */
+</style>

@@ -1,5 +1,5 @@
 {
-  // 使用 IntelliSense 了解相关属性。 
+  // 使用 IntelliSense 了解相关属性。
   // 悬停以查看现有属性的描述。
   // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
@@ -7,15 +7,39 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "jest 当前 TS",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+      "skipFiles": ["<node_internals>/**"],
+      "args": ["${fileBasename}", "-c", "package.json", "-i"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "当前TS",
+      "program": "${workspaceRoot}/debug/${fileBasenameNoExtension}.js",
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "编译当前 ts 文件"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "当前JS",
+      "program": "${file}",
+      "skipFiles": ["<node_internals>/**"],
+      "outFiles": ["${workspaceFolder}/debug/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Test store.js",
-      "program": "${workspaceFolder}/app/utils/test/testStore.js",
+      "program": "${workspaceFolder}/app/utils/test/testStore.js"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Launch main.js",
       "program": "${workspaceFolder}/app/main.js",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
-    },
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron"
+    }
   ]
 }

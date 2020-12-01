@@ -1,0 +1,132 @@
+<div id="main">
+  <!-- <div>
+    <div class="cover">
+      <div class="icon play"></div>
+      <div class="icon add"></div>
+    </div>
+    <div class="info">
+      <div class="name">Departures～あなたにおくるアイの歌～</div>
+      <div class="artist">未知艺术家</div>
+    </div>
+  </div> -->
+</div>
+<style>
+  .icon svg {
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: white;
+  }
+
+  .cover:hover .icon:hover {
+    padding: 0px;
+    transition: padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .icon {
+    transform-origin: center;
+    transform: scale(0);
+  }
+
+  .cover:hover .icon {
+    transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: scale(1);
+    box-sizing: border-box;
+    background-clip: content-box;
+    padding: 4px;
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.199);
+    background-color: currentColor;
+    display: flex;
+    width: 54px;
+    height: 54px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .cover:hover .play {
+    left: 32%;
+  }
+
+  .cover:hover .add {
+    left: 68%;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .info {
+    width: 180px;
+  }
+
+  .artist {
+    font-size: 12px;
+    margin: 10px;
+    color: rgb(140, 140, 140);
+  }
+
+  .name {
+    overflow: hidden;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0 10px;
+  }
+
+  #main {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    animation: fadeIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .cover:hover {
+    box-shadow: 0 20px 20px rgba(100, 100, 100, 0.452);
+  }
+
+  .cover {
+    position: relative;
+    margin: 10px;
+    width: 160px;
+    height: 160px;
+  }
+
+  .cover > div {
+    position: absolute;
+  }
+
+  .coverContainer {
+    display: flex;
+    width: inherit;
+    height: inherit;
+    background-color: rgb(230, 230, 230);
+  }
+
+  .coverContainer img {
+    width: inherit;
+    object-fit: cover;
+  }
+
+  .coverContainer svg {
+    fill: none;
+    stroke: white;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+  }
+</style>
+<script type="module" src="../../assets/devIcon.js"></script>

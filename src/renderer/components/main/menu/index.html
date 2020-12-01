@@ -1,0 +1,38 @@
+<div id="root">
+  <div class="menu"></div>
+  <div id="search"></div>
+  <div class="myMusic"></div>
+  <div class="recentPlayed"></div>
+  <div class="playing"></div>
+  <div id="showPlaylists">
+    <div class="playList"></div>
+    <div class="add"></div>
+  </div>
+  <div class="userPlaylists"></div>
+  <div class="settings"></div>
+</div>
+<style>
+  #root {
+    background-color: var(--bgColor, rgb(242, 242, 242));
+    width: inherit;
+    height: inherit;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(6, 50px) 1fr 50px;
+  }
+
+  #showPlaylists {
+    display: flex;
+    align-items: center;
+  }
+
+  .playList {
+    flex-grow: 1;
+  }
+
+  .userPlaylists {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+</style>

@@ -1,2 +1,7 @@
 node_modules/
 .VSCodeCounter/
+debug/
+app/
+*baiduyun.uploading.cfg
+dist/
+tmp/

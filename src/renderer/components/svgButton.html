@@ -1,0 +1,25 @@
+<div id="root" :click="click"></div>
+<style>
+  #root {
+    --width: [width];
+    --height: [height];
+    --color: [#color];
+  }
+  #root {
+    display: flex;
+    box-sizing: border-box;
+    fill: none;
+    width: var(--width, 48px);
+    height: var(--height, 48px);
+  }
+  svg {
+    margin: auto;
+    width: 50%;
+    height: 50%;
+    stroke-width: 4;
+    stroke: black;
+  }
+  #root:hover {
+    background-color: gray;
+  }
+</style>

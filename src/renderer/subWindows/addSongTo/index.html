@@ -1,0 +1,100 @@
+<div id="main">
+  <div class="mask"></div>
+  <div class="menu">
+    <div class="item" data-msg="playing">
+      <div class="icon wave"></div>
+      <div class="text">正在播放</div>
+    </div>
+    <div class="item" data-msg="saveAsPlayList">
+      <div class="icon add"></div>
+      <div class="text">新的播放列表</div>
+    </div>
+    <div class="list">
+      <div class="item" data-msg="album">
+        <div class="icon album"></div>
+        <div class="text">xxx专辑</div>
+      </div>
+      <div class="item" data-msg="album">
+        <div class="icon album"></div>
+        <div class="text">xxx专辑</div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .menu .text {
+    margin-left: 5px;
+  }
+
+  .menu .item:hover {
+    background-color: gainsboro;
+  }
+
+  .item {
+    color: black;
+    padding: 5px;
+    box-sizing: border-box;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    border-right-width: 10px;
+    border-left-width: 10px;
+    border-style: solid;
+    border-color: transparent;
+    background-clip: border-box;
+  }
+
+  .menu .item > * {
+    pointer-events: none;
+  }
+
+  .menu .item[data-msg='playing']::after {
+    content: '';
+    position: absolute;
+    width: 240px;
+    height: 30px;
+    display: block;
+    box-shadow: 0px 1px 0px rgb(103, 103, 103);
+  }
+
+  .menu .icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  .menu .icon svg {
+    stroke: black;
+    fill: none;
+    height: 16px;
+    width: 16px;
+  }
+
+  #main {
+    z-index: 3;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .menu {
+    box-shadow: lightgrey 0 10px 20px;
+    font-size: 14px;
+    width: 270px;
+    background-color: rgb(241, 241, 241);
+    position: fixed;
+    padding: 5px 0;
+    z-index: 4;
+  }
+
+  .mask {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    z-index: 3;
+    /* background-color: rgba(240, 86, 86, 0.555); */
+  }
+</style>
+<script type="module" src="../../assets/devIcon.js"></script>

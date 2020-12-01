@@ -1,0 +1,65 @@
+<div id="root">
+  <input
+    :input="input"
+    :change="change"
+    value="[#nowPlayingSongOffset]"
+    type="range"
+    min="0"
+    max="1000"
+    step="1"
+  />
+</div>
+<style>
+  #root {
+    --bgColor: [#color];
+    width: inherit;
+    display: flex;
+  }
+  input {
+    -webkit-appearance: none;
+    margin: 0;
+    border: 0;
+    height: 20px;
+    background: var(--bgColor, transparent);
+    width: 100%;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  /* 滑轨样式 */
+  input::-webkit-slider-runnable-track {
+    height: 2px;
+    background-color: white;
+  }
+  /* 按钮hover */
+  input:hover::-webkit-slider-thumb {
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  /* 按钮默认 */
+  input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    position: relative;
+    margin: 0;
+    border: 2px;
+    border-style: solid;
+    border-radius: 50%;
+    cursor: pointer;
+    top: -7px;
+    width: 16px;
+    height: 16px;
+    border-color: #ffffff;
+    outline: 2px solid var(--bgColor, transparent);
+    background-color: var(--bgColor, transparent);
+  }
+  /* 按钮按住时 */
+  input:active::-webkit-slider-thumb {
+    top: -11px;
+    width: 24px;
+    height: 24px;
+    border-color: white;
+    outline: none;
+    background-color: white;
+  }
+</style>

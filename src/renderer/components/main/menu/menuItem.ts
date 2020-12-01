@@ -1,0 +1,33 @@
+import { highlightedMenuItemText } from 'r/states'
+import svgIcon from 'c/svgIcon'
+import { El } from 'r/fundamental/creatEl'
+
+export default (icon: string, text: string): El => {
+  const iconEl = svgIcon(icon)
+
+  return {
+    template: __filename,
+    vars: {
+      text,
+    },
+    states: ['highlightedMenuItemText', 'color'],
+    props: {
+      highlight: false,
+    },
+    watchStates: {
+      highlightedMenuItemText: ({ props }, highlightedMenuItemText: string) => {
+        if (highlightedMenuItemText === text) {
+          props.highlight = true
+        } else {
+          props.highlight = false
+        }
+      },
+    },
+    evtHandlers: {
+      click: () => {
+        highlightedMenuItemText.tap('set', text)
+      },
+    },
+    children: { '.icon': iconEl },
+  }
+}

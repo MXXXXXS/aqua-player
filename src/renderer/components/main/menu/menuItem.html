@@ -1,0 +1,38 @@
+<div id="root" :class="$highlight" :click="click">
+  <div class="icon"></div>
+  <div class="text">[text]</div>
+</div>
+<style>
+  #root {
+    --color: [#color];
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    width: inherit;
+    box-sizing: border-box;
+  }
+
+  .icon {
+    display: flex;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .icon svg {
+    margin: auto;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: black;
+  }
+
+  .text {
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .highlight {
+    box-shadow: inset 4px 0 var(--color, rgb(113, 204, 192));
+  }
+</style>

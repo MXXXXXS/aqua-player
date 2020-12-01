@@ -1,0 +1,47 @@
+<div id="root" class="preference">
+  <div class="icon random">
+  </div>
+  <div class="randomAll">无序播放所有([$total])</div>
+  <div class="sort" :click="changeSort">
+    <span>排序依据: </span>
+    <span class="sortBy"></span>
+  </div>
+  <div class="type" :click="filterType">
+    <span>类型: </span>
+    <span class="typeBy"></span>
+  </div>
+</div>
+<style>
+  #root {
+    padding: 0 10px;
+    height: 50px;
+    font-size: 14px;
+    align-items: center;
+    display: flex;
+  }
+
+  .icon {
+    display: flex;
+  }
+
+  .random svg {
+    margin: auto;
+    fill: none;
+    stroke: black;
+    width: 16px;
+    height: 16px;
+  }
+
+  .randomAll {
+    margin-left: 10px;
+  }
+
+  .sort,
+  .type {
+    position: relative;
+    align-self: start;
+    margin-top: 16px;
+    margin-left: 20px;
+  }
+
+</style>

@@ -1,0 +1,10 @@
+{
+  "svg.preview.background": "white",
+  "prettier.useEditorConfig": false,
+  "prettier.requireConfig": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "eslint.format.enable": true,
+  "files.eol": "\n",
+  "cSpell.words": ["proxied"]
+}

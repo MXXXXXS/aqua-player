@@ -1,0 +1,68 @@
+<div
+  id="root"
+  :mouseover="mouseover"
+  :mouseout="mouseout"
+  :mousedown="mousedown"
+  :mouseup="mouseup"
+  :click="click"
+></div>
+<style>
+  #root {
+    --width: [width];
+    --height: [height];
+
+    --svgWidth: [svgWidth];
+    --svgHeight: [svgHeight];
+
+    --borderWidth: [borderWidth];
+    --hoverBorderWidth: [hoverBorderWidth];
+
+    --color: [#color];
+    --bgColor: [bgColor];
+    --borderColor: [borderColor];
+
+    --hoverColor: [hoverColor];
+    --hoverBgColor: [hoverBgColor];
+    --hoverBorderColor: [hoverBorderColor];
+
+    --pressScale: [pressScale];
+    --pressedDownColor: [pressedDownColor];
+    --pressedDownBgColor: [pressedDownBgColor];
+  }
+  #root {
+    display: flex;
+    box-sizing: border-box;
+    width: var(--width, 48px);
+    height: var(--height, 48px);
+    border-style: solid;
+    border-width: var(--borderWidth, 0);
+    border-color: var(--borderColor, transparent);
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background-color: var(--bgColor, transparent);
+  }
+  svg {
+    margin: auto;
+    width: var(--svgWidth, 25px);
+    height: var(--svgHeight, 25px);
+    fill: none;
+    stroke-width: 4;
+    stroke: var(--color, black);
+  }
+  #root:hover svg {
+    stroke: var(--hoverColor, black);
+  }
+  #root:hover {
+    background-color: var(--hoverBgColor, var(--bgColor, transparent));
+    border-color: var(--hoverBorderColor, transparent);
+    border-width: var(--hoverBorderWidth, 0);
+  }
+  .pressedDown {
+    transform: scale(var(--pressScale, 0.9));
+  }
+  #root.pressedDown:hover {
+    background-color: var(--pressedDownBgColor, transparent);
+  }
+  #root.pressedDown svg {
+    stroke: var(--pressedDownColor, var(--color, black));
+  }
+</style>

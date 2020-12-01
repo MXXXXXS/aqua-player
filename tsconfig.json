@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ESNext",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    // https://www.typescriptlang.org/docs/handbook/babel-with-typescript.html#type-checking-and-dts-file-generation
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "isolatedModules": true,
+    //https://www.typescriptlang.org/tsconfig#paths
+    //  Re-map imports to lookup locations relative to the baseUrl
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"],
+      "r/*": ["src/renderer/*"],
+      "c/*": ["src/renderer/components/*"],
+      "ru/*": ["src/renderer/utils/*"]
+    }
+  },
+  "files": ["src/renderer/index.ts"],
+  "include": ["src"],
+  "exclude": ["node_modules", ".vscode", "app", "webpack", "debug"]
+}

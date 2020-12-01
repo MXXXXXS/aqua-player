@@ -4,30 +4,97 @@
   "description": "仿win10 Groove音乐播放器",
   "main": "app/main.js",
   "scripts": {
-    "start": "electron .",
-    "watch": "nodemon -w ./app --exec npm -- run start",
-    "updateIcons": "node utils/replace.js && node utils/collectIcons.js",
-    "updateComps": "node utils/collectComponents.js",
-    "updateAll": "node utils/replace.js && node utils/collectIcons.js && node utils/collectComponents.js",
-    "servePages": "http-server ./app -p 80"
+    "start": "webpack",
+    "electron": "chcp 65001 && electron .",
+    "test": "jest",
+    "prettier": "git add -A && prettier --write ."
   },
   "keywords": [],
   "author": "MXXXXXS",
   "license": "MIT",
   "dependencies": {
-    "ffmpeg-static": "^2.5.0",
-    "music-metadata": "^4.2.1",
-    "node-vibrant": "^3.1.3",
-    "pinyin": "^2.9.0",
-    "sortablejs": "^1.10.0-rc3"
+    "@types/mockjs": "^1.0.3",
+    "electron": "^9.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "franc-min": "^5.0.0",
+    "howler": "^2.2.1",
+    "koa": "^2.13.0",
+    "koa-static": "^5.0.0",
+    "lodash": "^4.17.20",
+    "music-metadata": "^7.5.0",
+    "node-vibrant": "^3.1.6",
+    "pinyin": "^2.9.1",
+    "sortablejs": "^1.12.0",
+    "typescript": "^4.0.5"
   },
   "devDependencies": {
-    "electron": "^v6.0.2",
-    "eslint": "^6.1.0",
-    "nodemon": "^1.19.1"
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.7",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
+    "@types/ffmpeg-static": "^3.0.0",
+    "@types/howler": "^2.2.1",
+    "@types/jest": "^26.0.15",
+    "@types/pinyin": "^2.8.2",
+    "@typescript-eslint/eslint-plugin": "^4.7.0",
+    "@typescript-eslint/parser": "^4.6.1",
+    "babel-jest": "^26.6.3",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-root-import": "^6.6.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.3.0",
+    "eslint": "^7.13.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-import-resolver-typescript": "^2.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "html-webpack-plugin": "^4.5.0",
+    "husky": "^4.3.0",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.1",
+    "mockjs": "^1.1.0",
+    "nodemon": "^1.19.4",
+    "prettier": "2.2.0",
+    "prettier-eslint": "^11.0.0",
+    "tree-kill": "^1.2.2",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-merge": "^5.4.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MXXXXXS/aqua-player.git"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^~/(.*)$": "<rootDir>/src/$1",
+      "^r/(.*)$": "<rootDir>/src/renderer/$1",
+      "^c/(.*)$": "<rootDir>/src/renderer/components/$1",
+      "^ru/(.*)$": "<rootDir>/src/renderer/utils/$1"
+    },
+    "transform": {
+      "\\.[jt]sx?$": "babel-jest"
+    },
+    "testPathIgnorePatterns": [
+      "debug/",
+      "m.test.ts"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.[jt]s": "eslint --cache --fix",
+    "*.{[jt]s,css,md}": "prettier --write"
   }
 }

@@ -1,0 +1,49 @@
+{
+  // Place your aqua-player 工作区 snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  "New customElement": {
+    "scope": "javascript,typescript",
+    "prefix": "nc",
+    "body": [
+      "import { El } from 'r/fundamental/creatEl'",
+      "",
+      "const config: El = {",
+      "  template: __filename,",
+      "  $0",
+      "}",
+      "",
+      "export default config"
+    ]
+  },
+  "transiton": {
+    "scope": "css",
+    "prefix": "tranCubic",
+    "body": "transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);",
+    "description": "缓出过渡"
+  },
+  "catch err": {
+    "scope": "javascript,typescript",
+    "prefix": "err",
+    "body": ".catch((err) => console.error(err))"
+  },
+  "disable eslint": {
+    "scope": "javascript,typescript",
+    "prefix": "eslintdisable",
+    "body": "/* eslint-disable */"
+  },
+  "asyncLock": {
+    "scope": "javascript,typescript",
+    "prefix": "lockBlock",
+    "body": [
+      "if (lock('$1')) {",
+      "    $0",
+      "  unlock('$1')",
+      "}",
+    ]
+  }
+}
