@@ -1,21 +1,23 @@
 import { El } from 'r/fundamental/creatEl'
 import { EvtHandler } from '../fundamental/AquaEl'
 
-export default ({
-  staticText,
+export default <T = string>({
+  staticText = '',
   textSrc = '',
+  textGetter = (state) => (state as unknown) as string,
   onClick,
 }: {
-  staticText: string
+  staticText?: string
   textSrc?: string
+  textGetter?: (state: T) => string
   onClick: EvtHandler
 }): El => {
   return {
     template: __filename,
     states: ['color', textSrc],
     watchStates: {
-      [textSrc]: ({ props }, newText: string) => {
-        props.text = newText
+      [textSrc]: ({ props }, newState: T) => {
+        props.text = textGetter(newState)
       },
     },
     props: {

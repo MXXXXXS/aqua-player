@@ -2,16 +2,24 @@ import { El } from 'r/fundamental/creatEl'
 import slotSwitcher from '~/renderer/components/slotSwitcher'
 import panelSwitcher from './panelSwitcher'
 import sortTypePanel from './sortTypePanel'
-import musicByDate from './music'
+import musicSwitcher from './music'
 
-const musicSwitcher = slotSwitcher({
+const sortTypePanels = slotSwitcher({
   slots: [
     {
-      slot: 'byDate',
-      el: musicByDate,
+      slot: 'music',
+      el: sortTypePanel('musicSortBy', 'filterGenres'),
+    },
+    // {
+    //   slot: 'artists',
+    //   el: sortTypePanel('musicSortBy', ''),
+    // },
+    {
+      slot: 'albums',
+      el: sortTypePanel('albumsSortBy', 'albumsFilterGenres'),
     },
   ],
-  route: ['s-music-by', 'byDate'],
+  route: ['s-sortTypePanel', 'music'],
 })
 
 const contentSwitcher = slotSwitcher({
@@ -20,6 +28,14 @@ const contentSwitcher = slotSwitcher({
       slot: 'music',
       el: musicSwitcher,
     },
+    // {
+    //   slot: 'artists',
+    //   el: ,
+    // },
+    // {
+    //   slot: 'albums',
+    //   el: ,
+    // },
   ],
   route: ['s-music', 'music'],
 })
@@ -28,8 +44,8 @@ const config: El = {
   template: __filename,
   children: {
     '.myMusicPanel': panelSwitcher,
+    '.sortTypePanel': sortTypePanels,
     '.contentSwitcher': contentSwitcher,
-    '.sortTypePanel': sortTypePanel,
   },
   created: ({ host }) => {
     host.style.overflow = 'hidden'

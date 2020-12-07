@@ -1,15 +1,28 @@
+const {readdirSync} = require('fs')
 const { join, basename } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { merge } = require('webpack-merge')
 
 const { tsconfig, watch, workSpaceFolder, base } = require('./webpack.parts')
 
+const subWindows = join(workSpaceFolder, 'src/renderer/subWindows/pages')
 const entryPrefix = join(workSpaceFolder, 'src/renderer')
 
-const pages = {
+const mainPage = {
   'index': 'index.ts',
-  'subWindows/sortBy/index': 'subWindows/sortBy/index.ts'
 }
+
+
+const subPageNames = readdirSync(subWindows, {
+  encoding: 'utf8'
+})
+
+const subPages = subPageNames.reduce((subPages, subPageName) => {
+  subPages[`subWindows/pages/${subPageName}/index`] = `subWindows/pages/${subPageName}/index.ts`
+  return subPages
+}, {})
+
+const pages = Object.assign({}, mainPage, subPages)
 
 const entries = {}
 const htmlPages = []

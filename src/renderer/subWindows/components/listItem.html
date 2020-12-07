@@ -1,6 +1,5 @@
-<div id="root" :class='$activated'>
-  <div class="icon"></div>
-  <div class="text">[text]</div>
+<div id="root" :class='activated' :click="click">
+  [text]
 </div>
 <style>
   #root {
@@ -12,19 +11,15 @@
     padding: 0 10px;
     user-select: none;
     background-color: var(--bgColor);
-    height: var(--height);
-  }
-
-  .text {
     line-height: var(--height);
+    height: var(--height);
   }
 
   #root:hover {
     background-color: var(--hoverBgColor);
   }
-  
+
   #root.activated {
     background-color: var(--color);
   }
-
 </style>

@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { forIn, isObject, isEmpty } from 'lodash'
+import { forIn, isObject, isEmpty, find, entries, compact } from 'lodash'
 
 export default (baseObj, comparedObj) => {
   function diff(baseObj, comparedObj, diffResult = {}) {
@@ -50,18 +50,34 @@ export const diffArray = <T>(
   arrB.forEach((item) => addKey(item, 'b'))
 
   const diff: {
-    add: Array<string>
-    del: Array<string>
+    add: Array<T>
+    del: Array<T>
+    keep: Array<[T, T]>
   } = {
     add: [],
     del: [],
+    keep: []
   }
+
+  function getItemByKey(arr: T[], key: string) {
+    return find(arr, item => getKey(item) === key)
+  }
+
   forIn(diffDic, (mark, key) => {
+    const itemA = getItemByKey(arrA, key)
+    const itemB = getItemByKey(arrB, key)
     if (mark === 'a') {
-      diff.del.push(key)
+      diff.del.push(itemA)
     } else if (mark === 'b') {
-      diff.add.push(key)
+      diff.add.push(itemB)
+    } else {
+      diff.add.push([itemA, itemB])
     }
   })
+
+  entries(diff).forEach(([key, value]) => {
+    diff[key] = compact(value)
+  })
+
   return diff
 }

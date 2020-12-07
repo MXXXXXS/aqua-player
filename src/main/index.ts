@@ -4,8 +4,6 @@ import * as url from 'url'
 
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import relativeToWorkspace from '~/utils/relativeToWorkspace'
-import { ipc } from '~/renderer/states'
-import { fstat } from 'fs'
 
 function createMainWindow() {
   const pathname = relativeToWorkspace('app/renderer/index.html')
@@ -22,7 +20,7 @@ function createWindow({
   width = 1800,
   minHeight = 500,
   minWidth = 360,
-  frame = true,
+  frame = false,
   node = true,
 }: {
   pathname: string
@@ -55,11 +53,14 @@ function createWindow({
     },
   })
 
-  mainWindow.loadURL(mainPage).catch((err) => console.error(err))
-
   mainWindow.webContents.openDevTools()
 
-  fn(mainWindow)
+  mainWindow
+    .loadURL(mainPage)
+    .then(() => {
+      mainWindowLoaded(mainWindow)
+    })
+    .catch((err) => console.error(err))
 }
 
 // app生命周期
@@ -96,52 +97,91 @@ ipcMain.on('open file explorer', (e) => {
 function createSubWindow({
   x,
   y,
-  pathname,
+  width,
+  height,
 }: {
-  pathname: string
+  width: number
+  height: number
   x: number
   y: number
 }) {
-  const subWindow = new BrowserWindow({
+  return new BrowserWindow({
     x: Math.round(x),
     y: Math.round(y),
+    width,
+    height,
+    frame: false,
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
     },
   })
-  console.log('加载: ', pathname, '\n', fs.existsSync(pathname))
-
-  const subPage = url.format({
-    pathname,
-    protocol: 'file',
-    slashes: true,
-  })
-  subWindow.loadURL(subPage).catch((err) => console.error(err))
-
-  subWindow.webContents.openDevTools()
-  // subWindow.once('blur', () => {
-  //   subWindow.close()
-  // })
 }
 
-function fn(mainWindow: BrowserWindow) {
+function mainWindowLoaded(mainWindow: BrowserWindow) {
+  ipcMain.on('activate view', (e, name, text) => {
+    mainWindow.webContents.send('activate view', name, text)
+  })
+
   ipcMain.on(
     'create sub window',
     (
       e,
       args: {
+        stateName: string
+        data: unknown
         file: string
+        width: number
+        height: number
         xy: [number, number]
       }
     ) => {
-      const [elX, elY] = args.xy
-      const pathname = args.file
+      const {
+        stateName,
+        data,
+        xy: [elX, elY],
+        file: pathname,
+        width,
+        height,
+      } = args
       const [mainX, mainY] = mainWindow.getPosition()
-      createSubWindow({
-        pathname,
+      const subWindow = createSubWindow({
+        width,
+        height,
         x: mainX + elX,
         y: mainY + elY,
       })
+      console.log('加载: ', pathname, '\n', fs.existsSync(pathname))
+
+      const subPage = url.format({
+        pathname,
+        protocol: 'file',
+        slashes: true,
+      })
+      subWindow
+        .loadURL(subPage)
+        .then(() => subPageLoaded(subWindow, stateName, data))
+        .catch((err) => console.error(err))
     }
   )
+}
+async function subPageLoaded(
+  subWindow: BrowserWindow,
+  stateName: string,
+  data: unknown
+) {
+  subWindow.webContents.send('data', stateName, data)
+  // subWindow.webContents.openDevTools()
+
+  await new Promise((res, rej) => {
+    ipcMain.once('close sub window', () => {
+      res()
+    })
+
+    subWindow.once('blur', () => {
+      res()
+    })
+  })
+
+  subWindow.close()
 }

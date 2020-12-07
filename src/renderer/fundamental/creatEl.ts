@@ -1,7 +1,8 @@
+import { isArray } from 'lodash'
 import AquaEl, { AquaElConfig } from 'r/fundamental/AquaEl'
 
 export interface El extends AquaElConfig {
-  children?: Record<string, El | HTMLElement | null>
+  children?: Record<string, El | HTMLElement | Array<El | HTMLElement> | null>
 }
 
 const createEl = (elConfig: El): AquaEl => {
@@ -12,14 +13,22 @@ const createEl = (elConfig: El): AquaEl => {
     Object.entries(children).forEach(([selector, el]) => {
       const mountedEl = shadowRoot.querySelector(selector)
       if (mountedEl && el) {
-        if (el instanceof HTMLElement) {
-          mountedEl.appendChild(el)
+        const els: Array<El | HTMLElement> = []
+        if (!isArray(el)) {
+          els.push(el)
         } else {
-          const elToMount = createEl(el)
-          if (elToMount) {
-            mountedEl.appendChild(elToMount)
-          }
+          els.push(...el)
         }
+        els.forEach((el) => {
+          if (el instanceof HTMLElement) {
+            mountedEl.appendChild(el)
+          } else {
+            const elToMount = createEl(el)
+            if (elToMount) {
+              mountedEl.appendChild(elToMount)
+            }
+          }
+        })
       }
     })
   }

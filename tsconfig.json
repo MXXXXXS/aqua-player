@@ -25,6 +25,8 @@
     }
   },
   "files": ["src/renderer/index.ts"],
-  "include": ["src"],
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": ["node_modules", ".vscode", "app", "webpack", "debug"]
 }

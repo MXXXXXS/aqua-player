@@ -1,12 +1,12 @@
 import list from 'c/list'
 import { El } from 'r/fundamental/creatEl'
-import { ipc, layers } from '~/renderer/states'
+import { Folder, ipc, layers } from '~/renderer/states'
 import folderItem from 'c/folderAdder/folderItem'
 
-const folderItems = list<string>({
+const folderItems = list<Folder, Folder[]>({
   stateName: 'folders',
-  keyGen: (folder) => folder,
-  elGen: ({ item }) => folderItem(item),
+  keyGen: ({ path }) => path,
+  elGen: ({ item }) => folderItem(item.path),
 })
 
 const config: El = {

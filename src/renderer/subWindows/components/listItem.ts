@@ -1,16 +1,19 @@
 import { El } from 'r/fundamental/creatEl'
-import svgIcon from 'c/svgIcon'
 
-export default (iconName = '', text: string, activated = false): El => {
+export default (
+  text: string,
+  activated = false,
+  onClick: (e: Event) => void
+): El => {
   return {
     template: __filename,
     states: ['color', 'bgColor', 'hoverBgColor'],
-    props: {
-      activated: activated,
-    },
     vars: {
+      activated,
       text,
     },
-    children: { '.icon': iconName ? svgIcon(iconName, '32px') : null },
+    evtHandlers: {
+      click: (_, e) => onClick(e),
+    },
   }
 }

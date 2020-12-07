@@ -41,7 +41,7 @@ const router: Aqua<RouterData> = new Aqua<RouterData>({
         }
       }
     },
-    multAdd(newRoutesToAdd: Array<Route>) {
+    multiAdd(...newRoutesToAdd: Array<Route>) {
       newRoutesToAdd.forEach((newRouteToAdd) => {
         router.tap('add', newRouteToAdd)
       })

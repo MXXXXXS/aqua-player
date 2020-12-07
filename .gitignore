@@ -5,3 +5,4 @@ app/
 *baiduyun.uploading.cfg
 dist/
 tmp/
+*.mp3

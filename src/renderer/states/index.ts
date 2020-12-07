@@ -4,17 +4,18 @@ import { lock, unlock } from 'ru/Locker'
 import r from 'r/states/router'
 import Aqua from 'r/fundamental/aqua'
 import { ListKD, ListKDItem } from 'c/list'
-import { findIndex, noop, uniq } from 'lodash'
+import { findIndex, noop, sortBy, uniqBy } from 'lodash'
 import getMusicMeta, {
-  MusicMetaList,
   MusicMeta,
+  MusicMetaList,
   MusicMetaWithCover,
 } from 'r/core/getMusicMeta'
 import song, { play, seek, pause, load } from 'r/core/player'
 import scanSongs from 'ru/scanSongs'
 import { diffArray } from 'ru/diff'
-import relativeToWorkspace from '~/utils/relativeToWorkspace'
 import { TagType } from 'c/main/content/myMusic/panelSwitcher'
+import sortWords, { Group } from '../utils/sortWords'
+import { saveToDB } from '../db'
 
 export const router = r
 export interface States {
@@ -25,7 +26,7 @@ export const myMusicPanel = new Aqua<TagType>({
   data: 'music',
   reacts: [
     ({ newData: newTag }) => {
-      router.tap('add', ['s-music', newTag])
+      router.tap('multiAdd', ['s-music', newTag], ['s-sortTypePanel', newTag])
     },
   ],
 })
@@ -366,6 +367,57 @@ export const songsSortByScannedDate = new Aqua<MusicMetaList>({
   ],
 })
 
+export interface SortedSongs {
+  sortType: 'a-z' | 'artists' | 'albums'
+  list: [string, Array<[key: string, items: MusicMetaList]>][]
+}
+
+export const sortedSongs = new Aqua<SortedSongs>({
+  data: {
+    sortType: 'a-z',
+    list: [],
+  },
+  acts: {
+    sort(sortType: SortedSongs['sortType']): SortedSongs {
+      const list = songsSortByScannedDate.data
+      let keyGetter
+      switch (sortType) {
+        case 'a-z': {
+          keyGetter = (meta: MusicMeta) => meta.title || ''
+          break
+        }
+        case 'artists': {
+          keyGetter = (meta: MusicMeta) => meta.artist || ''
+          break
+        }
+        case 'albums': {
+          keyGetter = (meta: MusicMeta) => meta.album || ''
+          break
+        }
+      }
+      const { en, zh } = sortWords(list, keyGetter)
+      return {
+        sortType: sortType,
+        list: [
+          ...sortBy(Object.entries(en), ([initial]) => initial),
+          ...sortBy(Object.entries(zh), ([initial]) => initial).map(
+            ([initial, items]) =>
+              ['拼音' + initial, items] as [string, Group<MusicMeta>[]]
+          ),
+        ],
+      }
+    },
+  },
+  reacts: [
+    // ({ newData }: { newData: MusicMetaList }) => {
+    //   nowPlayingList.tap('set', {
+    //     cursor: 0,
+    //     list: newData,
+    //   })
+    // },
+  ],
+})
+
 export const songs = new Aqua<ListKD<MusicMetaList>>({
   data: [],
   acts: {
@@ -384,7 +436,14 @@ export const songs = new Aqua<ListKD<MusicMetaList>>({
     },
   },
   reacts: [
-    ({ newData: newSongs }: { newData: ListKD<MusicMetaList> }) => {
+    async (
+      { newData: newSongs }: { newData: ListKD<MusicMetaList> },
+      next = noop
+    ) => {
+      await saveToDB(newSongs)
+      next(newSongs)
+    },
+    (newSongs: ListKD<MusicMetaList>) => {
       const sorted: MusicMetaList = []
       newSongs.reduce((sorted, { data: musicMetaList }) => {
         sorted.push(...musicMetaList)
@@ -396,13 +455,17 @@ export const songs = new Aqua<ListKD<MusicMetaList>>({
   ],
 })
 
-export const folders: Aqua<Array<string>> = new Aqua<Array<string>>({
+export interface Folder {
+  path: string
+  scanNeeded: boolean
+}
+
+export const folders: Aqua<Array<Folder>> = new Aqua<Array<Folder>>({
   data: [],
   acts: {
-    push: (newFolders: Array<string>) => {
+    push: (newFolders: Array<Folder>) => {
       const oldFolders = folders.data
-
-      return uniq([...oldFolders, ...newFolders])
+      return uniqBy([...oldFolders, ...newFolders], (folder) => folder.path)
     },
     del: (by: string | number) => {
       const oldFolders = folders.data
@@ -411,7 +474,7 @@ export const folders: Aqua<Array<string>> = new Aqua<Array<string>>({
       if (typeof by === 'number') {
         deletedElIndex = by
       } else if (typeof by === 'string') {
-        deletedElIndex = findIndex(oldFolders, (key) => key === by)
+        deletedElIndex = findIndex(oldFolders, ({ path }) => path === by)
       }
 
       if (typeof deletedElIndex === 'number') {
@@ -427,24 +490,26 @@ export const folders: Aqua<Array<string>> = new Aqua<Array<string>>({
         newData: newFolders,
         oldData: oldFolders,
       }: {
-        newData: Array<string>
-        oldData: Array<string>
+        newData: Array<Folder>
+        oldData: Array<Folder>
       },
       next = noop
     ) => {
-      const diff = diffArray<string>(oldFolders, newFolders, (key) => key)
+      const diff = diffArray<Folder>(oldFolders, newFolders, ({ path }) => path)
       for (let index = 0; index < diff.add.length; index++) {
-        const folderToAdd = diff.add[index]
-        const newSongs = await scanSongs(folderToAdd).catch((err) =>
-          console.error(err)
-        )
-        next({
-          key: folderToAdd,
-          data: newSongs,
-        })
+        const { path, scanNeeded } = diff.add[index]
+        if (scanNeeded) {
+          const newSongs = await scanSongs(path).catch((err) =>
+            console.error(err)
+          )
+          next({
+            key: path,
+            data: newSongs,
+          })
+        }
       }
       diff.del.forEach((folder) => {
-        songs.tap('del', folder)
+        songs.tap('del', folder.path)
       })
     },
     (newSongs: ListKDItem<MusicMetaList>) => {
@@ -547,63 +612,82 @@ export const searchText = new Aqua<string>({
   },
 })
 
-// const time = new Aqua({
-//   data: 0,
-// })
-
-// const totalTime = new Aqua({
-//   data: 0,
-// })
-
-// const playFrom = new Aqua({
-//   data: 0,
-// })
-
-// const isPlaying = new Aqua({
-//   data: false,
-//   acts: {
-//     play() {
-//       return true
-//     },
-//     pause() {
-//       return false
-//     },
-//   },
-// })
-
-// const currentTag = new Aqua({
-//   data: '歌曲',
-// })
-
-// interface nowPlayingSong {
-//   name: string
-//   artist: string
-//   album: string
-//   date: string
-//   genre: string
-//   duration: string
-// }
-
-export interface SortTypes {
-  list: ['添加日期', 'A到Z', '歌手', '专辑']
+export interface ViewTypes {
+  list: string[]
   cursor: number
 }
 
-export const sortBy = new Aqua<SortTypes>({
-  data: {
-    list: ['添加日期', 'A到Z', '歌手', '专辑'],
-    cursor: 0,
-  },
-  acts: {
-    change: ({ x, y }) => {
-      ipcRenderer.send('create sub window', {
-        file: 'app/renderer/subWindows/sortBy/index.html',
-        xy: [x, y],
-      })
-    },
-  },
-})
+export const musicSortBy = subWindowState('musicSortBy', [
+  '添加日期',
+  'A到Z',
+  '歌手',
+  '专辑',
+])
+export const filterGenres = subWindowState('filterGenres', ['所有流派'])
 
-const sortByGenre = new Aqua<string>({
-  data: '所有流派',
-})
+export const albumsSortBy = subWindowState('albumsSortBy', [
+  '添加日期',
+  'A到Z',
+  '发行年份',
+  '歌手',
+])
+
+export const albumsFilterGenres = subWindowState('albumsFilterGenres', [
+  '所有流派',
+])
+
+function subWindowState(stateName: string, data: string[]): Aqua<ViewTypes> {
+  const state = new Aqua<ViewTypes>({
+    data: {
+      list: data,
+      cursor: 0,
+    },
+    acts: {
+      setList: (list: string[]) => {
+        return {
+          list,
+          cursor: 0,
+        }
+      },
+      change: ({ x, y }) => {
+        const { cursor } = state.data
+        // 30 是一项条目的高度, 5 是偏移居中修正
+        const heightOffset = cursor * 30 + 5
+        ipcRenderer.send('create sub window', {
+          stateName,
+          data: state.data,
+          file: `app/renderer/subWindows/pages/changeView/index.html`,
+          width: 130,
+          height: state.data.list.length * 30,
+          xy: [x, y - heightOffset],
+        })
+      },
+      activate: (text: string): ViewTypes | undefined => {
+        const { list } = state.data
+        const newCursor = list.indexOf(text)
+        if (newCursor > -1) {
+          return {
+            list,
+            cursor: newCursor,
+          }
+        }
+      },
+    },
+    reacts: [
+      ({ newData }: { newData: ViewTypes }) => {
+        ipcRenderer.send('close sub window')
+
+        const { list, cursor } = newData
+        const tag = list[cursor]
+
+        console.log(tag)
+
+        if (tag === 'A到Z') {
+          sortedSongs.tap('sort', 'a-z')
+        }
+        router.tap('add', ['s-music-sort-by', tag])
+      },
+    ],
+  })
+  return state
+}

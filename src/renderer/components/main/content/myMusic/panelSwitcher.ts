@@ -10,8 +10,8 @@ export type TagType = 'music' | 'artists' | 'albums'
 const config: El = {
   template: __filename,
   states: ['color'],
-  created: ({ root }) => {
-    root.querySelector('.tags')?.addEventListener('click', (e) => {
+  evtHandlers: {
+    click: ({ root }, e) => {
       const target = e.target as HTMLElement
       const tag = target.innerText
       const index = panels.indexOf(tag)
@@ -20,7 +20,7 @@ const config: El = {
         root.querySelector('.selected')?.classList.remove('selected')
         target.classList.add('selected')
       }
-    })
+    },
   },
 }
 

@@ -5,20 +5,24 @@ function isEnWord(word: string) {
   return /\w/.test(word[0])
 }
 
+export type Group<T> = [key: string, items: T[]]
+
 interface SortedItems<T> {
-  [initial: string]: [key: string, items: T[]][]
+  [initial: string]: Group<T>[]
 }
 
-export default function (
-  words: string[]
+export default function <T>(
+  items: T[],
+  wordGetter: (item: T) => string
 ): {
-  zh: SortedItems<string>
-  en: SortedItems<string>
+  zh: SortedItems<T>
+  en: SortedItems<T>
 } {
-  const enWords: string[] = []
-  const zhWords: string[] = []
-  words.forEach((word) => {
-    isEnWord(word) ? enWords.push(word) : zhWords.push(word)
+  const enItems: T[] = []
+  const zhItems: T[] = []
+  items.forEach((item) => {
+    const word = wordGetter(item)
+    isEnWord(word) ? enItems.push(item) : zhItems.push(item)
   })
 
   type ItemKeyGetter<T> = (item: T, by: (key: T) => string) => string
@@ -62,15 +66,8 @@ export default function (
     })
     return sorted
   }
-  const sortedEnWords = sortItems<string>(enWords, (word) => word)
-  const sortedZhWords = sortItems<string>(zhWords, (word) => word)
+  const sortedEnItems = sortItems<T>(enItems, (word) => wordGetter(word))
+  const sortedZhItems = sortItems<T>(zhItems, (word) => wordGetter(word))
 
-  // groupsZh = groupsZh.map((group) => {
-  //   ;/\w/.test(group[0])
-  //     ? (group[0] = `拼音` + group[0])
-  //     : (group[0] = `# ` + group[0])
-  //   return group
-  // })
-
-  return { en: sortedEnWords, zh: sortedZhWords }
+  return { en: sortedEnItems, zh: sortedZhItems }
 }

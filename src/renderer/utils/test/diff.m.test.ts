@@ -1,4 +1,4 @@
-import diff from '../diff'
+import diff, { diffArray } from '../diff'
 
 const lgjson = function (obj) {
   console.log(JSON.stringify(obj, null, 2))

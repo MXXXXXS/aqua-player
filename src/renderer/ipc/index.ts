@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
-import { folders } from 'r/states'
+import * as states from 'r/states'
+import { folders, Folder } from 'r/states'
 
 ipcRenderer.on(
   'add these folders',
@@ -8,10 +9,18 @@ ipcRenderer.on(
     const { filePaths } = args
 
     if (filePaths.length > 0) {
-      const folderPaths = filePaths.map((folderPath) =>
-        folderPath.replace(/\\/g, '/')
-      )
+      const folderPaths: Array<Folder> = filePaths.map((folderPath) => ({
+        path: folderPath.replace(/\\/g, '/'),
+        scanNeeded: true,
+      }))
       folders.tap('push', folderPaths)
     }
+  }
+)
+
+ipcRenderer.on(
+  'activate view',
+  (e, name: keyof typeof states, text: string) => {
+    states[name].tap('activate', text)
   }
 )
