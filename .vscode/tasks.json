@@ -6,7 +6,17 @@
     {
       "label": "编译当前 ts 文件",
       "type": "shell",
-      "command": "node webpack/webpack.debug.js ${file}",
+      "command": "node webpack/debug/webpack.node.js ${file}",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "编译当前 ts 文件并挂载到 web",
+      "type": "shell",
+      "command": "node webpack/debug/webpack.web.js ${file}",
       "group": "build",
       "presentation": {
         "reveal": "always",

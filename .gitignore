@@ -1,8 +1,11 @@
 node_modules/
 .VSCodeCounter/
-debug/
+/debug
 app/
 *baiduyun.uploading.cfg
 dist/
 tmp/
 *.mp3
+*.log
+
+.eslintcache

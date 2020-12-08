@@ -21,6 +21,16 @@
       "preLaunchTask": "编译当前 ts 文件"
     },
     {
+      "type": "chrome",
+      "request": "launch",
+      "name": "当前TS Web",
+      "file": "${workspaceRoot}/debug/index.html",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "preLaunchTask": "编译当前 ts 文件并挂载到 web"
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "当前JS",
