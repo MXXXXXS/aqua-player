@@ -13,7 +13,7 @@ export interface RouterData {
   position: number
 }
 
-const router: Aqua<RouterData> = new Aqua<RouterData>({
+export const router: Aqua<RouterData> = new Aqua<RouterData>({
   data: {
     routes: {},
     history: [],
@@ -77,5 +77,3 @@ const router: Aqua<RouterData> = new Aqua<RouterData>({
     },
   ],
 })
-
-export default router
