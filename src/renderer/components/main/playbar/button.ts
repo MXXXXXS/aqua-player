@@ -25,7 +25,6 @@ export default ({
   },
   vars: {
     canPress: false,
-    svgBuffer: {},
     icons,
     width,
   },
@@ -34,21 +33,16 @@ export default ({
     ...watchProps,
     iconIndex: ({ root, vars }, index: number) => {
       const icons = vars.icons as Array<string>
-      const svgBuffer = vars.svgBuffer as Record<string, string>
       let icon
       if (index > -1 && index < icons.length) {
         icon = icons[index]
       } else {
         icon = icons[0]
       }
-      if (svgBuffer[icon]) {
-        root.innerHTML = svgBuffer[icon]
-      } else {
-        const svg = loadSvg(icon)
-        if (svg) {
-          svgBuffer[icon] = svg
-          root.innerHTML = svgBuffer[icon]
-        }
+      const svg = loadSvg(icon)
+      if (svg) {
+        root.firstElementChild?.remove()
+        root.appendChild(svg)
       }
     },
     // isActive: ({root}, isActive) => {

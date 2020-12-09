@@ -18,7 +18,6 @@ export default ({
     displayedIconIndex: 0,
   },
   vars: {
-    svgBuffer: {},
     icons,
     width,
     height,
@@ -26,17 +25,12 @@ export default ({
   watchProps: {
     displayedIconIndex: ({ root, vars }, index: number) => {
       const icons = vars.icons as Array<string>
-      const svgBuffer = vars.svgBuffer as Record<string, string>
       if (index > -1 && index < icons.length) {
         const icon = icons[index]
-        if (svgBuffer[icon]) {
-          root.innerHTML = svgBuffer[icon]
-        } else {
-          const svg = loadSvg(icon)
-          if (svg) {
-            svgBuffer[icon] = svg
-            root.innerHTML = svgBuffer[icon]
-          }
+        const svg = loadSvg(icon)
+        if (svg) {
+          root.firstElementChild?.remove()
+          root.appendChild(svg)
         }
       }
     },

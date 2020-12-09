@@ -7,6 +7,7 @@ import getMusicMeta, {
 } from 'r/core/getMusicMeta'
 import song, { play, seek, pause, load } from 'r/core/player'
 
+// 播放的三种状态
 export const isEnded = new Aqua<boolean>({
   data: true,
   reacts: [
@@ -53,6 +54,7 @@ export const isPlaying = new Aqua<boolean>({
   data: false,
 })
 
+// 播放歌曲的信息
 export interface SongMeta {
   meta: MusicMetaWithCover
   coverUrl: string
@@ -75,6 +77,7 @@ export const songMeta = new Aqua<SongMeta>({
   },
 })
 
+// 列表播放模式, 单次列表, 循环列表, 单曲循环
 export interface PlayMode {
   cursor: number
   list: ['onePassList', 'loopList', 'loopSingle']
@@ -97,6 +100,7 @@ export const playMode: Aqua<PlayMode> = new Aqua<PlayMode>({
   },
 })
 
+// 播放歌曲的时间轴偏移
 export interface NowPlayingSongOffset {
   offset: number
   seconds: number
@@ -175,6 +179,7 @@ export const nowPlayingSongOffset: Aqua<NowPlayingSongOffset> = new Aqua<NowPlay
   }
 )
 
+// 当前的播放列表, 会在"正在播放"页面显示
 interface NowPlayingList {
   cursor: number
   list: MusicMetaList
@@ -230,10 +235,7 @@ export const nowPlayingList: Aqua<NowPlayingList> = new Aqua<NowPlayingList>({
   // reacts: [({ newData, oldData }) => {}],
 })
 
-export const nowPlayingSongCover = new Aqua<string>({
-  data: '',
-})
-
+// 当前播放的歌曲
 export const nowPlayingSong: Aqua<string> = new Aqua<string>({
   data: '',
   acts: {

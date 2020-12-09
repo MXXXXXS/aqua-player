@@ -9,7 +9,7 @@ export default (icon: string, width = ''): El => ({
   created: ({ root }) => {
     const svg = loadSvg(icon)
     if (svg) {
-      root.innerHTML = svg
+      root.appendChild(svg)
     }
   },
 })

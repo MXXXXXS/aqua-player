@@ -8,6 +8,7 @@ import { diffArray } from 'ru/diff'
 import sortWords, { Group } from '../utils/sortWords'
 import { saveToDB } from '../db'
 
+// 按时间排序展平的songs, 用于显示在"我的音乐"页面的"歌曲"默认的"添加日期"视图
 export const songsSortByScannedDate = new Aqua<MusicMetaList>({
   data: [],
   acts: {},
@@ -21,6 +22,7 @@ export const songsSortByScannedDate = new Aqua<MusicMetaList>({
   ],
 })
 
+// 排序songsSortByScannedDate, 用于显示在"我的音乐"页面的"歌曲"的三种排序视图
 export interface SortedSongs {
   sortType: 'a-z' | 'artists' | 'albums'
   list: [string, Array<[key: string, items: MusicMetaList]>][]
@@ -72,6 +74,9 @@ export const sortedSongs = new Aqua<SortedSongs>({
   ],
 })
 
+// 扫描文件夹后获得的歌曲
+// key是文件夹路径, data是对应路径下的歌曲
+// 不全部汇合成一个MusicMetaList是为了方便在删除文件夹时删除对应的歌曲, 免除了查找
 export const songs = new Aqua<ListKD<MusicMetaList>>({
   data: [],
   acts: {
@@ -109,6 +114,7 @@ export const songs = new Aqua<ListKD<MusicMetaList>>({
   ],
 })
 
+// 添加的包含歌曲的文件夹, 来自"设置"页面的"选择查找音乐的位置"
 export interface Folder {
   path: string
   scanNeeded: boolean

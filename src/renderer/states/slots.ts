@@ -14,7 +14,7 @@ export const myMusicPanel = new Aqua<TagType>({
 })
 
 export const highlightedMenuItemText = new Aqua<string>({
-  data: '',
+  data: '我的音乐',
   reacts: [
     ({ newData: curTab }, next = noop) => {
       //console.log('现在激活的menuItemActivated为: ', curTab)
