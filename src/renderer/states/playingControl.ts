@@ -1,4 +1,4 @@
-import { lock, unlock } from 'ru/Locker'
+import { addLock } from 'ru/Locker'
 import Aqua from 'r/fundamental/aqua'
 import { findIndex } from 'lodash'
 import getMusicMeta, {
@@ -191,46 +191,42 @@ export const nowPlayingList: Aqua<NowPlayingList> = new Aqua<NowPlayingList>({
     list: [],
   },
   acts: {
-    next: () => {
-      if (lock('next')) {
-        const { cursor, list } = nowPlayingList.data
-        let nextCursorPosition = 0
-        if (cursor + 1 < list.length) {
-          nextCursorPosition = cursor + 1
-        }
-        const newSongPath = list[nextCursorPosition].path
-        if (isPlaying.data) {
-          nowPlayingSong
-            .tapAsync('playAnother', newSongPath)
-            .catch((err) => console.error(err))
-        } else {
-          nowPlayingSong
-            .tapAsync('loadAnother', newSongPath)
-            .catch((err) => console.error(err))
-        }
-        unlock('next')
+    next: addLock((unlock) => {
+      const { cursor, list } = nowPlayingList.data
+      let nextCursorPosition = 0
+      if (cursor + 1 < list.length) {
+        nextCursorPosition = cursor + 1
       }
-    },
-    previous: () => {
-      if (lock('previous')) {
-        const { cursor, list } = nowPlayingList.data
-        let nextCursorPosition = list.length - 1
-        if (cursor - 1 > -1) {
-          nextCursorPosition = cursor - 1
-        }
-        const newSongPath = list[nextCursorPosition].path
-        if (isPlaying.data) {
-          nowPlayingSong
-            .tapAsync('playAnother', newSongPath)
-            .catch((err) => console.error(err))
-        } else {
-          nowPlayingSong
-            .tapAsync('loadAnother', newSongPath)
-            .catch((err) => console.error(err))
-        }
-        unlock('previous')
+      const newSongPath = list[nextCursorPosition].path
+      if (isPlaying.data) {
+        nowPlayingSong
+          .tapAsync('playAnother', newSongPath)
+          .catch((err) => console.error(err))
+      } else {
+        nowPlayingSong
+          .tapAsync('loadAnother', newSongPath)
+          .catch((err) => console.error(err))
       }
-    },
+      unlock()
+    }),
+    previous: addLock((unlock) => {
+      const { cursor, list } = nowPlayingList.data
+      let nextCursorPosition = list.length - 1
+      if (cursor - 1 > -1) {
+        nextCursorPosition = cursor - 1
+      }
+      const newSongPath = list[nextCursorPosition].path
+      if (isPlaying.data) {
+        nowPlayingSong
+          .tapAsync('playAnother', newSongPath)
+          .catch((err) => console.error(err))
+      } else {
+        nowPlayingSong
+          .tapAsync('loadAnother', newSongPath)
+          .catch((err) => console.error(err))
+      }
+      unlock()
+    }),
   },
   // reacts: [({ newData, oldData }) => {}],
 })
@@ -239,64 +235,50 @@ export const nowPlayingList: Aqua<NowPlayingList> = new Aqua<NowPlayingList>({
 export const nowPlayingSong: Aqua<string> = new Aqua<string>({
   data: '',
   acts: {
-    replay: async () => {
-      if (lock('replay')) {
-        await nowPlayingSong.tapAsync('playAnother', nowPlayingSong.data)
-        unlock('replay')
+    replay: addLock(async (unlock) => {
+      await nowPlayingSong.tapAsync('playAnother', nowPlayingSong.data)
+      unlock()
+    }),
+    seek: addLock(async (unlock, perMille: number) => {
+      await seek(perMille)
+      unlock()
+      //console.log('seeked')
+      return true
+    }),
+    pause: addLock(async (unlock) => {
+      await pause()
+      //console.log('暂停播放: ', getCurrentSong())
+      isPlaying.tap('set', false)
+      isPaused.tap('set', true)
+      unlock()
+    }),
+    togglePlayState: addLock((unlock) => {
+      if (isPlaying.data) {
+        nowPlayingSong.tapAsync('pause').catch((err) => console.error(err))
+      } else {
+        nowPlayingSong.tapAsync('play').catch((err) => console.error(err))
       }
-    },
-    seek: async (perMille: number) => {
-      if (lock('seek')) {
-        await seek(perMille)
-        unlock('seek')
-        //console.log('seeked')
-        return true
-      }
-    },
-    pause: async () => {
-      if (lock('pause')) {
-        await pause()
-        //console.log('暂停播放: ', getCurrentSong())
-        isPlaying.tap('set', false)
-        isPaused.tap('set', true)
-        unlock('pause')
-      }
-    },
-    togglePlayState: () => {
-      if (lock('togglePlayState')) {
-        if (isPlaying.data) {
-          nowPlayingSong.tapAsync('pause').catch((err) => console.error(err))
-        } else {
-          nowPlayingSong.tapAsync('play').catch((err) => console.error(err))
-        }
-        unlock('togglePlayState')
-      }
-    },
-    play: async () => {
-      if (lock('play')) {
-        await play()
-        //console.log('开始播放: ', getCurrentSong())
-        isPlaying.tap('set', true)
-        isPaused.tap('set', false)
-        isEnded.tap('set', false)
-        unlock('play')
-      }
-    },
-    loadAnother: async (songPath: string) => {
-      if (lock('loadAnother')) {
-        await load(songPath)
-        //console.log('已加载: ', songPath)
-        nowPlayingSong.tap('set', songPath)
-        unlock('loadAnother')
-      }
-    },
-    playAnother: async (songPath: string) => {
-      if (lock('playAnother')) {
-        await nowPlayingSong.tapAsync('loadAnother', songPath)
-        await nowPlayingSong.tapAsync('play')
-        unlock('playAnother')
-      }
-    },
+      unlock()
+    }),
+    play: addLock(async (unlock) => {
+      await play()
+      //console.log('开始播放: ', getCurrentSong())
+      isPlaying.tap('set', true)
+      isPaused.tap('set', false)
+      isEnded.tap('set', false)
+      unlock()
+    }),
+    loadAnother: addLock(async (unlock, songPath: string) => {
+      await load(songPath)
+      //console.log('已加载: ', songPath)
+      nowPlayingSong.tap('set', songPath)
+      unlock()
+    }),
+    playAnother: addLock(async (unlock, songPath: string) => {
+      await nowPlayingSong.tapAsync('loadAnother', songPath)
+      await nowPlayingSong.tapAsync('play')
+      unlock()
+    }),
   },
   reacts: [
     async ({ newData: newPath }: { newData: string }) => {

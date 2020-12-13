@@ -2,11 +2,11 @@
   <div class="icon random">
   </div>
   <div class="randomAll">无序播放所有([$total])</div>
-  <div class="sort" :click="changeSort">
+  <div class="sort" @click="changeSort">
     <span>排序依据: </span>
     <span class="sortBy"></span>
   </div>
-  <div class="type" :click="filterType">
+  <div class="type" @click="filterType">
     <span>类型: </span>
     <span class="typeBy"></span>
   </div>

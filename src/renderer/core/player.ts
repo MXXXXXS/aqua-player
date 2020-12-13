@@ -1,14 +1,8 @@
 import { Howl } from 'howler'
 import { isEmpty } from 'lodash'
-import {
-  isPlaying,
-  isPaused,
-  isEnded,
-  nowPlayingSong,
-  nowPlayingSongOffset,
-} from 'r/states'
+import { isPlaying, isPaused, isEnded, nowPlayingSong } from 'r/states'
 
-const getCurrentSong = () => nowPlayingSong.data.path
+const getCurrentSong = () => nowPlayingSong.data
 
 const song = {
   howl: {} as Howl,

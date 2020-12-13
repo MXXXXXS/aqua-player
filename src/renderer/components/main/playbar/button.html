@@ -1,11 +1,11 @@
 <div
   id="root"
-  :mouseover="mouseover"
-  :mouseout="mouseout"
-  :mousedown="mousedown"
-  :mouseup="mouseup"
-  :click="click"
-  :class="$isActive, $pressedDown"
+  @mouseover="mouseover"
+  @mouseout="mouseout"
+  @mousedown="mousedown"
+  @mouseup="mouseup"
+  @click="click"
+  @class="$isActive, $pressedDown"
 ></div>
 <style>
   #root {

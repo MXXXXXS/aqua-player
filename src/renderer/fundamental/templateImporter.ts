@@ -205,7 +205,7 @@ export default function importTemplate(
       const classMark = /:class/
       const styleMark = /:style/
 
-      const evtMark = /:(\w+)/
+      const evtMark = /@(\w+)/
 
       attributeNames.forEach((attrName) => {
         const attrValue = el.getAttribute(attrName)
@@ -233,8 +233,8 @@ export default function importTemplate(
             attrs.push([rawAttrValueParts, attrName, el])
           }
           // 事件处理函数绑定解析
-          // 比如: ":click=highlight, requestA"
-          // 标识符":", 事件名"click", 对应的事件处理函数"highlight", "requestA"
+          // 比如: "@click=highlight, requestA"
+          // 标识符"@", 事件名"click", 对应的事件处理函数"highlight", "requestA"
           // 事件处理函数可以有多个, 使用","分隔
           const result = evtMark.exec(attrName)
           if (result) {

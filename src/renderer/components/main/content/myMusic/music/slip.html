@@ -1,12 +1,12 @@
 <div id="root">
-  <div class="icon checkBox" :click="check"></div>
+  <div class="icon checkBox" @click="check"></div>
   <div class="name">
     <div class="text">
       <div class="icon wave"></div>
       <span class="title">[title]</span>
     </div>
-    <div class="icon play" :click="play"></div>
-    <div class="icon addOrRemove" :click="add,remove"></div>
+    <div class="icon play" @click="play"></div>
+    <div class="icon addOrRemove" @click="add,remove"></div>
   </div>
   <div class="artist">[artist]</div>
   <div class="album">[album]</div>

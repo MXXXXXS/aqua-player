@@ -1,5 +1,5 @@
 import { remove, forIn } from 'lodash'
-import execMiddlewares, { Middleware } from 'ru/middleware'
+import runPipeline, { Pipe } from '~/renderer/utils/pipeline'
 import isAsync from '../utils/isAsync'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,13 +13,13 @@ type Hooked = [hookedObj: Record<string, unknown>, key: string]
 interface AquaConfig<T> {
   data: T
   acts?: Acts<T>
-  reacts?: Array<Middleware>
+  reacts?: Array<Pipe>
 }
 
 export default class Aqua<T> {
   data: T
   private acts: Acts<T>
-  private reacts: Array<Middleware>
+  private reacts: Array<Pipe>
   private hooks: Array<Hooked>
   constructor(config: AquaConfig<T>) {
     this.data = config.data
@@ -36,7 +36,7 @@ export default class Aqua<T> {
       hookedObj[hookedObjKey] = newData
     })
     this.data = newData
-    execMiddlewares({ newData: newData, oldData: oldData }, this.reacts)
+    runPipeline({ newData: newData, oldData: oldData }, this.reacts)
   }
 
   tap(actName: string, ...args: unknown[]): void {
