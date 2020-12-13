@@ -1,11 +1,15 @@
 import { ipcRenderer } from 'electron'
 import { router } from './router'
+import { color } from './themeStyle'
 import { sortedSongs } from './musicLists'
 import Aqua from 'r/fundamental/aqua'
 
 export interface ViewTypes {
   list: string[]
   cursor: number
+}
+export interface SortTypePanelData extends ViewTypes {
+  color: string
 }
 
 export const musicSortBy = subWindowState('musicSortBy', [
@@ -46,7 +50,7 @@ function subWindowState(stateName: string, data: string[]): Aqua<ViewTypes> {
         const heightOffset = cursor * 30 + 5
         ipcRenderer.send('create sub window', {
           stateName,
-          data: state.data,
+          data: { ...state.data, color: color.data },
           file: `app/renderer/subWindows/pages/changeView/index.html`,
           width: 130,
           height: state.data.list.length * 30,
@@ -75,6 +79,12 @@ function subWindowState(stateName: string, data: string[]): Aqua<ViewTypes> {
 
         if (tag === 'A到Z') {
           sortedSongs.tap('sort', 'a-z')
+        }
+        if (tag === '歌手') {
+          sortedSongs.tap('sort', 'artist')
+        }
+        if (tag === '专辑') {
+          sortedSongs.tap('sort', 'album')
         }
         router.tap('add', ['s-music-sort-by', tag])
       },

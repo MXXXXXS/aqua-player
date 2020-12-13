@@ -1,10 +1,8 @@
 <div id="root">
   <div class="icon checkBox" @click="check"></div>
   <div class="name">
-    <div class="text">
-      <div class="icon wave"></div>
-      <span class="title">[title]</span>
-    </div>
+    <span class="wave" :class="$isPlayingMark"></span>
+    <span class="title">[title]</span>
     <div class="icon play" @click="play"></div>
     <div class="icon addOrRemove" @click="add,remove"></div>
   </div>
@@ -19,7 +17,9 @@
     color: var(--hoverColor, black);
     background-color: var(--hoverBgColor, #d9d9d9);
   }
+
   #root {
+    --color: [$color];
     display: grid;
     grid-template-rows: 48px;
     grid-template-columns: 48px 1.5fr 1fr 1fr 64px 1fr 64px;
@@ -30,15 +30,16 @@
     overflow: hidden;
     font-size: 12px;
   }
+
   .wave {
     position: relative;
+    margin-right: 10px;
     display: none;
     background: transparent;
   }
 
-  .wave svg {
-    height: 14px;
-    width: 14px;
+  .showWave {
+    display: unset;
   }
 
   .play {
@@ -49,18 +50,18 @@
     right: 0;
   }
 
-  .name .text {
+  .name .title {
     white-space: nowrap;
     overflow: hidden;
     font-size: 14px;
   }
 
   #root:hover .icon {
-    visibility: visible;
+    display: unset;
   }
 
   .icon {
-    visibility: hidden;
+    display: none;
     flex-shrink: 0;
     height: 48px;
     width: 48px;
@@ -72,7 +73,7 @@
 
   .name {
     grid-column: 2 / 3;
-    color: var(--nameColor, black);
+    color: var(--color, black);
     margin-right: 10px;
     position: relative;
     display: flex;
@@ -109,6 +110,7 @@
     grid-column: 7 / 8;
     margin-right: 10px;
   }
+
   .artist,
   .album {
     overflow: hidden;

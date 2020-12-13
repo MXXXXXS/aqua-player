@@ -1,14 +1,20 @@
 import { El } from 'r/fundamental/creatEl'
 
-export default (
-  text: string,
+export default ({
+  text,
+  color = '',
   activated = false,
+  onClick,
+}: {
+  text: string
+  color: string
+  activated: boolean
   onClick: (e: Event) => void
-): El => {
+}): El => {
   return {
     template: __filename,
-    states: ['color', 'bgColor', 'hoverBgColor'],
     vars: {
+      color,
       classNames: { activated },
       text,
     },

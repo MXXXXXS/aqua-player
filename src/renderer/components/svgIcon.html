@@ -2,8 +2,11 @@
 <style>
   #root {
     --width: [width];
-    --color: [#color];
+    --filling: [filling];
+    --color: [color];
+    --themeColor: [#color];
   }
+
   #root {
     display: flex;
     box-sizing: border-box;
@@ -11,11 +14,12 @@
     width: var(--width, 48px);
     height: var(--width, 48px);
   }
+
   svg {
     margin: auto;
-    width: 50%;
-    height: 50%;
+    width: var(--filling, 50%);
+    height: var(--filling, 50%);
     stroke-width: 4;
-    stroke: black;
+    stroke: var(--color, var(--themeColor, black));
   }
 </style>

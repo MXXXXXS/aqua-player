@@ -5,7 +5,10 @@ import slip from './slip'
 
 export default (name: string, songs: MusicMetaList): [El, List<MusicMeta>] => {
   const list = new List<MusicMeta>({
-    elGen: ({ data: song }) => [slip(song), undefined],
+    elGen: ({ data: song }) => [
+      slip({ ...song, listType: 'sortedSongs' }),
+      undefined,
+    ],
     keyGen: (song) => song.path,
   })
 

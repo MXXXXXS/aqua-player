@@ -7,10 +7,10 @@ const rmStyle = (svg: string) => {
 
 export const svgElBuffer: Record<string, Node> = {}
 
-export default (icon: string): Node | undefined => {
+export default (icon: string): HTMLElement | undefined => {
   const iconPath = join(iconDir, `${icon}.svg`)
   if (svgElBuffer[iconPath]) {
-    return svgElBuffer[iconPath].cloneNode(true)
+    return svgElBuffer[iconPath].cloneNode(true) as HTMLElement
   }
   try {
     const iconSVG = fs.readFileSync(iconPath, {
@@ -20,7 +20,7 @@ export default (icon: string): Node | undefined => {
     const template = document.createElement('template')
     template.innerHTML = svg
     svgElBuffer[iconPath] = template.content
-    return svgElBuffer[iconPath].cloneNode(true)
+    return svgElBuffer[iconPath].cloneNode(true) as HTMLElement
   } catch (error) {
     console.error(`图标"${icon}"svg文件读取失败:\n$`, error)
   }

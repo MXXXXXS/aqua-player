@@ -302,7 +302,7 @@ class AquaEl extends HTMLElement {
             this.props?.watch({
               [insertName]: (newVal: string) => {
                 const computed = this.props?.proxied[insertName] as string
-                rootEl.style.setProperty(`--${varName}`, computed || newVal)
+                rootEl.style.setProperty(`--${varName}`, computed || '')
               },
             })
             break
@@ -311,7 +311,7 @@ class AquaEl extends HTMLElement {
             this.stateProps?.watch({
               [insertName]: (newVal: string) => {
                 const computed = this.stateProps?.proxied[insertName] as string
-                rootEl.style.setProperty(`--${varName}`, computed || newVal)
+                rootEl.style.setProperty(`--${varName}`, computed || '')
               },
             })
             break

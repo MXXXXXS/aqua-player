@@ -20,7 +20,7 @@ const createEl = (elConfig: El): AquaEl => {
           els.push(...el)
         }
         els.forEach((el) => {
-          if (el instanceof HTMLElement) {
+          if (el instanceof Node) {
             mountedEl.appendChild(el)
           } else {
             const elToMount = createEl(el)

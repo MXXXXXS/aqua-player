@@ -191,7 +191,7 @@ export const nowPlayingList: Aqua<NowPlayingList> = new Aqua<NowPlayingList>({
     list: [],
   },
   acts: {
-    next: addLock((unlock) => {
+    next: () => {
       const { cursor, list } = nowPlayingList.data
       let nextCursorPosition = 0
       if (cursor + 1 < list.length) {
@@ -207,9 +207,8 @@ export const nowPlayingList: Aqua<NowPlayingList> = new Aqua<NowPlayingList>({
           .tapAsync('loadAnother', newSongPath)
           .catch((err) => console.error(err))
       }
-      unlock()
-    }),
-    previous: addLock((unlock) => {
+    },
+    previous: () => {
       const { cursor, list } = nowPlayingList.data
       let nextCursorPosition = list.length - 1
       if (cursor - 1 > -1) {
@@ -225,8 +224,7 @@ export const nowPlayingList: Aqua<NowPlayingList> = new Aqua<NowPlayingList>({
           .tapAsync('loadAnother', newSongPath)
           .catch((err) => console.error(err))
       }
-      unlock()
-    }),
+    },
   },
   // reacts: [({ newData, oldData }) => {}],
 })
@@ -235,6 +233,11 @@ export const nowPlayingList: Aqua<NowPlayingList> = new Aqua<NowPlayingList>({
 export const nowPlayingSong: Aqua<string> = new Aqua<string>({
   data: '',
   acts: {
+    playSlip: (path: string) => {
+      nowPlayingSong
+        .tapAsync('playAnother', path)
+        .catch((err) => console.error(err))
+    },
     replay: addLock(async (unlock) => {
       await nowPlayingSong.tapAsync('playAnother', nowPlayingSong.data)
       unlock()

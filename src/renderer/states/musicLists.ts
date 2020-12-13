@@ -8,6 +8,32 @@ import { diffArray } from 'ru/diff'
 import sortWords, { Group } from '../utils/sortWords'
 import { saveToDB } from '../db'
 
+export type ListType = 'songsSortByScannedDate' | 'sortedSongs' | 'collection'
+
+export const nowPlayingListType = new Aqua<ListType>({
+  data: 'songsSortByScannedDate',
+  reacts: [
+    ({ newData: listType }: { newData: ListType }) => {
+      switch (listType) {
+        case 'songsSortByScannedDate': {
+          const list = songsSortByScannedDate.data
+          nowPlayingList.tap('set', { cursor: 0, list })
+          break
+        }
+        case 'sortedSongs': {
+          const { list } = sortedSongs.data
+          const flattenedList = list.reduce((acc, [_key, ...musicMetaList]) => {
+            acc.push(...musicMetaList)
+            return acc
+          }, [] as MusicMetaList)
+          nowPlayingList.tap('set', { cursor: 0, list: flattenedList })
+          break
+        }
+      }
+    },
+  ],
+})
+
 // 按时间排序展平的songs, 用于显示在"我的音乐"页面的"歌曲"默认的"添加日期"视图
 export const songsSortByScannedDate = new Aqua<MusicMetaList>({
   data: [],
@@ -24,8 +50,8 @@ export const songsSortByScannedDate = new Aqua<MusicMetaList>({
 
 // 排序songsSortByScannedDate, 用于显示在"我的音乐"页面的"歌曲"的三种排序视图
 export interface SortedSongs {
-  sortType: 'a-z' | 'artists' | 'albums'
-  list: [string, Array<[key: string, items: MusicMetaList]>][]
+  sortType: 'a-z' | 'artist' | 'album'
+  list: Group<MusicMeta>[]
 }
 
 export const sortedSongs = new Aqua<SortedSongs>({
@@ -37,30 +63,52 @@ export const sortedSongs = new Aqua<SortedSongs>({
     sort(sortType: SortedSongs['sortType']): SortedSongs {
       const list = songsSortByScannedDate.data
       let keyGetter
+      let listGen
       switch (sortType) {
         case 'a-z': {
           keyGetter = (meta: MusicMeta) => meta.title || ''
+          listGen = (sortedList: [string, Group<MusicMeta>[]][]) => {
+            const list = []
+            for (let i = 0; i < sortedList.length; i++) {
+              const subList = []
+              const [initial, groups] = sortedList[i]
+              subList.push(initial)
+              groups.forEach(([_key, ...musicMetaList]) => {
+                subList.push(...musicMetaList)
+              })
+              list.push(subList as Group<MusicMeta>)
+            }
+            return list
+          }
           break
         }
-        case 'artists': {
-          keyGetter = (meta: MusicMeta) => meta.artist || ''
-          break
-        }
-        case 'albums': {
-          keyGetter = (meta: MusicMeta) => meta.album || ''
+        case 'artist':
+        case 'album': {
+          keyGetter = (meta: MusicMeta) => meta[sortType] || ''
+          listGen = (sortedList: [string, Group<MusicMeta>[]][]) => {
+            const list = []
+            for (let i = 0; i < sortedList.length; i++) {
+              const [_initial, groups] = sortedList[i]
+              list.push(...groups)
+            }
+            return list
+          }
           break
         }
       }
       const { en, zh } = sortWords(list, keyGetter)
+
+      const sortedList = [
+        ...sortBy(Object.entries(en), ([initial]) => initial),
+        ...sortBy(Object.entries(zh), ([initial]) => initial).map(
+          ([initial, items]) =>
+            ['拼音' + initial, items] as [string, Group<MusicMeta>[]]
+        ),
+      ]
+
       return {
         sortType: sortType,
-        list: [
-          ...sortBy(Object.entries(en), ([initial]) => initial),
-          ...sortBy(Object.entries(zh), ([initial]) => initial).map(
-            ([initial, items]) =>
-              ['拼音' + initial, items] as [string, Group<MusicMeta>[]]
-          ),
-        ],
+        list: listGen(sortedList),
       }
     },
   },

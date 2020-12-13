@@ -1,7 +1,7 @@
 import { El } from 'r/fundamental/creatEl'
 import slotSwitcher from '~/renderer/components/slotSwitcher'
 import sortedByScannedDate from './sortedByScannedDate'
-import sortedByAlphabet from './sortedByAlphabet'
+import sortedBySortType from './sortedBySortType'
 
 const panels = slotSwitcher({
   slots: [
@@ -11,7 +11,15 @@ const panels = slotSwitcher({
     },
     {
       slot: 'A到Z',
-      el: sortedByAlphabet,
+      el: sortedBySortType,
+    },
+    {
+      slot: '歌手',
+      el: sortedBySortType,
+    },
+    {
+      slot: '专辑',
+      el: sortedBySortType,
     },
   ],
   route: ['s-music-sort-by', '添加日期'],

@@ -4,7 +4,7 @@ import textButton from '~/renderer/components/textButton'
 import * as states from '~/renderer/states'
 import { ViewTypes } from '~/renderer/states'
 
-const randomIcon = svgIcon('random')
+const randomIcon = svgIcon({ icon: 'random' })
 
 export default (
   sortTypes: keyof typeof states,

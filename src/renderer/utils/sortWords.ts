@@ -5,7 +5,7 @@ function isEnWord(word: string) {
   return /\w/.test(word[0])
 }
 
-export type Group<T> = [key: string, items: T[]]
+export type Group<T> = [key: string, ...items: T[]]
 
 interface SortedItems<T> {
   [initial: string]: Group<T>[]
@@ -58,10 +58,9 @@ export default function <T>(
         return key === word
       })
       if (result) {
-        const [, items] = result
-        items.push(item)
+        result.push(item)
       } else {
-        sorted[initial].push([word, [item]])
+        sorted[initial].push([word, item])
       }
     })
     return sorted
