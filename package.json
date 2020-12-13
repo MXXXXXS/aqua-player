@@ -13,6 +13,7 @@
   "author": "MXXXXXS",
   "license": "MIT",
   "dependencies": {
+    "change-case": "^4.1.2",
     "electron": "^9.0.4",
     "franc-min": "^5.0.0",
     "howler": "^2.2.1",

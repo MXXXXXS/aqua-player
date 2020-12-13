@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { camelCase } from 'change-case'
 import { entries, filter, forIn, isArray, noop, uniqBy } from 'lodash'
 import * as states from 'r/states'
 import ReactiveObj from 'r/fundamental/ReactiveObj'
@@ -222,15 +223,26 @@ class AquaEl extends HTMLElement {
       }
     )
     // 绑定class
-    bindEls<string>(this, config, classList, (className, isTrue, _, el) => {
-      if (isTrue) {
-        ;(el as HTMLElement).classList.add(className)
-        return className
-      } else {
-        ;(el as HTMLElement).classList.remove(className)
-        return ''
+    bindEls<Record<string, boolean>>(
+      this,
+      config,
+      classList,
+      (_, classList) => {
+        return classList
+      },
+      (updatedValues, _, node) => {
+        const el = node as HTMLElement
+        const styles = updatedValues.filter((v) => typeof v !== 'string')
+        const style = Object.assign({}, ...styles) as Record<string, string>
+        forIn(style, (value, name) => {
+          if (value) {
+            el.classList.add(name)
+          } else {
+            el.classList.remove(name)
+          }
+        })
       }
-    })
+    )
     // 绑定style
     bindEls<Record<string, string>>(
       this,
@@ -239,13 +251,14 @@ class AquaEl extends HTMLElement {
       (_, styleValue) => {
         return styleValue
       },
-      (updatedValues, _, el) => {
+      (updatedValues, _, node) => {
+        const el = node as HTMLElement
         const styles = updatedValues.filter(
           (v) => typeof v !== 'string'
         ) as Record<string, string>[]
         const style = Object.assign({}, ...styles) as Record<string, string>
         forIn(style, (value, name) => {
-          ;(el as HTMLElement).style.setProperty(name, value)
+          el.style.setProperty(name, value)
         })
       }
     )
@@ -256,10 +269,9 @@ class AquaEl extends HTMLElement {
       attrs,
       (_, newVal) => newVal,
       (updatedValues, propName, el) => {
-        if (propName === 'class') {
-          propName = 'className'
-        }
-        ;(el as Record<string, any>)[propName] = updatedValues.join('')
+        ;(el as Record<string, any>)[camelCase(propName)] = updatedValues.join(
+          ''
+        )
       }
     )
     // 绑定事件处理函数

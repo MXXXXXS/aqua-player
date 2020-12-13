@@ -1,7 +1,7 @@
 <div id="root">
   <img class="cover" src="[$cover]" alt="" />
-  <div class="lighter [nameOrArtist]">[$title]</div>
-  <div class="bold [artistOrName]">[$artist]</div>
+  <div class="lighter" :class="titleClassNames">[$title]</div>
+  <div class="bold" :class="artistClassNames">[$artist]</div>
   <div class="mask" @click="clicked"></div>
 </div>
 <style>

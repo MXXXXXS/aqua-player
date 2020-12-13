@@ -12,15 +12,11 @@ export default (icon: string, text: string): El => {
     },
     states: ['highlightedMenuItemText', 'color'],
     props: {
-      highlight: false,
+      classNames: { highlight: false },
     },
     watchStates: {
       highlightedMenuItemText: ({ props }, highlightedMenuItemText: string) => {
-        if (highlightedMenuItemText === text) {
-          props.highlight = true
-        } else {
-          props.highlight = false
-        }
+        props.classNames = { highlight: highlightedMenuItemText === text }
       },
     },
     evtHandlers: {

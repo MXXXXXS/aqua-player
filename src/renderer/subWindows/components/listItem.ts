@@ -9,7 +9,7 @@ export default (
     template: __filename,
     states: ['color', 'bgColor', 'hoverBgColor'],
     vars: {
-      activated,
+      classNames: { activated },
       text,
     },
     evtHandlers: {

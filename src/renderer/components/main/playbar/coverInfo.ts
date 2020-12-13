@@ -10,8 +10,14 @@ export default (toggleNameAndArtistPosition = false): El => ({
     cover: '',
   },
   vars: {
-    nameOrArtist: !toggleNameAndArtistPosition ? 'name' : 'artist',
-    artistOrName: toggleNameAndArtistPosition ? 'name' : 'artist',
+    titleClassNames: {
+      name: !toggleNameAndArtistPosition,
+      artist: toggleNameAndArtistPosition,
+    },
+    artistClassNames: {
+      name: toggleNameAndArtistPosition,
+      artist: !toggleNameAndArtistPosition,
+    },
   },
   watchStates: {
     songMeta: ({ props }, { meta, coverUrl }: SongMeta) => {
