@@ -124,7 +124,7 @@ function bindEls<T>(
   boundEls.forEach(([marks]) => {
     uniqBy(
       filter(marks, (mark) => isArray(mark)),
-      (mark) => mark[1]
+      (mark) => mark[0] + mark[1]
     ).forEach((mark) => {
       const [insertType, name] = mark
       switch (insertType) {
@@ -325,13 +325,13 @@ class AquaEl extends HTMLElement {
     }
   }
 
-  connectedCallback(): void {
-    console.log(this.tagName, '已挂载')
-  }
+  // connectedCallback(): void {
+  //   console.log(this.tagName, '已挂载')
+  // }
 
-  disconnectedCallback(): void {
-    console.log(this.tagName, '已卸载')
-  }
+  // disconnectedCallback(): void {
+  //   console.log(this.tagName, '已卸载')
+  // }
 }
 
 customElements.define('aqua-el', AquaEl)
