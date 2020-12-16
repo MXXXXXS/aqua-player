@@ -172,11 +172,13 @@ export default function importTemplate(
     tempHTMLText = fs.readFileSync(htmlFilePath, {
       encoding: 'utf8',
     })
-    // 在传给innerHTML之前处理css variables占位符
-    template.innerHTML = filterCssVarMarks(tempHTMLText)
   } else {
-    template.innerHTML = filterCssVarMarks(pathOrHTML)
+    tempHTMLText = pathOrHTML
   }
+
+  // 在传给innerHTML之前处理css variables占位符
+  template.innerHTML = filterCssVarMarks(tempHTMLText)
+  const rootEl = template.content.querySelector('#root')
 
   const renderTexts: BoundEls = []
   const classList: BoundEls = []
@@ -184,7 +186,6 @@ export default function importTemplate(
   const attrs: BoundEls = []
   const handlers: handlers = {}
 
-  const rootEl = template.content.querySelector('#root')
   Array.from<HTMLElement>(template.content.querySelectorAll('*')).forEach(
     (el) => {
       // 文本占位解析

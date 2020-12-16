@@ -1,10 +1,37 @@
-import { MusicMeta } from 'r/core/getMusicMeta'
+import { El } from 'r/fundamental/creatEl'
+import { MusicMeta, MusicMetaList } from 'r/core/getMusicMeta'
 
-import list from 'c/list'
+import List from 'r/fundamental/List'
 import slip from './slip'
+import virtualList from 'c/virtualList'
 
-export default list<MusicMeta>({
-  stateName: 'songsSortByScannedDate',
-  keyGen: (meta) => meta.path,
-  elGen: ({ item }) => slip({ ...item, listType: 'songsSortByScannedDate' }),
+const vList = virtualList({
+  list: new List<MusicMeta>({
+    keyGen: (item) => item.path,
+    elGen: ({ data: item }) => [
+      slip({ ...item, listType: 'songsSortByScannedDate' }),
+      undefined,
+    ],
+  }),
+  paddingCount: 30,
+  itemHeight: 48,
 })
+const vListProps = vList.props!.proxied
+
+const config: El = {
+  // template: __filename,
+  states: ['songsSortByScannedDate', 'contentSwitcherHeight'],
+  watchStates: {
+    songsSortByScannedDate: (_, musicMetaList: MusicMetaList) => {
+      vListProps.listData = musicMetaList
+    },
+    contentSwitcherHeight: (_, contentSwitcherHeight: number) => {
+      vListProps.viewerHeight = String(contentSwitcherHeight) + 'px'
+    },
+  },
+  children: {
+    '#root': vList,
+  },
+}
+
+export default config

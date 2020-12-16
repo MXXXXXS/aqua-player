@@ -1,0 +1,29 @@
+<div id="root" class="listViewer" @scroll="scroll">
+  <div class="listContainer">
+    <div class="list"></div>
+  </div>
+</div>
+<style>
+  #root {
+    --offset: [$offset];
+    --listHeight: [$listHeight];
+    --viewerHeight: [$viewerHeight];
+    --paddingTop: [$paddingTop];
+  }
+
+  .listViewer {
+    height: var(--viewerHeight, 0);
+    overflow-y: auto;
+  }
+
+  .listContainer {
+    position: relative;
+    height: var(--listHeight, 500px);
+  }
+
+  .list {
+    position: relative;
+    padding-top: var(--paddingTop, 0);
+    top: var(--offset, 0);
+  }
+</style>

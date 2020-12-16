@@ -3,6 +3,7 @@ import slotSwitcher from '~/renderer/components/slotSwitcher'
 import panelSwitcher from './panelSwitcher'
 import sortTypePanel from './sortTypePanel'
 import musicSwitcher from './music'
+import { contentSwitcherHeight } from '~/renderer/states'
 
 const sortTypePanels = slotSwitcher({
   slots: [
@@ -47,8 +48,18 @@ const config: El = {
     '.sortTypePanel': sortTypePanels,
     '.contentSwitcher': contentSwitcher,
   },
-  created: ({ host }) => {
+  created: ({ host, root }) => {
     host.style.overflow = 'hidden'
+    const contentEl = root.querySelector<HTMLElement>('.contentSwitcher')
+    if (contentEl) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const { height } = entry.contentRect
+          contentSwitcherHeight.tap('set', height)
+        }
+      })
+      resizeObserver.observe(contentEl)
+    }
   },
 }
 

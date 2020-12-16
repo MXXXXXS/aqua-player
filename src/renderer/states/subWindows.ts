@@ -38,9 +38,9 @@ function subWindowState(stateName: string, data: string[]): Aqua<ViewTypes> {
       cursor: 0,
     },
     acts: {
-      setList: (list: string[]) => {
+      setList: (list: string[], close: false) => {
         return {
-          list,
+          list: [...list],
           cursor: 0,
         }
       },
@@ -70,23 +70,40 @@ function subWindowState(stateName: string, data: string[]): Aqua<ViewTypes> {
     },
     reacts: [
       ({ newData }: { newData: ViewTypes }) => {
-        ipcRenderer.send('close sub window')
-
         const { list, cursor } = newData
         const tag = list[cursor]
 
         console.log(tag)
-
-        if (tag === 'A到Z') {
-          sortedSongs.tap('sort', 'a-z')
+        let routerTag = '添加日期'
+        let genreFilter = ''
+        switch (tag) {
+          case '添加日期': {
+            router.tap('add', ['s-music-sort-by', '添加日期'])
+            routerTag = tag
+            break
+          }
+          case 'A到Z': {
+            sortedSongs.tap('sort', 'a-z')
+            routerTag = tag
+            break
+          }
+          case '歌手': {
+            sortedSongs.tap('sort', 'artist')
+            routerTag = tag
+            break
+          }
+          case '专辑': {
+            sortedSongs.tap('sort', 'album')
+            routerTag = tag
+            break
+          }
+          default: {
+            genreFilter = tag
+            break
+          }
         }
-        if (tag === '歌手') {
-          sortedSongs.tap('sort', 'artist')
-        }
-        if (tag === '专辑') {
-          sortedSongs.tap('sort', 'album')
-        }
-        router.tap('add', ['s-music-sort-by', tag])
+        router.tap('add', ['s-music-sort-by', routerTag])
+        // TODO: 过滤显示内容
       },
     ],
   })

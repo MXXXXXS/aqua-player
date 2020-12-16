@@ -4,7 +4,7 @@
 </div>
 <style>
   #root {
-    --color: [#color];
+    --highlightColor: [#color];
     display: flex;
     min-width: 0;
     align-items: center;
@@ -14,6 +14,8 @@
 
   .icon {
     display: flex;
+    justify-content: center;
+    align-items: center;
     width: 48px;
     height: 48px;
     flex-shrink: 0;
@@ -33,6 +35,6 @@
   }
 
   .highlight {
-    box-shadow: inset 4px 0 var(--color, rgb(113, 204, 192));
+    box-shadow: inset 4px 0 var(--highlightColor, rgb(113, 204, 192));
   }
 </style>

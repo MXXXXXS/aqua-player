@@ -7,6 +7,7 @@ import scanSongs from 'ru/scanSongs'
 import { diffArray } from 'ru/diff'
 import sortWords, { Group } from '../utils/sortWords'
 import { saveToDB } from '../db'
+import { filterGenres } from './subWindows'
 
 export type ListType = 'songsSortByScannedDate' | 'sortedSongs' | 'collection'
 
@@ -39,11 +40,21 @@ export const songsSortByScannedDate = new Aqua<MusicMetaList>({
   data: [],
   acts: {},
   reacts: [
-    ({ newData }: { newData: MusicMetaList }) => {
+    ({ newData: musicMetaList }: { newData: MusicMetaList }) => {
       nowPlayingList.tap('set', {
         cursor: 0,
-        list: newData,
+        list: musicMetaList,
       })
+
+      const genresTable: Record<string, boolean> = {}
+
+      musicMetaList.forEach(({ genre }) => {
+        if (!genresTable[genre || '未知流派']) {
+          genresTable[genre || '未知流派'] = true
+        }
+      })
+
+      filterGenres.tap('setList', ['所有流派', ...Object.keys(genresTable)])
     },
   ],
 })
@@ -97,7 +108,6 @@ export const sortedSongs = new Aqua<SortedSongs>({
         }
       }
       const { en, zh } = sortWords(list, keyGetter)
-
       const sortedList = [
         ...sortBy(Object.entries(en), ([initial]) => initial),
         ...sortBy(Object.entries(zh), ([initial]) => initial).map(

@@ -21,6 +21,7 @@ ipcRenderer.on(
 ipcRenderer.on(
   'activate view',
   (e, name: keyof typeof states, text: string) => {
+    ipcRenderer.send('close sub window')
     states[name].tap('activate', text)
   }
 )

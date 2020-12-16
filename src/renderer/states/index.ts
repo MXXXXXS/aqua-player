@@ -7,6 +7,7 @@ export * from './slots'
 export * from './subWindows'
 export * from './themeStyle'
 export * from './router'
+export * from './variables'
 
 export interface States {
   [stateName: string]: Aqua<unknown>

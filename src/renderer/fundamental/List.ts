@@ -1,7 +1,7 @@
 import { modify } from 'ru/minDistance'
 import createEl, { El } from './creatEl'
 
-import { findIndex, noop } from 'lodash'
+import { findIndex } from 'lodash'
 
 type KeyGen<T> = (item: T) => string
 type ElGen<T> = (_: {
@@ -41,11 +41,11 @@ export default class List<T> {
     this.subLists = {}
   }
 
-  mount(el: HTMLElement) {
+  mount(el: HTMLElement): void {
     this.root = el
   }
 
-  update(newData: Array<T>) {
+  update(newData: Array<T>): void {
     const { keyGen, elGen, root, subLists, subListGetter } = this
     if (!root) {
       return

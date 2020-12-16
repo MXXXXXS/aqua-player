@@ -13,6 +13,7 @@
   "author": "MXXXXXS",
   "license": "MIT",
   "dependencies": {
+    "@types/resize-observer-browser": "^0.1.4",
     "change-case": "^4.1.2",
     "electron": "^9.0.4",
     "franc-min": "^5.0.0",
@@ -33,7 +34,6 @@
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
-    "@types/ffmpeg-static": "^3.0.0",
     "@types/howler": "^2.2.1",
     "@types/jest": "^26.0.15",
     "@types/pinyin": "^2.8.2",
