@@ -4,9 +4,9 @@ import List from 'r/fundamental/List'
 import group from './group'
 
 const config: El = {
-  states: ['sortedSongs'],
+  states: ['sortedSongsFilteredByGenre'],
   watchStates: {
-    sortedSongs: ({ vars }, state: SortedSongs): void => {
+    sortedSongsFilteredByGenre: ({ vars }, state: SortedSongs): void => {
       const sortedSongs = state.list
       const list = vars.list as List<SortedSongs['list'][number]>
       list?.update(sortedSongs)

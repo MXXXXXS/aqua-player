@@ -1,8 +1,7 @@
 import { ipcRenderer } from 'electron'
-import { router } from './router'
 import { color } from './themeStyle'
-import { sortedSongs } from './musicLists'
 import Aqua from 'r/fundamental/aqua'
+import { musicFilter } from './musicLists'
 
 export interface ViewTypes {
   list: string[]
@@ -11,6 +10,12 @@ export interface ViewTypes {
 export interface SortTypePanelData extends ViewTypes {
   color: string
 }
+
+type PanelName =
+  | 'musicSortBy'
+  | 'filterGenres'
+  | 'albumsSortBy'
+  | 'albumsFilterGenres'
 
 export const musicSortBy = subWindowState('musicSortBy', [
   '添加日期',
@@ -31,14 +36,14 @@ export const albumsFilterGenres = subWindowState('albumsFilterGenres', [
   '所有流派',
 ])
 
-function subWindowState(stateName: string, data: string[]): Aqua<ViewTypes> {
+function subWindowState(stateName: PanelName, data: string[]): Aqua<ViewTypes> {
   const state = new Aqua<ViewTypes>({
     data: {
       list: data,
       cursor: 0,
     },
     acts: {
-      setList: (list: string[], close: false) => {
+      setList: (list: string[]) => {
         return {
           list: [...list],
           cursor: 0,
@@ -73,37 +78,22 @@ function subWindowState(stateName: string, data: string[]): Aqua<ViewTypes> {
         const { list, cursor } = newData
         const tag = list[cursor]
 
-        console.log(tag)
-        let routerTag = '添加日期'
-        let genreFilter = ''
-        switch (tag) {
-          case '添加日期': {
-            router.tap('add', ['s-music-sort-by', '添加日期'])
-            routerTag = tag
+        switch (stateName) {
+          case 'musicSortBy': {
+            musicFilter.tap('setRoute', tag)
             break
           }
-          case 'A到Z': {
-            sortedSongs.tap('sort', 'a-z')
-            routerTag = tag
+          case 'filterGenres': {
+            musicFilter.tap('setGenre', tag)
             break
           }
-          case '歌手': {
-            sortedSongs.tap('sort', 'artist')
-            routerTag = tag
+          case 'albumsSortBy': {
             break
           }
-          case '专辑': {
-            sortedSongs.tap('sort', 'album')
-            routerTag = tag
-            break
-          }
-          default: {
-            genreFilter = tag
+          case 'albumsFilterGenres': {
             break
           }
         }
-        router.tap('add', ['s-music-sort-by', routerTag])
-        // TODO: 过滤显示内容
       },
     ],
   })

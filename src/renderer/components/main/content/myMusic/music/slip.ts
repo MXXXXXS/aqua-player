@@ -66,7 +66,7 @@ export default ({
     evtHandlers: {
       play: ({ vars }) => {
         nowPlayingSong.tap('playSlip', path)
-        nowPlayingListType.tap('set', vars.listType)
+        nowPlayingListType.tap('play', vars.listType)
       },
     },
     children: {

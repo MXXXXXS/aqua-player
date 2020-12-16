@@ -9,7 +9,7 @@ const vList = virtualList({
   list: new List<MusicMeta>({
     keyGen: (item) => item.path,
     elGen: ({ data: item }) => [
-      slip({ ...item, listType: 'songsSortByScannedDate' }),
+      slip({ ...item, listType: 'songsSortedByDate' }),
       undefined,
     ],
   }),
@@ -20,9 +20,9 @@ const vListProps = vList.props!.proxied
 
 const config: El = {
   // template: __filename,
-  states: ['songsSortByScannedDate', 'contentSwitcherHeight'],
+  states: ['songsSortByDateFilteredByGenre', 'contentSwitcherHeight'],
   watchStates: {
-    songsSortByScannedDate: (_, musicMetaList: MusicMetaList) => {
+    songsSortByDateFilteredByGenre: (_, musicMetaList: MusicMetaList) => {
       vListProps.listData = musicMetaList
     },
     contentSwitcherHeight: (_, contentSwitcherHeight: number) => {

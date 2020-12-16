@@ -1,28 +1,62 @@
 import Aqua from 'r/fundamental/aqua'
 import { ListKD, ListKDItem } from 'c/list'
 import { nowPlayingList } from './playingControl'
-import { findIndex, noop, sortBy, uniqBy } from 'lodash'
+import { filter, findIndex, noop, sortBy, uniqBy } from 'lodash'
 import { MusicMeta, MusicMetaList } from 'r/core/getMusicMeta'
 import scanSongs from 'ru/scanSongs'
 import { diffArray } from 'ru/diff'
 import sortWords, { Group } from '../utils/sortWords'
 import { saveToDB } from '../db'
 import { filterGenres } from './subWindows'
+import { router } from './router'
 
-export type ListType = 'songsSortByScannedDate' | 'sortedSongs' | 'collection'
+type MusicFilterTag = [
+  '添加日期' | 'A到Z' | '歌手' | '专辑',
+  '所有流派' | string
+]
+
+const tagMapToSortType = {
+  添加日期: '',
+  A到Z: 'a-z',
+  歌手: 'artist',
+  专辑: 'album',
+}
+
+export const musicFilter: Aqua<MusicFilterTag> = new Aqua<MusicFilterTag>({
+  data: ['添加日期', '所有流派'],
+  acts: {
+    setRoute: (route: MusicFilterTag[0]) => {
+      const genre = musicFilter.data[1]
+      router.tap('add', ['s-music-sort-by', route])
+      sortedSongs.tap('sort', tagMapToSortType[route])
+      musicFilter.tap('setGenre', genre, route)
+      return [route, genre]
+    },
+    setGenre: (genre: string, route = musicFilter.data[0]) => {
+      if (route === '添加日期') {
+        songsSortByDateFilteredByGenre.tap('filter', genre)
+      } else {
+        sortedSongsFilteredByGenre.tap('filter', genre)
+      }
+      return [route, genre]
+    },
+  },
+})
+
+export type ListType = 'songsSortedByDate' | 'sortedSongs' | 'collection' | ''
 
 export const nowPlayingListType = new Aqua<ListType>({
-  data: 'songsSortByScannedDate',
-  reacts: [
-    ({ newData: listType }: { newData: ListType }) => {
+  data: '',
+  acts: {
+    play: (listType: ListType) => {
       switch (listType) {
-        case 'songsSortByScannedDate': {
-          const list = songsSortByScannedDate.data
+        case 'songsSortedByDate': {
+          const list = songsSortByDateFilteredByGenre.data
           nowPlayingList.tap('set', { cursor: 0, list })
           break
         }
         case 'sortedSongs': {
-          const { list } = sortedSongs.data
+          const { list } = sortedSongsFilteredByGenre.data
           const flattenedList = list.reduce((acc, [_key, ...musicMetaList]) => {
             acc.push(...musicMetaList)
             return acc
@@ -31,12 +65,13 @@ export const nowPlayingListType = new Aqua<ListType>({
           break
         }
       }
+      return listType
     },
-  ],
+  },
 })
 
 // 按时间排序展平的songs, 用于显示在"我的音乐"页面的"歌曲"默认的"添加日期"视图
-export const songsSortByScannedDate = new Aqua<MusicMetaList>({
+export const songsSortedByDate = new Aqua<MusicMetaList>({
   data: [],
   acts: {},
   reacts: [
@@ -59,6 +94,24 @@ export const songsSortByScannedDate = new Aqua<MusicMetaList>({
   ],
 })
 
+export const songsSortByDateFilteredByGenre = new Aqua<MusicMetaList>({
+  data: [],
+  acts: {
+    filter: (genre: string) => {
+      const list = songsSortedByDate.data
+      if (genre === '所有流派') {
+        return [...list]
+      }
+      return filter(list, (song) => {
+        if (genre === '未知流派') {
+          return !song.genre
+        }
+        return song.genre === genre
+      })
+    },
+  },
+})
+
 // 排序songsSortByScannedDate, 用于显示在"我的音乐"页面的"歌曲"的三种排序视图
 export interface SortedSongs {
   sortType: 'a-z' | 'artist' | 'album'
@@ -71,8 +124,8 @@ export const sortedSongs = new Aqua<SortedSongs>({
     list: [],
   },
   acts: {
-    sort(sortType: SortedSongs['sortType']): SortedSongs {
-      const list = songsSortByScannedDate.data
+    sort(sortType: SortedSongs['sortType']): SortedSongs | undefined {
+      const list = songsSortedByDate.data
       let keyGetter
       let listGen
       switch (sortType) {
@@ -107,18 +160,20 @@ export const sortedSongs = new Aqua<SortedSongs>({
           break
         }
       }
-      const { en, zh } = sortWords(list, keyGetter)
-      const sortedList = [
-        ...sortBy(Object.entries(en), ([initial]) => initial),
-        ...sortBy(Object.entries(zh), ([initial]) => initial).map(
-          ([initial, items]) =>
-            ['拼音' + initial, items] as [string, Group<MusicMeta>[]]
-        ),
-      ]
+      if (keyGetter && listGen) {
+        const { en, zh } = sortWords(list, keyGetter)
+        const sortedList = [
+          ...sortBy(Object.entries(en), ([initial]) => initial),
+          ...sortBy(Object.entries(zh), ([initial]) => initial).map(
+            ([initial, items]) =>
+              ['拼音' + initial, items] as [string, Group<MusicMeta>[]]
+          ),
+        ]
 
-      return {
-        sortType: sortType,
-        list: listGen(sortedList),
+        return {
+          sortType: sortType,
+          list: listGen(sortedList),
+        }
       }
     },
   },
@@ -130,6 +185,39 @@ export const sortedSongs = new Aqua<SortedSongs>({
     //   })
     // },
   ],
+})
+
+export const sortedSongsFilteredByGenre = new Aqua<SortedSongs>({
+  data: {
+    sortType: 'a-z',
+    list: [],
+  },
+  acts: {
+    filter: (genre: string) => {
+      const list = sortedSongs.data.list
+      if (genre === '所有流派') {
+        return {
+          sortType: sortedSongs.data.sortType,
+          list: [...list],
+        }
+      }
+      const filteredList = list.map(([name, ...songs]) => {
+        return [
+          name,
+          ...filter(songs, (song) => {
+            if (genre === '未知流派') {
+              return !song.genre
+            }
+            return song.genre === genre
+          }),
+        ] as Group<MusicMeta>
+      })
+      return {
+        sortType: sortedSongs.data.sortType,
+        list: filter(filteredList, ([_name, ...songs]) => songs.length > 0),
+      }
+    },
+  },
 })
 
 // 扫描文件夹后获得的歌曲
@@ -167,7 +255,7 @@ export const songs = new Aqua<ListKD<MusicMetaList>>({
         return sorted
       }, sorted)
       sorted.sort((a, b) => a.scannedDate - b.scannedDate)
-      songsSortByScannedDate.tap('set', sorted)
+      songsSortedByDate.tap('set', sorted)
     },
   ],
 })
