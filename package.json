@@ -20,7 +20,7 @@
     "howler": "^2.2.1",
     "koa": "^2.13.0",
     "koa-static": "^5.0.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "music-metadata": "^7.5.1",
     "node-vibrant": "^3.1.6",
     "pinyin": "^2.9.1",
